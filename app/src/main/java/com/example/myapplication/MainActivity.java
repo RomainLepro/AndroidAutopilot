@@ -20,7 +20,7 @@ import android.widget.Toast;
 public class MainActivity extends AppCompatActivity {
 
     Toolbar toolbar;
-    Fragment fragment1,fragment2;
+    Fragment fragment1,fragment2,fragment3;
     FragmentTransaction ft;
 
 
@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
 
         fragment1 = new Fragment1();
         fragment2 = new Fragment2();
+        fragment3 = new Fragment3();
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -74,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.item3:
                 Toast.makeText(getApplicationContext(),"ITEM 3",Toast.LENGTH_SHORT).show();
                 ft = getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.FrameLayout,fragment1);
+                ft.replace(R.id.FrameLayout,fragment3);
                 ft.commit();
                 break;
         }
