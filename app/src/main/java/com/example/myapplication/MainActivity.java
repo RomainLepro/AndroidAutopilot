@@ -1,45 +1,83 @@
 package com.example.myapplication;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.tabs.TabLayout;
-
-import androidx.viewpager.widget.ViewPager;
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.Toolbar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
+import android.widget.Toast;
 
-import com.example.myapplication.ui.main.SectionsPagerAdapter;
-import com.example.myapplication.databinding.ActivityMainBinding;
+
 
 public class MainActivity extends AppCompatActivity {
 
-    private ActivityMainBinding binding;
+    Toolbar toolbar;
+    Fragment fragment1,fragment2;
+    FragmentTransaction ft;
 
+
+
+    @SuppressLint("ResourceType")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        invalidateOptionsMenu();
 
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+        fragment1 = new Fragment1();
+        fragment2 = new Fragment2();
 
-        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
-        ViewPager viewPager = binding.viewPager;
-        viewPager.setAdapter(sectionsPagerAdapter);
-        TabLayout tabs = binding.tabs;
-        tabs.setupWithViewPager(viewPager);
-        FloatingActionButton fab = binding.fab;
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setTitle("Main Page");
+        toolbar.setSubtitle("Test Subtitle");
+        toolbar.inflateMenu(R.menu.option_menu);
 
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.FrameLayout,fragment1);
+        ft.commit();
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.option_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId())
+        {
+            case R.id.item1:
+                Toast.makeText(getApplicationContext(),"ITEM 1",Toast.LENGTH_SHORT).show();
+
+                ft = getSupportFragmentManager().beginTransaction();
+                ft.replace(R.id.FrameLayout,fragment1);
+                ft.commit();
+                break;
+            case R.id.item2:
+                Toast.makeText(getApplicationContext(),"ITEM 2",Toast.LENGTH_SHORT).show();
+
+                ft = getSupportFragmentManager().beginTransaction();
+                ft.replace(R.id.FrameLayout,fragment2);
+                ft.commit();
+                break;
+            case R.id.item3:
+                Toast.makeText(getApplicationContext(),"ITEM 3",Toast.LENGTH_SHORT).show();
+                ft = getSupportFragmentManager().beginTransaction();
+                ft.replace(R.id.FrameLayout,fragment1);
+                ft.commit();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
