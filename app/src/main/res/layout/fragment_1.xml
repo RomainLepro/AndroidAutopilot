@@ -1,14 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Fragment1">
+    tools:context=".Fragment1"
+    android:paddingBottom="16dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="16dp">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="hello_blank_fragment 1" />
+        android:id="@+id/tv_plotTittle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:text="serial_port"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
-</FrameLayout>
+    <TextView
+        android:id="@+id/tv_logger"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="34dp"
+        android:background="#FFFFFF"
+        android:scrollbars="vertical"
+        android:scrollHorizontally="true"
+        android:ellipsize="marquee"
+        android:marqueeRepeatLimit ="marquee_forever"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:gravity="bottom" />
+
+    <EditText
+        android:id="@+id/tv_send"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_logger"
+        android:layout_alignLeft="@+id/tv_logger"
+        android:layout_alignRight="@+id/tv_logger"
+        android:layout_marginTop="28dp"
+        android:ems="10" />
+
+    <Button
+        android:id="@+id/btn_send"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/tv_send"
+        android:layout_alignRight="@+id/tv_send"
+        android:layout_below="@+id/tv_send"
+        android:layout_marginTop="42dp"
+        android:text="Send"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="connect"
+        android:id="@+id/btn_connect"
+        android:layout_below="@+id/btn_send"
+        android:layout_alignRight="@+id/btn_send"
+        android:layout_alignEnd="@+id/btn_send"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"/>
+
+</RelativeLayout>

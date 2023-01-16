@@ -17,7 +17,7 @@ import android.widget.Toast;
 
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AndroidCommunication {
 
     Toolbar toolbar;
     Fragment fragment1,fragment2,fragment3;
