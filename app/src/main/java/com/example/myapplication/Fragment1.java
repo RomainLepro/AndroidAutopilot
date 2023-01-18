@@ -114,7 +114,7 @@ public class Fragment1 extends Fragment {
             @Override
             public void onClick(View view) {
                 Log.i("btn_send","btn_send");
-                String message = tv_send.getText().toString();
+                String message = tv_send.getText().toString() + '\n';
                 MainActivity activity = (MainActivity)getActivity();
                 activity.send(message);
                 tv_logger.setText(activity.getLogger());
