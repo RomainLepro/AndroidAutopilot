@@ -1,5 +1,7 @@
 package com.example.myapplication;
 
+import android.content.Context;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -8,6 +10,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -16,33 +20,19 @@ import android.view.ViewGroup;
  */
 public class Fragment2 extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    TextView tv_ax,tv_ay,tv_az;
+    TextView tv_gx,tv_gy,tv_gz;
+    Button btn_update;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    View view;
 
     public Fragment2() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment Fragment2.
-     */
-    // TODO: Rename and change types and number of parameters
     public static Fragment2 newInstance(String param1, String param2) {
         Fragment2 fragment = new Fragment2();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -50,17 +40,46 @@ public class Fragment2 extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
         Log.i("Fragment2","onCreate");
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_2, container, false);
+
+        view = inflater.inflate(R.layout.fragment_2, container, false);
+
+        tv_ax = view.findViewById(R.id.tv_ax);
+        tv_ay = view.findViewById(R.id.tv_ay);
+        tv_az = view.findViewById(R.id.tv_az);
+
+        tv_gx = view.findViewById(R.id.tv_gx);
+        tv_gy = view.findViewById(R.id.tv_gy);
+        tv_gz = view.findViewById(R.id.tv_gz);
+
+        btn_update = view.findViewById(R.id.btn_update);
+
+        btn_update.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i("Update","update");
+            }
+        });
+
+        Log.i("CREATE_SENSOR","creating activity sensor");
+
+        return view;
+    }
+
+    //called to update the veiw from main activity
+    public void updateView(float[] accelerometerReading,float[] orientationAngles)
+    {
+        tv_ax.setText(String.valueOf(accelerometerReading[0]));
+        tv_ay.setText(String.valueOf(accelerometerReading[1]));
+        tv_az.setText(String.valueOf(accelerometerReading[2]));
+
+        tv_gx.setText(String.valueOf(orientationAngles[0]));
+        tv_gy.setText(String.valueOf(orientationAngles[1]));
+        tv_gz.setText(String.valueOf(orientationAngles[2]));
     }
 }
