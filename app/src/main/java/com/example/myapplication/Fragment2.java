@@ -20,8 +20,9 @@ import android.widget.TextView;
  */
 public class Fragment2 extends Fragment {
 
-    TextView tv_ax,tv_ay,tv_az;
-    TextView tv_gx,tv_gy,tv_gz;
+    TextView tv_ax,tv_ay,tv_az,tv_gx,tv_gy,tv_gz;
+    TextView tv_Rx,tv_Ry,tv_Rz,tv_Th,tv_Sa,tv_Sb,tv_He,tv_Te;
+
     Button btn_update;
 
     View view;
@@ -57,6 +58,16 @@ public class Fragment2 extends Fragment {
         tv_gy = view.findViewById(R.id.tv_gy);
         tv_gz = view.findViewById(R.id.tv_gz);
 
+        tv_Rx = view.findViewById(R.id.tv_Rx);
+        tv_Ry = view.findViewById(R.id.tv_Ry);
+        tv_Rz = view.findViewById(R.id.tv_Rz);
+
+        tv_Th = view.findViewById(R.id.tv_Th);
+        tv_Sa = view.findViewById(R.id.tv_Sa);
+        tv_Sb = view.findViewById(R.id.tv_Sb);
+        tv_He = view.findViewById(R.id.tv_He);
+        tv_Te = view.findViewById(R.id.tv_Te);
+
         btn_update = view.findViewById(R.id.btn_update);
 
         btn_update.setOnClickListener(new View.OnClickListener() {
@@ -81,5 +92,19 @@ public class Fragment2 extends Fragment {
         tv_gx.setText(String.valueOf(orientationAngles[0]));
         tv_gy.setText(String.valueOf(orientationAngles[1]));
         tv_gz.setText(String.valueOf(orientationAngles[2]));
+    }
+
+    public void updateView(float[] accelerometerReading,float[] orientationAngles,int[] radioListInputs)
+    {
+        updateView(accelerometerReading,orientationAngles);
+
+        tv_Rx.setText(String.valueOf(radioListInputs[0]));
+        tv_Ry.setText(String.valueOf(radioListInputs[1]));
+        tv_Rz.setText(String.valueOf(radioListInputs[2]));
+        tv_Th.setText(String.valueOf(radioListInputs[3]));
+        tv_Sa.setText(String.valueOf(radioListInputs[4]));
+        tv_Sb.setText(String.valueOf(radioListInputs[5]));
+        tv_He.setText(String.valueOf(radioListInputs[6]));
+        tv_Te.setText(String.valueOf(radioListInputs[7]));
     }
 }

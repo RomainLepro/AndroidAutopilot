@@ -1,5 +1,7 @@
 package com.example.myapplication;
 
+import static java.lang.Long.min;
+
 import android.Manifest;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -25,12 +27,19 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+
 public class AndroidCommunication extends AppCompatActivity implements SerialInputOutputManager.Listener{
+
+
+    static String L_name_servos[] = {"S1","S2","S2"};
+    static String L_name_radio[] = {"OX","OY","OZ","TH","SA","SB","HE","TE"};
+    static int L_val_radio[] = {500,500,500,500,500,500,500,500};
 
     private static final int READ_WAIT_MILLIS = 100;
     private static final int WRITE_WAIT_MILLIS = 100;
     private static final String ACTION_USB_PERMISSION = "com.android.example.USB_PERMISSION";
-    private String logger =  "";
+    private String logger = "" ,debug =  "";
+    private String word = "";
 
 
     /*
@@ -80,21 +89,24 @@ public class AndroidCommunication extends AppCompatActivity implements SerialInp
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         startUsb();
-
         Timer t = new Timer();
         t.scheduleAtFixedRate(timer , 0 , 1000);
-
     }
 
     @Override
     public void onNewData(byte[] data) {
         runOnUiThread(() -> {
-            logger +=(new String(data)); });
+            String message = (new String(data));
+            logger += message;
+        });
     }
 
-    private void receive(byte[] data) {
 
-        logger +=(new String(data, StandardCharsets.UTF_8));
+    public void onNewData(String data) {
+        runOnUiThread(() -> {
+            String message = data;
+            logger += message;
+        });
     }
 
     public void send(String message)
@@ -104,35 +116,16 @@ public class AndroidCommunication extends AppCompatActivity implements SerialInp
         {
             byte[] request;
             String sendString = message;
-            logger+=("sending : "+message+"\n");
             request = sendString.getBytes();
             try {
                 port.write(request, WRITE_WAIT_MILLIS);
-                logger+=("send success\n");
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
         else
         {
-            logger+=("send failed\n");
-        }
-    }
-
-
-    void read()
-    {
-        if(port!=null && port.isOpen()) {
-            byte[] response = new byte[100];
-            try {
-                if(port.read(response, READ_WAIT_MILLIS)>0)
-                {
-                    logger+=(new String(response, StandardCharsets.UTF_8));
-                }
-            }
-            catch (IOException e) {
-                e.printStackTrace();
-            }
+            debug+=("send failed\n");
         }
     }
 
@@ -200,7 +193,6 @@ public class AndroidCommunication extends AppCompatActivity implements SerialInp
 
     public String getLogger()
     {
-        Log.i("getLogger",Integer.toString(logger.length()));
         if(logger.length()>500)
         {
             int remove =  logger.length()- 500;
@@ -209,11 +201,68 @@ public class AndroidCommunication extends AppCompatActivity implements SerialInp
         return logger;
     }
 
+    public String getDebug()
+    {
+        if(debug.length()>500)
+        {
+            int remove =  debug.length()- 500;
+            debug = debug.substring(remove,debug.length());
+        }
+        return debug;
+    }
+
     public boolean isConnected() {
         if(port!=null)
         {
             return port.isOpen();
         }
         return false;
+    }
+
+
+
+    public void extractData()
+    {
+        if(logger.length()<100)
+        {
+            return;
+        }
+        int ind = (int) (logger.length()-50);
+        String L[] = logger.substring(ind).split(String.valueOf('\n'));
+
+
+        for(int j=0;j< L.length-1;j++)
+        {
+
+            word = L[j];
+            if(word.length()>=4)
+            {
+                String NAME = word.substring(0,2);
+                String VAL = word.substring(3,word.length()-1);
+
+                for (int i =0;i<L_name_radio.length;i++) {
+                    if(L_name_radio[i].equals(NAME))
+                    {
+                        try {
+                            L_val_radio[i] = Integer.parseInt(VAL);
+                        }
+                        catch(Exception e){
+                            debug+='\n'+"value gotten : " + VAL + " IS NOT A NUMBER" +'\n';
+                            debug+="size : " + VAL.length() +'\n';
+                            return;
+                        }
+
+                        debug+="value gotten : " + NAME +'\n';
+                        debug+="value gotten : " + Integer.toString(L_val_radio[i])+'\n';
+                        debug+="value gotten : " + VAL+'\n';
+                        return;
+                    }
+                }
+                Log.i("name not found : ",NAME);
+                debug+="name not found"+'\n';
+                return;
+            }
+        }
+
     }
 }

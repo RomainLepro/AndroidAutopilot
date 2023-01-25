@@ -33,14 +33,29 @@
         android:focusableInTouchMode="true"
         android:gravity="bottom" />
 
+    <TextView
+        android:id="@+id/tv_debug"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_below="@+id/tv_logger"
+        android:layout_marginTop="20dp"
+        android:background="#FFFFFF"
+        android:ellipsize="marquee"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:gravity="bottom"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:scrollbars="vertical"
+        android:scrollHorizontally="true" />
+
     <EditText
         android:id="@+id/tv_send"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_logger"
-        android:layout_alignLeft="@+id/tv_logger"
-        android:layout_alignRight="@+id/tv_logger"
-        android:layout_marginTop="28dp"
+        android:layout_below="@+id/tv_debug"
+        android:layout_alignLeft="@+id/tv_debug"
+        android:layout_alignRight="@+id/tv_debug"
+        android:layout_marginTop="20dp"
         android:ems="10" />
 
     <Button
@@ -50,7 +65,7 @@
         android:layout_alignLeft="@+id/tv_send"
         android:layout_alignRight="@+id/tv_send"
         android:layout_below="@+id/tv_send"
-        android:layout_marginTop="42dp"
+        android:layout_marginTop="20dp"
         android:text="Send"/>
 
     <Button
@@ -61,6 +76,17 @@
         android:layout_below="@+id/btn_send"
         android:layout_alignRight="@+id/btn_send"
         android:layout_alignEnd="@+id/btn_send"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="debug"
+        android:id="@+id/btn_debug"
+        android:layout_below="@+id/btn_connect"
+        android:layout_alignRight="@+id/btn_connect"
+        android:layout_alignEnd="@+id/btn_connect"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"/>
 

@@ -1,14 +1,19 @@
 package com.example.myapplication;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -19,9 +24,29 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.Priority;
+import com.google.android.gms.tasks.OnSuccessListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends AndroidCommunication implements SensorEventListener {
+
+    public static final int MILLIS = 1000;
+    private static final int PERMISSION_FINE_LOCATION = 99;
+    FusedLocationProviderClient fusedLocationProviderClient;
+    LocationCallback locationCallback;
+    LocationRequest locationRequest;
+    List<Location> savedLocations = new ArrayList<>();;
+    private Location currentLocation;
+    private int locationUpdateCount = 0;
+
 
     Toolbar toolbar;
     Fragment fragment1,fragment2,fragment3;
@@ -38,7 +63,6 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
 
 
     private static final int dtUpdateUI_ms = 100;
-
     private static final int dtUpdateSimulation_ms = 2;
 
 
@@ -49,19 +73,17 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
             Runnable activity = this;
             if(activity!=null)
             {
-                Log.i("Loop updating UIS","looping");
-
                 if(fragment1.isVisible())
                 {
-                    ((Fragment1) fragment1).updateView(getLogger());
+                    ((Fragment1) fragment1).updateView(getLogger(),getDebug());
                 }
                 if(fragment2.isVisible())
                 {
-                    ((Fragment2) fragment2).updateView(accelerometerReading, orientationAngles);
+                    ((Fragment2) fragment2).updateView(accelerometerReading, orientationAngles,L_val_radio);
                 }
                 if(fragment3.isVisible())
                 {
-                    ((Fragment3) fragment3).updateView();
+                    ((Fragment3) fragment3).updateView(savedLocations,currentLocation,locationUpdateCount);
                 }
                 handler.postDelayed(this, dtUpdateUI_ms);
             }
@@ -73,13 +95,11 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
             Runnable activity = this;
             if(activity!=null)
             {
-                Log.i("Loop Simulation","looping simulation");
-
                 handler.postDelayed(this, dtUpdateSimulation_ms);
+                extractData();
             }
         }
     };
-
 
 
     @SuppressLint("ResourceType")
@@ -108,6 +128,23 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
         handler = new Handler(Looper.getMainLooper());
         handler.postDelayed(taskUpdateUi,dtUpdateUI_ms);
         handler.postDelayed(taskUpdateSimulation,dtUpdateSimulation_ms);
+
+
+
+        //LOCATION
+        createLocationRequest();
+        //this event is triggered every time the condition are met (here the timer)
+        locationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(@NonNull LocationResult locationResult) {
+                updateGps();
+                super.onLocationResult(locationResult);
+                Location location = locationResult.getLastLocation();
+            }
+        };
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(MainActivity.this);
+        requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION},PERMISSION_FINE_LOCATION);
+        startLocationUpdate();
 
     }
 
@@ -206,4 +243,97 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
     }
 
 
+
+
+    //LOCATION
+
+
+    public void saveCurrentLocation()
+    {
+        savedLocations.add(getCurrentLocation());
+    }
+
+    public List<Location> getSavedLocations()
+    {
+        return savedLocations;
+    }
+
+    public Location getCurrentLocation()
+    {
+        return currentLocation;
+    }
+
+    protected void createLocationRequest() {
+        locationRequest = LocationRequest.create();
+        locationRequest.setInterval(10*MILLIS);
+        locationRequest.setFastestInterval(3*MILLIS);
+        locationRequest.setPriority(Priority.PRIORITY_HIGH_ACCURACY);
+    }
+
+    public void startLocationUpdate() {
+        if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback,  Looper.getMainLooper());
+            updateGps();
+            Log.i("update","start location update");
+        }
+        else
+        {
+            Log.i("update","start location update FAILED");
+        }
+    }
+
+    public void stopLocationUpdate() {
+        fusedLocationProviderClient.removeLocationUpdates(locationCallback);
+        Log.i("update","stop location update");
+    }
+
+    private void updateGps()
+    {
+        Log.i("UpdateGps","Update GPS");
+
+        if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+        )
+        {
+            fusedLocationProviderClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                @Override
+                public void onSuccess(Location location) {
+                    if(location != null) // check that the location isn't null
+                    {
+                        Log.i("UpdateGps","not null");
+                        locationUpdateCount++;
+                        currentLocation = location;
+                    }
+                    else
+                    {
+                        Log.i("UpdateGps","null");
+                    }
+                }
+            });
+        }
+        else
+        {
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            {
+                Log.e("UpdateGps","No permission");
+                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION},PERMISSION_FINE_LOCATION);
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
+        {
+            updateGps();
+        }
+        else
+        {
+            Toast.makeText(this, "This app requires permission", Toast.LENGTH_SHORT).show();
+            finish();
+        }
+    }
 }

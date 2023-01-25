@@ -20,14 +20,8 @@ import android.widget.TextView;
  */
 public class Fragment1 extends Fragment {
 
-    TextView tv_logger,tv_send;
-    Button btn_connect,btn_send;
-
-
-
-
-
-
+    TextView tv_logger,tv_send,tv_debug;
+    Button btn_connect,btn_send,btn_debug;
 
     public Fragment1() {
         // Required empty public constructor
@@ -57,6 +51,9 @@ public class Fragment1 extends Fragment {
 
         tv_logger = view.findViewById(R.id.tv_logger);
         tv_logger.setSelected(true);
+        tv_debug = view.findViewById(R.id.tv_debug);
+        //tv__debug.setSelected(true);
+
         tv_send = view.findViewById(R.id.tv_send);
 
         btn_connect = view.findViewById(R.id.btn_connect);
@@ -82,12 +79,27 @@ public class Fragment1 extends Fragment {
             }
         });
 
+        btn_debug = view.findViewById(R.id.btn_debug);
+        btn_debug.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i("btn_debug","btn_debug");
+                String message = tv_send.getText().toString() + '\n';
+                MainActivity activity = (MainActivity)getActivity();
+            }
+        });
+
         return view;
     }
 
     public void updateView(String logger)
     {
         tv_logger.setText(logger);
+    }
+    public void updateView(String logger,String debug)
+    {
+        updateView(logger);
+        tv_debug.setText(debug);
     }
 
 }
