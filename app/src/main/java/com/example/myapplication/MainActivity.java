@@ -97,6 +97,12 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
             {
                 handler.postDelayed(this, dtUpdateSimulation_ms);
                 extractData();
+
+                L_val_servos[0] = (int)(500+accelerometerReading[0]*20);
+                L_val_servos[2] = (int)(500+accelerometerReading[2]*20);
+                L_val_servos[1] = (int)(500+accelerometerReading[1]*20);
+
+                sendData();
             }
         }
     };

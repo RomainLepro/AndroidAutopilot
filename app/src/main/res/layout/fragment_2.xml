@@ -17,7 +17,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_labelHe" />
 
     <TextView
-        android:id="@+id/tv_Te"
+        android:id="@+id/tv_He"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="0.00"
@@ -35,7 +35,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_labelSb" />
 
     <TextView
-        android:id="@+id/tv_He"
+        android:id="@+id/tv_Te"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="0.00"

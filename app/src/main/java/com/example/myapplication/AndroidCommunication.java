@@ -32,6 +32,8 @@ public class AndroidCommunication extends AppCompatActivity implements SerialInp
 
 
     static String L_name_servos[] = {"S1","S2","S2"};
+
+    static int L_val_servos[] = {500,500,500};
     static String L_name_radio[] = {"OX","OY","OZ","TH","SA","SB","HE","TE"};
     static int L_val_radio[] = {500,500,500,500,500,500,500,500};
 
@@ -101,14 +103,6 @@ public class AndroidCommunication extends AppCompatActivity implements SerialInp
         });
     }
 
-
-    public void onNewData(String data) {
-        runOnUiThread(() -> {
-            String message = data;
-            logger += message;
-        });
-    }
-
     public void send(String message)
     {
         Log.i("send","send");
@@ -129,14 +123,26 @@ public class AndroidCommunication extends AppCompatActivity implements SerialInp
         }
     }
 
+    public void sendData()
+    {
+        String mot = "";
+        for(int i = 0;i<L_val_servos.length;i++)
+        {
+            mot += Integer.toString(L_val_servos[i]);
+            mot += ";";
+        }
+        mot += '\n';
+        send(mot);
+    }
+
     public void startUsb()
     {
         Log.i("startUsb","startUsb");
         manager = (UsbManager) getSystemService(Context.USB_SERVICE);
         availableDrivers = UsbSerialProber.getDefaultProber().findAllDrivers(manager);
-        logger+=("starting USB\n");
+        debug+=("starting USB\n");
         if (availableDrivers.isEmpty()) {
-            logger+=("no available driver\n");
+            debug+=("no available driver\n");
             return;
         }
 
@@ -147,28 +153,28 @@ public class AndroidCommunication extends AppCompatActivity implements SerialInp
         if (connection == null) {
             PendingIntent permissionIntent = PendingIntent.getBroadcast(this, 0, new Intent(ACTION_USB_PERMISSION), 0);
             manager.requestPermission(driver.getDevice(),permissionIntent);
-            logger+=("asked permission\n");
+            debug+=("asked permission\n");
             connection = manager.openDevice(driver.getDevice());
             if (connection == null) {
-                logger+=("failed to connect\n");
+                debug+=("failed to connect\n");
                 return;
             }
         }
 
         port = driver.getPorts().get(0); // Most devices have just one port (port 0)
-        logger+=("opening port\n");
+        debug+=("opening port\n");
 
         try {
             port.open(connection);
             port.setParameters(115200, 8, UsbSerialPort.STOPBITS_1, UsbSerialPort.PARITY_NONE);
         } catch (IOException e) {
             e.printStackTrace();
-            logger+=("failed to open connection with port\n");
+            debug+=("failed to open connection with port\n");
         }
 
         if(port.isOpen())
         {
-            logger+=("connection succeeded !\n");
+            debug+=("connection succeeded !\n");
             byte[] response = new byte[100];
             try {
                 int len = port.read(response, READ_WAIT_MILLIS);
@@ -181,7 +187,7 @@ public class AndroidCommunication extends AppCompatActivity implements SerialInp
         }
         else
         {
-            logger+=("port not open\n");
+            debug+=("port not open\n");
         }
     }
 
@@ -221,7 +227,7 @@ public class AndroidCommunication extends AppCompatActivity implements SerialInp
 
 
 
-    public void extractData()
+    public void extractData_old()
     {
         if(logger.length()<100)
         {
@@ -260,6 +266,47 @@ public class AndroidCommunication extends AppCompatActivity implements SerialInp
                 }
                 Log.i("name not found : ",NAME);
                 debug+="name not found"+'\n';
+                return;
+            }
+        }
+
+    }
+
+    public void extractData()
+    {
+        int dataSize = 40;
+        if(logger.length()<=dataSize*2)
+        {
+            return;
+        }
+
+        String sub = logger.substring(logger.length()-dataSize*2);
+        String[] lines = sub.split(Character.toString('\n'));
+        if(lines.length <1)
+        {
+            debug+=("not enough lines, size : " + lines.length + '\n');
+            return;
+        }
+        String[] split = (lines[1]).split(";");
+
+        if(split.length < 5)
+        {
+            debug+=("not enough data, size : " + split.length + '\n');
+            return;
+        }
+        if(split.length > L_val_radio.length+1)
+        {
+            debug+=("too much data, size : " + split.length + '\n');
+            return;
+        }
+        for(int i=0;i<split.length-1;i++)
+        {
+            System.out.println(split[i]);
+            try {
+                L_val_radio[i] = Integer.parseInt(split[i]);
+            }
+            catch(Exception e){
+                debug+='\n'+"value gotten : " + split[i] + " IS NOT A NUMBER" +'\n';
                 return;
             }
         }
