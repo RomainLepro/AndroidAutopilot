@@ -1,7 +1,5 @@
-package com.example.myapplication;
+package com.example.myapplication.fragments;
 
-import android.content.Context;
-import android.hardware.SensorManager;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -13,12 +11,14 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.myapplication.R;
+
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link Fragment2#newInstance} factory method to
+ * Use the {@link Fragment4#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Fragment2 extends Fragment {
+public class Fragment4 extends Fragment {
 
     TextView tv_ax,tv_ay,tv_az,tv_gx,tv_gy,tv_gz;
     TextView tv_Rx,tv_Ry,tv_Rz,tv_Th,tv_Sa,tv_Sb,tv_He,tv_Te;
@@ -27,12 +27,12 @@ public class Fragment2 extends Fragment {
 
     View view;
 
-    public Fragment2() {
+    public Fragment4() {
         // Required empty public constructor
     }
 
-    public static Fragment2 newInstance(String param1, String param2) {
-        Fragment2 fragment = new Fragment2();
+    public static Fragment4 newInstance(String param1, String param2) {
+        Fragment4 fragment = new Fragment4();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -41,7 +41,7 @@ public class Fragment2 extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.i("Fragment2","onCreate");
+        Log.i("Fragment4","onCreate");
     }
 
     @Override
@@ -81,7 +81,10 @@ public class Fragment2 extends Fragment {
 
         return view;
     }
+    public void updateView()
+    {
 
+    }
     //called to update the veiw from main activity
     public void updateView(float[] accelerometerReading,float[] orientationAngles)
     {

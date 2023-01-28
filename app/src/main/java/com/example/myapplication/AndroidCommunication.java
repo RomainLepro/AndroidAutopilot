@@ -125,6 +125,10 @@ public class AndroidCommunication extends AppCompatActivity implements SerialInp
 
     public void sendData()
     {
+        if(!isConnected())
+        {
+            return;
+        }
         String mot = "";
         for(int i = 0;i<L_val_servos.length;i++)
         {

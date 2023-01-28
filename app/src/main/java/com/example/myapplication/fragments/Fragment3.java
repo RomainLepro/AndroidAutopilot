@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.myapplication.fragments;
 
 import android.content.Intent;
 import android.location.Location;
@@ -14,6 +14,9 @@ import android.widget.Button;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.example.myapplication.MainActivity;
+import com.example.myapplication.R;
+import com.example.myapplication.ShowSavedLocationList;
 import com.google.android.gms.location.Priority;
 
 import java.util.List;
@@ -112,6 +115,22 @@ public class Fragment3 extends Fragment {
                 }
             }
         });
+
+        btn_showWaypoints   = view.findViewById(R.id.btn_showWaypoints);
+        btn_showWaypoints.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getActivity(), ShowSavedLocationList.class);
+                startActivity(i);
+            }
+        });
+
+
+        //INITIALIZE
+        tv_updates.setText("ON");
+        myApp.startLocationUpdate();
+        myApp.locationRequest.setPriority(Priority.PRIORITY_HIGH_ACCURACY);
+        tv_sensor.setText("Using high accuracy");
 
         return view;
     }

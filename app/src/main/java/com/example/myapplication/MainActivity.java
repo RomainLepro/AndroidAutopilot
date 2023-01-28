@@ -24,6 +24,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.example.myapplication.fragments.Fragment1;
+import com.example.myapplication.fragments.Fragment2;
+import com.example.myapplication.fragments.Fragment3;
+import com.example.myapplication.fragments.Fragment4;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -42,14 +46,14 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
     private static final int PERMISSION_FINE_LOCATION = 99;
     FusedLocationProviderClient fusedLocationProviderClient;
     LocationCallback locationCallback;
-    LocationRequest locationRequest;
+    public LocationRequest locationRequest;
     List<Location> savedLocations = new ArrayList<>();;
     private Location currentLocation;
     private int locationUpdateCount = 0;
 
 
     Toolbar toolbar;
-    Fragment fragment1,fragment2,fragment3;
+    Fragment fragment1,fragment2,fragment3,fragment4;
     FragmentTransaction ft;
 
 
@@ -65,7 +69,7 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
     private static final int dtUpdateUI_ms = 100;
     private static final int dtUpdateSimulation_ms = 2;
 
-
+    Plane plane;
 
     Handler handler;
     final Runnable taskUpdateUi = new Runnable() {
@@ -85,6 +89,10 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
                 {
                     ((Fragment3) fragment3).updateView(savedLocations,currentLocation,locationUpdateCount);
                 }
+                if(fragment4.isVisible())
+                {
+                    ((Fragment4)fragment4).updateView();
+                }
                 handler.postDelayed(this, dtUpdateUI_ms);
             }
         }
@@ -98,9 +106,9 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
                 handler.postDelayed(this, dtUpdateSimulation_ms);
                 extractData();
 
-                L_val_servos[0] = (int)(500+accelerometerReading[0]*20);
-                L_val_servos[2] = (int)(500+accelerometerReading[2]*20);
-                L_val_servos[1] = (int)(500+accelerometerReading[1]*20);
+                L_val_servos[0] = (int)(L_val_radio[0]+orientationAngles[0]*100);
+                L_val_servos[1] = (int)(L_val_radio[1]+orientationAngles[1]*100);
+                L_val_servos[2] = (int)(L_val_radio[2]+orientationAngles[2]*100);
 
                 sendData();
             }
@@ -111,6 +119,9 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
     @SuppressLint("ResourceType")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        plane = new Plane();
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         invalidateOptionsMenu();
@@ -118,6 +129,7 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
         fragment1 = new Fragment1();
         fragment2 = new Fragment2();
         fragment3 = new Fragment3();
+        fragment4 = new Fragment4();
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -165,23 +177,29 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
         switch (item.getItemId())
         {
             case R.id.item1:
-                Toast.makeText(getApplicationContext(),"ITEM 1",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),"LOGGER",Toast.LENGTH_SHORT).show();
 
                 ft = getSupportFragmentManager().beginTransaction();
                 ft.replace(R.id.FrameLayout,fragment1);
                 ft.commit();
                 break;
             case R.id.item2:
-                Toast.makeText(getApplicationContext(),"ITEM 2",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),"SENSOR",Toast.LENGTH_SHORT).show();
 
                 ft = getSupportFragmentManager().beginTransaction();
                 ft.replace(R.id.FrameLayout,fragment2);
                 ft.commit();
                 break;
             case R.id.item3:
-                Toast.makeText(getApplicationContext(),"ITEM 3",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),"GPS",Toast.LENGTH_SHORT).show();
                 ft = getSupportFragmentManager().beginTransaction();
                 ft.replace(R.id.FrameLayout,fragment3);
+                ft.commit();
+                break;
+            case R.id.item4:
+                Toast.makeText(getApplicationContext(),"PID",Toast.LENGTH_SHORT).show();
+                ft = getSupportFragmentManager().beginTransaction();
+                ft.replace(R.id.FrameLayout,fragment4);
                 ft.commit();
                 break;
         }

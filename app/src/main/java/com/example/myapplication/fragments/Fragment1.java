@@ -1,17 +1,18 @@
-package com.example.myapplication;
+package com.example.myapplication.fragments;
 
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.example.myapplication.MainActivity;
+import com.example.myapplication.R;
 
 /**
  * A simple {@link Fragment} subclass.
