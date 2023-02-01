@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.myapplication.palne;
 
 public class Plane {
     PID PIDX,PIDY,PIDZ;

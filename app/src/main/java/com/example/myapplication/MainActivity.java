@@ -28,6 +28,7 @@ import com.example.myapplication.fragments.Fragment1;
 import com.example.myapplication.fragments.Fragment2;
 import com.example.myapplication.fragments.Fragment3;
 import com.example.myapplication.fragments.Fragment4;
+import com.example.myapplication.palne.Plane;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -66,12 +67,13 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
     private final float[] orientationAngles = new float[3];
 
 
-    private static final int dtUpdateUI_ms = 100;
+    private static final int dtUpdateUI_ms = 200;
     private static final int dtUpdateSimulation_ms = 2;
 
     Plane plane;
 
     Handler handler;
+
     final Runnable taskUpdateUi = new Runnable() {
         public void run() {
             Runnable activity = this;
@@ -91,7 +93,16 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
                 }
                 if(fragment4.isVisible())
                 {
-                    ((Fragment4)fragment4).updateView();
+                    // transfert PID values from plane
+                    float[] L = {0,0,0};
+                    L[0] = (L_val_radio[0]+orientationAngles[0]*100);
+                    L[1] = (L_val_radio[1]+orientationAngles[1]*100);
+                    L[2] = (L_val_radio[2]+orientationAngles[2]*100);
+                    ((Fragment4)fragment4).updateView(L);
+
+                    // updates PID gain of plane
+
+
                 }
                 handler.postDelayed(this, dtUpdateUI_ms);
             }
@@ -105,6 +116,8 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
             {
                 handler.postDelayed(this, dtUpdateSimulation_ms);
                 extractData();
+
+                // update plane and its PIDS (with radio and gyros)
 
                 L_val_servos[0] = (int)(L_val_radio[0]+orientationAngles[0]*100);
                 L_val_servos[1] = (int)(L_val_radio[1]+orientationAngles[1]*100);
