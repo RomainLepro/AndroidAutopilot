@@ -6,62 +6,245 @@
     android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <TextView
-        android:id="@+id/tv_pid"
-        android:layout_width="40dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="16dp"
-        android:text="PID()"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/tv_p"
-        android:layout_width="40dp"
-        android:layout_height="50dp"
-        android:text="NAME"
-        android:textColor="@color/black"
-        app:layout_constraintStart_toEndOf="@+id/tv_pid"
-        app:layout_constraintTop_toTopOf="@+id/tv_pid" />
+    <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id = "@+id/tableLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp">
 
-    <TextView
-        android:id="@+id/tv_p_value"
-        android:layout_width="80dp"
-        android:layout_height="50dp"
-        android:inputType="numberDecimal"
-        android:text="VALUE"
-        android:textColor="@color/black"
-        app:layout_constraintStart_toEndOf="@+id/tv_p"
-        app:layout_constraintTop_toTopOf="@+id/tv_p" />
+        <TableRow android:background="#51B435" android:padding="0dp">
 
-    <TextView
-        android:id="@+id/tv_p_result"
-        android:layout_width="80dp"
-        android:layout_height="50dp"
-        android:inputType="numberDecimal"
-        android:text="RESULT"
-        android:textColor="@color/black"
-        app:layout_constraintStart_toEndOf="@+id/tv_p_value"
-        app:layout_constraintTop_toTopOf="@+id/tv_p_value" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="PID X"
+                android:textSize = "30dp"
+                android:textStyle="bold">
+            </TextView>
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:text="0.0"
+                android:textSize = "20dp"
+                android:textStyle="bold">
+            </TextView>
 
-    <ListView
-        android:id="@+id/simpleListView"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:divider="@color/material_blue_grey_800"
-        android:dividerHeight="1dp"
-        app:layout_constraintStart_toEndOf="@+id/tv_p_value"
-        app:layout_constraintTop_toBottomOf="@+id/tv_p_value" />
+        </TableRow>
 
-    <Button
-        android:id="@+id/btn_update"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Update PIDs"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/simpleListView" />
+        <TableRow android:background="#F0F7F7" android:padding="0dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:text="P" />
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:inputType="numberSigned|numberDecimal"
+                android:text="0.0" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="0.0" />
+        </TableRow>
+
+        <TableRow android:background="#F0F7F7" android:padding="0dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:text="I" />
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:inputType="numberSigned|numberDecimal"
+                android:text="0.0" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="0.0" />
+        </TableRow>
+
+        <TableRow android:background="#F0F7F7" android:padding="0dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:text="D" />
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:inputType="numberSigned|numberDecimal"
+                android:text="0.0" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="0.0" />
+        </TableRow>
+
+
+        <TableRow android:background="#51B435" android:padding="0dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="PID Z"
+                android:textSize = "30dp"
+                android:textStyle="bold">
+            </TextView>
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:text="0.0"
+                android:textSize = "20dp"
+                android:textStyle="bold">
+            </TextView>
+
+        </TableRow>
+
+        <TableRow android:background="#F0F7F7" android:padding="0dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:text="P" />
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:inputType="numberSigned|numberDecimal"
+                android:text="0.0" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="0.0" />
+        </TableRow>
+
+        <TableRow android:background="#F0F7F7" android:padding="0dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:text="I" />
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:inputType="numberSigned|numberDecimal"
+                android:text="0.0" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="0.0" />
+        </TableRow>
+
+        <TableRow android:background="#F0F7F7" android:padding="0dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:text="D" />
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:inputType="numberSigned|numberDecimal"
+                android:text="0.0" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="0.0" />
+        </TableRow>
+
+        <TableRow android:background="#51B435" android:padding="0dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="PID X"
+                android:textSize = "30dp"
+                android:textStyle="bold">
+            </TextView>
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:text="0.0"
+                android:textSize = "20dp"
+                android:textStyle="bold">
+            </TextView>
+
+        </TableRow>
+
+        <TableRow android:background="#F0F7F7" android:padding="0dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:text="P" />
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:inputType="numberSigned|numberDecimal"
+                android:text="0.0" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="0.0" />
+        </TableRow>
+
+        <TableRow android:background="#F0F7F7" android:padding="0dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:text="I" />
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:inputType="numberSigned|numberDecimal"
+                android:text="0.0" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="0.0" />
+        </TableRow>
+
+        <TableRow android:background="#F0F7F7" android:padding="0dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:text="D" />
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:inputType="numberSigned|numberDecimal"
+                android:text="0.0" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="0.0" />
+        </TableRow>
+
+    </TableLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

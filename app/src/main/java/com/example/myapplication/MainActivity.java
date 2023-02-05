@@ -67,8 +67,8 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
     private final float[] orientationAngles = new float[3];
 
 
-    private static final int dtUpdateUI_ms = 200;
-    private static final int dtUpdateSimulation_ms = 2;
+    private static final int dtUpdateUI_ms = 100;
+    private static final int dtUpdateSimulation_ms = 10;
 
     Plane plane;
 
@@ -94,11 +94,9 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
                 if(fragment4.isVisible())
                 {
                     // transfert PID values from plane
-                    float[] L = {0,0,0};
-                    L[0] = (L_val_radio[0]+orientationAngles[0]*100);
-                    L[1] = (L_val_radio[1]+orientationAngles[1]*100);
-                    L[2] = (L_val_radio[2]+orientationAngles[2]*100);
-                    ((Fragment4)fragment4).updateView(L);
+                    plane.updatePIDGains(((Fragment4)fragment4).getValues());
+
+                    ((Fragment4)fragment4).updateView(plane.getResults());
 
                     // updates PID gain of plane
 
@@ -116,17 +114,25 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
             {
                 handler.postDelayed(this, dtUpdateSimulation_ms);
                 extractData();
-
+                plane.orientationAngles = orientationAngles;
+                plane.L_val_radio = intToFloatArray(L_val_radio);
                 // update plane and its PIDS (with radio and gyros)
-
-                L_val_servos[0] = (int)(L_val_radio[0]+orientationAngles[0]*100);
-                L_val_servos[1] = (int)(L_val_radio[1]+orientationAngles[1]*100);
-                L_val_servos[2] = (int)(L_val_radio[2]+orientationAngles[2]*100);
-
+                plane.updateDt(dtUpdateSimulation_ms);
+                L_val_servos = plane.getResultsInt();
                 sendData();
             }
         }
     };
+
+    private float[] intToFloatArray(int[] intArray)
+    {
+        float[] floatArray = new float[intArray.length];
+        for (int i = 0 ; i < intArray.length; i++)
+        {
+            floatArray[i] = (float) intArray[i];
+        }
+        return floatArray;
+    }
 
 
     @SuppressLint("ResourceType")

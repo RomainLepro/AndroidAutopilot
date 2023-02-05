@@ -29,7 +29,7 @@
     <TextView
         android:id="@+id/tv_p"
         android:layout_width="40dp"
-        android:layout_height="50dp"
+        android:layout_height="40dp"
         android:text="P :"
         app:layout_constraintStart_toEndOf="@+id/tv_pid"
         app:layout_constraintTop_toTopOf="@+id/tv_pid" />
@@ -37,7 +37,7 @@
     <EditText
         android:id="@+id/tv_p_value"
         android:layout_width="80dp"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:inputType="numberDecimal"
         android:text="1.0"
         app:layout_constraintStart_toEndOf="@+id/tv_p"
@@ -55,7 +55,7 @@
     <TextView
         android:id="@+id/tv_i"
         android:layout_width="40dp"
-        android:layout_height="50dp"
+        android:layout_height="40dp"
         android:text="I :"
         app:layout_constraintStart_toStartOf="@+id/tv_p"
         app:layout_constraintTop_toBottomOf="@+id/tv_p" />
@@ -64,7 +64,7 @@
     <EditText
         android:id="@+id/tv_i_value"
         android:layout_width="80dp"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:inputType="numberDecimal"
         android:text="0.1"
         app:layout_constraintStart_toEndOf="@+id/tv_i"
@@ -82,7 +82,7 @@
     <TextView
         android:id="@+id/tv_d"
         android:layout_width="40dp"
-        android:layout_height="50dp"
+        android:layout_height="40dp"
         android:text="D :"
         app:layout_constraintStart_toStartOf="@+id/tv_i"
         app:layout_constraintTop_toBottomOf="@+id/tv_i" />
@@ -90,7 +90,7 @@
     <EditText
         android:id="@+id/tv_d_value"
         android:layout_width="80dp"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:inputType="numberDecimal"
         android:text="0.1"
         app:layout_constraintStart_toEndOf="@+id/tv_d"

@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.example.myapplication.R;
@@ -30,10 +32,13 @@ public class Fragment4 extends Fragment {
 
     ListView simpleList;
     Button btn_update;
+
     String countryList[] = {"OX","OY","OZ","TH"};
-    PidValueAdapter adapter;
+
     ArrayList<PidValue> arrayPidValues;
-    ViewGroup viewGroup;
+    TableLayout tableLayout;
+
+
 
 
     public Fragment4() {
@@ -56,64 +61,46 @@ public class Fragment4 extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        viewGroup = container;
 
         view = inflater.inflate(R.layout.fragment_4, container, false);
 
         arrayPidValues = new ArrayList<PidValue>();
 
-        arrayPidValues.add(new PidValue("PID_X"));
-        arrayPidValues.add(new PidValue("PID_Y"));
-        arrayPidValues.add(new PidValue("PID_Z"));
-        arrayPidValues.add(new PidValue("PID_T"));
-        arrayPidValues.add(new PidValue("PID_T2"));
+        arrayPidValues.add(new PidValue("PIDX: "));
+        arrayPidValues.add(new PidValue("PIDY: "));
+        arrayPidValues.add(new PidValue("PIDZ: "));
+        //--arrayPidValues.add(new PidValue("PID_T"));
 
-        adapter = new PidValueAdapter(getContext(),arrayPidValues);
-        simpleList = (ListView)view.findViewById(R.id.simpleListView);
-        //ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getContext(), R.layout.content, R.id.tv_pid, countryList);
-        simpleList.setAdapter(adapter);
-
-        btn_update    = view.findViewById(R.id.btn_update);
-        btn_update.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
+        tableLayout = (TableLayout) view.findViewById(R.id.tableLayout);
+        for(int i =0;i<3;i++)
+        {
+            TableRow row = (TableRow) tableLayout.getChildAt(i*4);
+            TableRow rowP = (TableRow) tableLayout.getChildAt(i*4+1);
+            TableRow rowI = (TableRow) tableLayout.getChildAt(i*4+2);
+            TableRow rowD = (TableRow) tableLayout.getChildAt(i*4+3);
+            arrayPidValues.get(i).init(row,rowP,rowI,rowD);
+        }
 
         return view;
     }
-    public void updateView()
-    {
-        float[] results = {123,456,0.789f};
-        updateView(results);
-    }
+
     //called to update the veiw from main activity
     public void updateView(float[] results)
     {
-        if(arrayPidValues==null || results.length>arrayPidValues.size())
+        for(int i = 0;i<results.length;i++)
         {
-            return;
-        }
-        for(int i =0;i<results.length;i++)
-        {
-            arrayPidValues.get(i).PIDresult=results[i];
-
+            arrayPidValues.get(i).PIDresult = results[i];
+            arrayPidValues.get(i).update();
         }
 
-        adapter.updateViews();
-        //simpleList.getAdapter().notifyDatasetChanged();
-
-        //simpleList.invalidateViews();
-        //synchronized(simpleList.getAdapter()){simpleList.getAdapter().notifyAll();}
     }
 
-    public float[] getValues()
+    public float[][] getValues()
     {
-        float[] output = {};
+        float[][] output = {null,null,null};
         for(int i =0;i<arrayPidValues.size();i++)
         {
-            arrayPidValues.get(i);
+            output[i] =   arrayPidValues.get(i).getPID();
         }
         return output;
     }
