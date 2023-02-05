@@ -29,9 +29,11 @@ public class Fragment4 extends Fragment {
     View view;
 
     ListView simpleList;
+    Button btn_update;
     String countryList[] = {"OX","OY","OZ","TH"};
-
+    PidValueAdapter adapter;
     ArrayList<PidValue> arrayPidValues;
+    ViewGroup viewGroup;
 
 
     public Fragment4() {
@@ -54,6 +56,7 @@ public class Fragment4 extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        viewGroup = container;
 
         view = inflater.inflate(R.layout.fragment_4, container, false);
 
@@ -62,11 +65,21 @@ public class Fragment4 extends Fragment {
         arrayPidValues.add(new PidValue("PID_X"));
         arrayPidValues.add(new PidValue("PID_Y"));
         arrayPidValues.add(new PidValue("PID_Z"));
+        arrayPidValues.add(new PidValue("PID_T"));
+        arrayPidValues.add(new PidValue("PID_T2"));
 
-        PidValueAdapter adapter = new PidValueAdapter(getContext(),arrayPidValues);
+        adapter = new PidValueAdapter(getContext(),arrayPidValues);
         simpleList = (ListView)view.findViewById(R.id.simpleListView);
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getContext(), R.layout.content, R.id.tv_pid, countryList);
+        //ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getContext(), R.layout.content, R.id.tv_pid, countryList);
         simpleList.setAdapter(adapter);
+
+        btn_update    = view.findViewById(R.id.btn_update);
+        btn_update.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
 
         return view;
     }
@@ -85,15 +98,23 @@ public class Fragment4 extends Fragment {
         for(int i =0;i<results.length;i++)
         {
             arrayPidValues.get(i).PIDresult=results[i];
+
         }
+
+        adapter.updateViews();
         //simpleList.getAdapter().notifyDatasetChanged();
-        simpleList.invalidateViews();
+
+        //simpleList.invalidateViews();
         //synchronized(simpleList.getAdapter()){simpleList.getAdapter().notifyAll();}
     }
 
     public float[] getValues()
     {
         float[] output = {};
+        for(int i =0;i<arrayPidValues.size();i++)
+        {
+            arrayPidValues.get(i);
+        }
         return output;
     }
 

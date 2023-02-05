@@ -55,4 +55,13 @@
         app:layout_constraintStart_toEndOf="@+id/tv_p_value"
         app:layout_constraintTop_toBottomOf="@+id/tv_p_value" />
 
+    <Button
+        android:id="@+id/btn_update"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Update PIDs"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/simpleListView" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

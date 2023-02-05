@@ -326,7 +326,7 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
 
     private void updateGps()
     {
-        Log.i("UpdateGps","Update GPS");
+        //Log.i("UpdateGps","Update GPS");
 
         if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
                 &&
@@ -338,13 +338,13 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
                 public void onSuccess(Location location) {
                     if(location != null) // check that the location isn't null
                     {
-                        Log.i("UpdateGps","not null");
+                        //Log.i("UpdateGps","not null");
                         locationUpdateCount++;
                         currentLocation = location;
                     }
                     else
                     {
-                        Log.i("UpdateGps","null");
+                        //Log.i("UpdateGps","null");
                     }
                 }
             });
