@@ -3,6 +3,7 @@ package com.example.myapplication.listValue;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.TableRow;
 import android.widget.TextView;
 
@@ -17,6 +18,10 @@ public class PidValue {
     TextView tv_pid,tv_pid_result;
     EditText tv_p,tv_i,tv_d;
 
+    Switch sw_invert;
+
+    boolean invert;
+
     public PidValue(String name) {
         this.name = name;
         this.Presult = 0.f;
@@ -26,6 +31,7 @@ public class PidValue {
         this.P = 1.f;
         this.I = 0.1f;
         this.D = 0.1f;
+        this.invert = false;
     }
 
 
@@ -46,10 +52,14 @@ public class PidValue {
         tv_i = (EditText)rowI.getChildAt(1);
         tv_d = (EditText)rowD.getChildAt(1);
 
+        sw_invert = (Switch)rowTitle.getChildAt(2);
+
         //init p i d values
         tv_p.setText(Float.toString(P));
         tv_i.setText(Float.toString(I));
         tv_d.setText(Float.toString(D));
+
+         sw_invert.setChecked(invert);
 
         update();
     }
@@ -63,6 +73,7 @@ public class PidValue {
         P = toFloat(tv_p.getText().toString());
         I = toFloat(tv_i.getText().toString());
         D = toFloat(tv_d.getText().toString());
+        invert = sw_invert.isChecked();
         //Log.i("update",Float.toString(P));
     }
 
@@ -75,6 +86,11 @@ public class PidValue {
 
     public float[] getPID()
     {
+        if(invert)
+        {
+            float[] res = {-P,-I,-D};
+            return res;
+        }
         float[] res = {P,I,D};
         return res;
     }

@@ -32,16 +32,21 @@ public class Plane {
 
     public int[] getResultsInt() {
         int[] L = {0,0,0};
-        L[0] = (int)PIDX.output;
-        L[1] = (int)PIDY.output;
-        L[2] = (int)PIDZ.output;
+        L[0] = format(PIDX.output);
+        L[1] = format(PIDY.output);
+        L[2] = format(PIDZ.output);
         return L;
+    }
+
+    private int format(float output) {
+        if (output<=-499)return 0;
+        if(output>=499)return 999;
+        return (int)output+500;
     }
 
     public void updatePIDGains(float[][] values) {
         PIDX.updateGains(values[0]);
         PIDY.updateGains(values[1]);
         PIDZ.updateGains(values[2]);
-
     }
 }

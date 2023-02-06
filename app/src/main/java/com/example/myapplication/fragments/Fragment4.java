@@ -43,6 +43,12 @@ public class Fragment4 extends Fragment {
 
     public Fragment4() {
         // Required empty public constructor
+        arrayPidValues = new ArrayList<PidValue>();
+
+        arrayPidValues.add(new PidValue("PIDX: "));
+        arrayPidValues.add(new PidValue("PIDY: "));
+        arrayPidValues.add(new PidValue("PIDZ: "));
+        //--arrayPidValues.add(new PidValue("PID_T"));     
     }
 
     public static Fragment4 newInstance(String param1, String param2) {
@@ -63,13 +69,6 @@ public class Fragment4 extends Fragment {
         // Inflate the layout for this fragment
 
         view = inflater.inflate(R.layout.fragment_4, container, false);
-
-        arrayPidValues = new ArrayList<PidValue>();
-
-        arrayPidValues.add(new PidValue("PIDX: "));
-        arrayPidValues.add(new PidValue("PIDY: "));
-        arrayPidValues.add(new PidValue("PIDZ: "));
-        //--arrayPidValues.add(new PidValue("PID_T"));
 
         tableLayout = (TableLayout) view.findViewById(R.id.tableLayout);
         for(int i =0;i<3;i++)
