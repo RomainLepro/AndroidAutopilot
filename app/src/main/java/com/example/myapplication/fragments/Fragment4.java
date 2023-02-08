@@ -33,21 +33,18 @@ public class Fragment4 extends Fragment {
     ListView simpleList;
     Button btn_update;
 
-    String countryList[] = {"OX","OY","OZ","TH"};
-
     ArrayList<PidValue> arrayPidValues;
     TableLayout tableLayout;
 
-
-
+    String[] pidNameList =  {"PIDX","PIDY","PIDZ" } ;
 
     public Fragment4() {
         // Required empty public constructor
         arrayPidValues = new ArrayList<PidValue>();
 
-        arrayPidValues.add(new PidValue("PIDX: "));
-        arrayPidValues.add(new PidValue("PIDY: "));
-        arrayPidValues.add(new PidValue("PIDZ: "));
+        arrayPidValues.add(new PidValue(pidNameList[0]));
+        arrayPidValues.add(new PidValue(pidNameList[1]));
+        arrayPidValues.add(new PidValue(pidNameList[2]));
         //--arrayPidValues.add(new PidValue("PID_T"));     
     }
 
@@ -83,6 +80,18 @@ public class Fragment4 extends Fragment {
         return view;
     }
 
+    private PidValue getPid(String pidName)
+    {
+        for(int i =0;i<arrayPidValues.size();i++)
+        {
+            if(arrayPidValues.get(i).name.equalsIgnoreCase(pidName))
+            {
+                return arrayPidValues.get(i);
+            };
+        }
+        return null;
+    }
+
     //called to update the veiw from main activity
     public void updateView(float[] results)
     {
@@ -94,12 +103,52 @@ public class Fragment4 extends Fragment {
 
     }
 
+    public void updateViewByName(float[] results)
+    {
+        assert(results.length==pidNameList.length);
+        for(int i =0;i<pidNameList.length;i++)
+        {
+            if(getPid(pidNameList[i])!=null)
+            {
+                getPid(pidNameList[i]).PIDresult = results[i];
+            }
+            else
+            {
+                Log.w("getValuesByName",pidNameList[i]+" not found");
+            }
+        }
+        for(int i = 0;i<arrayPidValues.size();i++)
+        {
+            arrayPidValues.get(i).update();
+        }
+    }
+
     public float[][] getValues()
     {
         float[][] output = {null,null,null};
         for(int i =0;i<arrayPidValues.size();i++)
         {
             output[i] =   arrayPidValues.get(i).getPID();
+        }
+        return output;
+    }
+
+    public float[][] getValuesByName()
+    {
+        float[][] output = {null,null,null};
+        float[] vide = {0,0,0};
+        for(int i =0;i<pidNameList.length;i++)
+        {
+            if(getPid(pidNameList[i])!=null)
+            {
+                output[i] =   getPid(pidNameList[i]).getPID();
+            }
+            else
+            {
+                output[i] = vide;
+                Log.w("getValuesByName",pidNameList[i]+" not found");
+            }
+
         }
         return output;
     }

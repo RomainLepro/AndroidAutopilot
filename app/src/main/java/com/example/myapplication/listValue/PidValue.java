@@ -14,6 +14,7 @@ public class PidValue {
     public float Presult,Iresult,Dresult,PIDresult;
     public float P,I,D;
 
+    EditText tv_title;
     TextView tv_p_result,tv_i_result,tv_d_result;
     TextView tv_pid,tv_pid_result;
     EditText tv_p,tv_i,tv_d;
@@ -37,7 +38,7 @@ public class PidValue {
 
     public void init(TableRow rowTitle,TableRow rowP,TableRow rowI,TableRow rowD)
     {
-        TextView tv_title = (TextView)rowTitle.getChildAt(0); // fixed
+        tv_title = (EditText)rowTitle.getChildAt(0); // fixed
         tv_title.setText(name);
 
         Log.i("init","rowP:"+Integer.toString(rowP.getChildCount()));
@@ -66,6 +67,7 @@ public class PidValue {
 
     public void update()
     {
+        name = tv_title.getText().toString();
         tv_p_result.setText(String.format("%.2f",Presult));
         tv_i_result.setText(String.format("%.2f",Iresult));
         tv_d_result.setText(String.format("%.2f",Dresult));
@@ -94,6 +96,8 @@ public class PidValue {
         float[] res = {P,I,D};
         return res;
     }
+
+
 
 
 }

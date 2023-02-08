@@ -94,9 +94,9 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
                 if(fragment4.isVisible())
                 {
                     // transfert PID values from plane
-                    plane.updatePIDGains(((Fragment4)fragment4).getValues());
+                    plane.updatePIDGains(((Fragment4)fragment4).getValues()); // not using by name to enable reordering of list
 
-                    ((Fragment4)fragment4).updateView(plane.getResults());
+                    ((Fragment4)fragment4).updateViewByName(plane.getResults());
 
                     // updates PID gain of plane
 

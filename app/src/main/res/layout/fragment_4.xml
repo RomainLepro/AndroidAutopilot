@@ -17,13 +17,13 @@
 
         <TableRow android:background="#51B435" android:padding="0dp">
 
-            <TextView
+            <EditText
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="PID X"
+                android:text="PIDX"
                 android:textSize = "30dp"
                 android:textStyle="bold">
-            </TextView>
+            </EditText>
             <TextView
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
@@ -101,13 +101,13 @@
 
         <TableRow android:background="#51B435" android:padding="0dp">
 
-            <TextView
+            <EditText
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="PID Z"
+                android:text="PIDY"
                 android:textSize = "30dp"
                 android:textStyle="bold">
-            </TextView>
+            </EditText>
             <TextView
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
@@ -183,13 +183,13 @@
 
         <TableRow android:background="#51B435" android:padding="0dp">
 
-            <TextView
+            <EditText
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="PID X"
+                android:text="PIDZ"
                 android:textSize = "30dp"
                 android:textStyle="bold">
-            </TextView>
+            </EditText>
             <TextView
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
