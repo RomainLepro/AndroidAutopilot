@@ -102,6 +102,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_labelspeed" />
 
+
+
     <TextView
         android:id="@+id/tv_bearing"
         android:layout_width="wrap_content"
@@ -111,13 +113,32 @@
         app:layout_constraintTop_toTopOf="@+id/tv_labelbearing" />
 
     <TextView
+        android:id="@+id/tv_labelbearingWp"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Wp Bearing:"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_labelbearing" />
+
+
+
+    <TextView
+        android:id="@+id/tv_bearingWp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0.00"
+        app:layout_constraintStart_toEndOf="@+id/tv_labelbearingWp"
+        app:layout_constraintTop_toTopOf="@+id/tv_labelbearingWp" />
+
+    <TextView
         android:id="@+id/tv_labelupdateCount"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="Update count:"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_labelbearing" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_labelbearingWp" />
 
     <TextView
         android:id="@+id/tv_updateCount"

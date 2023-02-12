@@ -1,10 +1,10 @@
 package com.example.myapplication.fragments;
 
-import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,7 +16,6 @@ import android.widget.TextView;
 
 import com.example.myapplication.MainActivity;
 import com.example.myapplication.R;
-import com.example.myapplication.ShowSavedLocationList;
 import com.google.android.gms.location.Priority;
 
 import java.util.List;
@@ -27,11 +26,16 @@ import java.util.List;
  * create an instance of this fragment.
  */
 public class Fragment3 extends Fragment {
-
     View view;
     Switch sw_locationsupdates,sw_gps;
-    TextView tv_lat,tv_lon,tv_accuracy,tv_speed,tv_altitude,tv_sensor,tv_updates,tv_waypointCount,tv_bearing,tv_updateCount;
+    TextView tv_lat,tv_lon,tv_accuracy,tv_speed,tv_altitude,tv_sensor,tv_updates,tv_waypointCount,tv_bearing,tv_bearingWp,tv_updateCount;
     Button btn_showWaypoints,btn_addWaypoint,btn_showMap,btn_showSensor,btn_showArduino;
+
+    MainActivity myApp;
+
+    Fragment5 fragment5;
+
+    Float lastBearing = 0.f;
 
     public Fragment3() {
         // Required empty public constructor
@@ -48,6 +52,7 @@ public class Fragment3 extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.i("Fragment3","onCreate");
+        fragment5 = new Fragment5();
 
     }
 
@@ -55,7 +60,7 @@ public class Fragment3 extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        MainActivity myApp = (MainActivity) getActivity();
+        myApp = (MainActivity) getActivity();
 
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_3, container, false);
@@ -69,6 +74,7 @@ public class Fragment3 extends Fragment {
         tv_updates = view.findViewById(R.id.tv_updates);
         tv_waypointCount = view.findViewById(R.id.tv_waypointCount);
         tv_bearing = view.findViewById(R.id.tv_bearing);
+        tv_bearingWp = view.findViewById(R.id.tv_bearingWp);
         tv_updateCount = view.findViewById(R.id.tv_updateCount);
 
         btn_addWaypoint     = view.findViewById(R.id.btn_addWaypoint);
@@ -120,8 +126,10 @@ public class Fragment3 extends Fragment {
         btn_showWaypoints.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(getActivity(), ShowSavedLocationList.class);
-                startActivity(i);
+                fragment5.savedLocations = myApp.getSavedLocations();
+                FragmentTransaction ft =  getActivity().getSupportFragmentManager().beginTransaction();
+                ft.replace(R.id.FrameLayout,fragment5);
+                ft.commit();
             }
         });
 
@@ -146,10 +154,17 @@ public class Fragment3 extends Fragment {
             //Log.i("UI","no location");
             return;
         }
+        float wpO = 0.f;
+        if(myApp.getSavedLocations().size()>0)
+        {
+            wpO = location.bearingTo(myApp.getSavedLocations().get(myApp.getSavedLocations().size()-1));
+        }
+
 
         tv_lat.setText(String.valueOf(location.getLatitude()));
         tv_lon.setText(String.valueOf(location.getLongitude()));
         tv_accuracy.setText(String.valueOf(location.getAccuracy()));
+        tv_bearingWp.setText(String.valueOf(wpO)+" delta : "+String.valueOf(wpO-lastBearing));
         tv_updateCount.setText(String.valueOf(updateCount));
 
         if(location.hasAltitude())
@@ -170,6 +185,7 @@ public class Fragment3 extends Fragment {
         }
         if(location.hasBearing())
         {
+            lastBearing = location.getBearing();
             tv_bearing.setText(String.valueOf(location.getBearing()));
         }
         else

@@ -6,6 +6,7 @@ public class Plane {
     PID PIDX,PIDY,PIDZ;
 
     public float[] L_val_radio;
+    public int[] L_val_radio_int;
     public float[]orientationAngles;
     public Plane()
     {
@@ -14,12 +15,12 @@ public class Plane {
         PIDY = new PID(2,0.1f,0.1f);
         PIDZ = new PID(2,0.1f,0.1f);
         orientationAngles = new float[]{0.f,0.f,0.f};
-        L_val_radio = new float[]{0.f,0.f,0.f};
+        L_val_radio = new float[]{0.f,0.f,0.f,0.f};
     }
     public void updateDt(int dt_ms){
-        PIDX.updateDt(orientationAngles[0]*100,L_val_radio[0],dt_ms);
-        PIDY.updateDt(orientationAngles[1]*100,L_val_radio[1],dt_ms);
-        PIDZ.updateDt(orientationAngles[2]*100,L_val_radio[2],dt_ms);
+        PIDX.updateDt(orientationAngles[2]*400,L_val_radio[0],dt_ms);
+        PIDY.updateDt(orientationAngles[1]*400,L_val_radio[1],dt_ms);
+        PIDZ.updateDt(orientationAngles[0]*400,L_val_radio[2],dt_ms);
     }
 
     public float[] getResults() {
@@ -31,10 +32,12 @@ public class Plane {
     }
 
     public int[] getResultsInt() {
-        int[] L = {0,0,0};
+        int[] L = L_val_radio_int.clone();
         L[0] = format(PIDX.output);
         L[1] = format(PIDY.output);
         L[2] = format(PIDZ.output);
+        L[3] = L_val_radio_int[3];
+        L[4] = L_val_radio_int[3];
         return L;
     }
 

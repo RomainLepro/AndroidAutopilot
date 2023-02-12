@@ -68,7 +68,7 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
 
 
     private static final int dtUpdateUI_ms = 100;
-    private static final int dtUpdateSimulation_ms = 10;
+    private static final int dtUpdateSimulation_ms = 5;
 
     Plane plane;
 
@@ -116,6 +116,7 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
                 extractData();
                 plane.orientationAngles = orientationAngles;
                 plane.L_val_radio = intToFloatArray(L_val_radio);
+                plane.L_val_radio_int = L_val_radio;
                 // update plane and its PIDS (with radio and gyros)
                 plane.updateDt(dtUpdateSimulation_ms);
                 L_val_servos = plane.getResultsInt();
