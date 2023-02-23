@@ -16,21 +16,21 @@ import com.example.myapplication.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link Fragment1#newInstance} factory method to
+ * Use the {@link FragmentLogger#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Fragment1 extends Fragment {
+public class FragmentLogger extends Fragment {
 
     TextView tv_logger,tv_send,tv_debug;
     Button btn_connect,btn_send,btn_debug;
 
-    public Fragment1() {
+    public FragmentLogger() {
         // Required empty public constructor
     }
 
 
-    public static Fragment1 newInstance() {
-        Fragment1 fragment = new Fragment1();
+    public static FragmentLogger newInstance() {
+        FragmentLogger fragment = new FragmentLogger();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -39,7 +39,7 @@ public class Fragment1 extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.i("Fragment1","onCreate");
+        Log.i("FragmentLogger","onCreate");
 
     }
 
@@ -48,7 +48,7 @@ public class Fragment1 extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_1, container, false);
+        View view = inflater.inflate(R.layout.fragment_logger, container, false);
 
         tv_logger = view.findViewById(R.id.tv_logger);
         tv_logger.setSelected(true);

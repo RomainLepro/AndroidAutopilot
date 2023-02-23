@@ -15,4 +15,12 @@
         android:id="@+id/item4"
         android:title="PID"/>
 
+    <item
+        android:id="@+id/item5"
+        android:title="WAYPOINTS"/>
+
+    <item
+        android:id="@+id/item6"
+        android:title="LINKER"/>
+
 </menu>

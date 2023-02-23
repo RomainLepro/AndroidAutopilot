@@ -16,19 +16,19 @@ import com.example.myapplication.R;
 import java.util.List;
 
 
-public class Fragment5 extends Fragment {
+public class FragmentWaypoints extends Fragment {
 
     public ListView lv_waypointList;
 
     View view;
-    List<Location> savedLocations;
+    public List<Location> savedLocations;
 
-    public Fragment5() {
+    public FragmentWaypoints() {
         // Required empty public constructor
     }
 
-    public static Fragment5 newInstance(String param1, String param2) {
-        Fragment5 fragment = new Fragment5();
+    public static FragmentWaypoints newInstance(String param1, String param2) {
+        FragmentWaypoints fragment = new FragmentWaypoints();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -44,7 +44,7 @@ public class Fragment5 extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        view = inflater.inflate(R.layout.fragment_5, container, false);
+        view = inflater.inflate(R.layout.fragment_waypoints, container, false);
 
         lv_waypointList = view.findViewById(R.id.lv_waypointList);
         lv_waypointList.setAdapter(new ArrayAdapter<Location>(getActivity(), android.R.layout.simple_list_item_1,savedLocations));

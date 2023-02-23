@@ -8,25 +8,22 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
-import android.widget.TextView;
 
 import com.example.myapplication.R;
 import com.example.myapplication.listValue.PidValue;
-import com.example.myapplication.listValue.PidValueAdapter;
 
 import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link Fragment4#newInstance} factory method to
+ * Use the {@link FragmentPID#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Fragment4 extends Fragment {
+public class FragmentPID extends Fragment {
 
     View view;
 
@@ -38,7 +35,7 @@ public class Fragment4 extends Fragment {
 
     String[] pidNameList =  {"PIDX","PIDY","PIDZ" } ;
 
-    public Fragment4() {
+    public FragmentPID() {
         // Required empty public constructor
         arrayPidValues = new ArrayList<PidValue>();
 
@@ -48,8 +45,8 @@ public class Fragment4 extends Fragment {
         //--arrayPidValues.add(new PidValue("PID_T"));     
     }
 
-    public static Fragment4 newInstance(String param1, String param2) {
-        Fragment4 fragment = new Fragment4();
+    public static FragmentPID newInstance(String param1, String param2) {
+        FragmentPID fragment = new FragmentPID();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -58,14 +55,14 @@ public class Fragment4 extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.i("Fragment4","onCreate");
+        Log.i("FragmentPID","onCreate");
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
-        view = inflater.inflate(R.layout.fragment_4, container, false);
+        view = inflater.inflate(R.layout.fragment_pid, container, false);
 
         tableLayout = (TableLayout) view.findViewById(R.id.tableLayout);
         for(int i =0;i<3;i++)

@@ -22,10 +22,10 @@ import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link Fragment3#newInstance} factory method to
+ * Use the {@link FragmentGps#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Fragment3 extends Fragment {
+public class FragmentGps extends Fragment {
     View view;
     Switch sw_locationsupdates,sw_gps;
     TextView tv_lat,tv_lon,tv_accuracy,tv_speed,tv_altitude,tv_sensor,tv_updates,tv_waypointCount,tv_bearing,tv_bearingWp,tv_updateCount;
@@ -33,16 +33,16 @@ public class Fragment3 extends Fragment {
 
     MainActivity myApp;
 
-    Fragment5 fragment5;
+    FragmentWaypoints fragmentWaypoints;
 
     Float lastBearing = 0.f;
 
-    public Fragment3() {
+    public FragmentGps() {
         // Required empty public constructor
     }
 
-    public static Fragment3 newInstance(String param1, String param2) {
-        Fragment3 fragment = new Fragment3();
+    public static FragmentGps newInstance(String param1, String param2) {
+        FragmentGps fragment = new FragmentGps();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -51,8 +51,8 @@ public class Fragment3 extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.i("Fragment3","onCreate");
-        fragment5 = new Fragment5();
+        Log.i("FragmentGps","onCreate");
+        fragmentWaypoints = new FragmentWaypoints();
 
     }
 
@@ -63,7 +63,7 @@ public class Fragment3 extends Fragment {
         myApp = (MainActivity) getActivity();
 
         // Inflate the layout for this fragment
-        view = inflater.inflate(R.layout.fragment_3, container, false);
+        view = inflater.inflate(R.layout.fragment_gps, container, false);
 
         tv_lat = view.findViewById(R.id.tv_lat);
         tv_lon = view.findViewById(R.id.tv_lon);
@@ -126,9 +126,9 @@ public class Fragment3 extends Fragment {
         btn_showWaypoints.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                fragment5.savedLocations = myApp.getSavedLocations();
+                fragmentWaypoints.savedLocations = myApp.getSavedLocations();
                 FragmentTransaction ft =  getActivity().getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.FrameLayout,fragment5);
+                ft.replace(R.id.FrameLayout, fragmentWaypoints);
                 ft.commit();
             }
         });

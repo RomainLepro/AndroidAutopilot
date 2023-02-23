@@ -13,13 +13,13 @@ import android.widget.TextView;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link Fragment2#newInstance} factory method to
+ * Use the {@link FragmentSensor#newInstance} factory method to
  * create an instance of this fragment.
  */
 
 ;import com.example.myapplication.R;
 
-public class Fragment2 extends Fragment {
+public class FragmentSensor extends Fragment {
 
     TextView tv_ax,tv_ay,tv_az,tv_gx,tv_gy,tv_gz;
     TextView tv_Rx,tv_Ry,tv_Rz,tv_Th,tv_Sa,tv_Sb,tv_He,tv_Te;
@@ -28,12 +28,12 @@ public class Fragment2 extends Fragment {
 
     View view;
 
-    public Fragment2() {
+    public FragmentSensor() {
         // Required empty public constructor
     }
 
-    public static Fragment2 newInstance(String param1, String param2) {
-        Fragment2 fragment = new Fragment2();
+    public static FragmentSensor newInstance(String param1, String param2) {
+        FragmentSensor fragment = new FragmentSensor();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -42,14 +42,14 @@ public class Fragment2 extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.i("Fragment2","onCreate");
+        Log.i("FragmentSensor","onCreate");
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
-        view = inflater.inflate(R.layout.fragment_2, container, false);
+        view = inflater.inflate(R.layout.fragment_sensor, container, false);
 
         tv_ax = view.findViewById(R.id.tv_ax);
         tv_ay = view.findViewById(R.id.tv_ay);

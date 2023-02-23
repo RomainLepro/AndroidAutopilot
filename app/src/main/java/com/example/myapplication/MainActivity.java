@@ -24,10 +24,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.example.myapplication.fragments.Fragment1;
-import com.example.myapplication.fragments.Fragment2;
-import com.example.myapplication.fragments.Fragment3;
-import com.example.myapplication.fragments.Fragment4;
+import com.example.myapplication.fragments.FragmentGps;
+import com.example.myapplication.fragments.FragmentLogger;
+import com.example.myapplication.fragments.FragmentPID;
+import com.example.myapplication.fragments.FragmentSensor;
+import com.example.myapplication.fragments.FragmentWaypoints;
+import com.example.myapplication.fragments.FragmentLinker;
 import com.example.myapplication.palne.Plane;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -39,6 +41,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 
 public class MainActivity extends AndroidCommunication implements SensorEventListener {
@@ -54,7 +57,7 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
 
 
     Toolbar toolbar;
-    Fragment fragment1,fragment2,fragment3,fragment4;
+    Fragment fragmentLogger, fragmentSensor, fragmentGps, fragmentPID, fragmentWaypoints, fragmentLinker;
     FragmentTransaction ft;
 
 
@@ -79,27 +82,33 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
             Runnable activity = this;
             if(activity!=null)
             {
-                if(fragment1.isVisible())
+                if(fragmentLogger.isVisible())
                 {
-                    ((Fragment1) fragment1).updateView(getLogger(),getDebug());
+                    ((FragmentLogger) fragmentLogger).updateView(getLogger(),getDebug());
                 }
-                if(fragment2.isVisible())
+                if(fragmentSensor.isVisible())
                 {
-                    ((Fragment2) fragment2).updateView(accelerometerReading, orientationAngles,L_val_radio);
+                    ((FragmentSensor) fragmentSensor).updateView(accelerometerReading, orientationAngles,L_val_radio);
                 }
-                if(fragment3.isVisible())
+                if(fragmentGps.isVisible())
                 {
-                    ((Fragment3) fragment3).updateView(savedLocations,currentLocation,locationUpdateCount);
+                    ((FragmentGps) fragmentGps).updateView(savedLocations,currentLocation,locationUpdateCount);
                 }
-                if(fragment4.isVisible())
+                if(fragmentPID.isVisible())
                 {
                     // transfert PID values from plane
-                    plane.updatePIDGains(((Fragment4)fragment4).getValues()); // not using by name to enable reordering of list
+                    plane.updatePIDGains(((FragmentPID) fragmentPID).getValues()); // not using by name to enable reordering of list
 
-                    ((Fragment4)fragment4).updateViewByName(plane.getResults());
+                    ((FragmentPID) fragmentPID).updateViewByName(plane.getResults());
 
                     // updates PID gain of plane
 
+
+                }
+                if(fragmentLinker.isVisible())
+                {
+                    float[][] values = ((FragmentLinker) fragmentLinker).getValues();
+                    Log.i("LINKER : ",String.valueOf(values[1][1]));
 
                 }
                 handler.postDelayed(this, dtUpdateUI_ms);
@@ -146,10 +155,12 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
         setContentView(R.layout.activity_main);
         invalidateOptionsMenu();
 
-        fragment1 = new Fragment1();
-        fragment2 = new Fragment2();
-        fragment3 = new Fragment3();
-        fragment4 = new Fragment4();
+        fragmentLogger = new FragmentLogger();
+        fragmentSensor = new FragmentSensor();
+        fragmentGps = new FragmentGps();
+        fragmentPID = new FragmentPID();
+        fragmentWaypoints = new FragmentWaypoints();
+        fragmentLinker = new FragmentLinker();
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -158,7 +169,7 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
         toolbar.inflateMenu(R.menu.option_menu);
 
         ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.FrameLayout,fragment1);
+        ft.replace(R.id.FrameLayout, fragmentLogger);
         ft.commit();
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -200,28 +211,40 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
                 Toast.makeText(getApplicationContext(),"LOGGER",Toast.LENGTH_SHORT).show();
 
                 ft = getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.FrameLayout,fragment1);
+                ft.replace(R.id.FrameLayout, fragmentLogger);
                 ft.commit();
                 break;
             case R.id.item2:
                 Toast.makeText(getApplicationContext(),"SENSOR",Toast.LENGTH_SHORT).show();
 
                 ft = getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.FrameLayout,fragment2);
+                ft.replace(R.id.FrameLayout, fragmentSensor);
                 ft.commit();
                 break;
             case R.id.item3:
                 Toast.makeText(getApplicationContext(),"GPS",Toast.LENGTH_SHORT).show();
                 ft = getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.FrameLayout,fragment3);
+                ft.replace(R.id.FrameLayout, fragmentGps);
                 ft.commit();
                 break;
             case R.id.item4:
                 Toast.makeText(getApplicationContext(),"PID",Toast.LENGTH_SHORT).show();
                 ft = getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.FrameLayout,fragment4);
+                ft.replace(R.id.FrameLayout, fragmentPID);
                 ft.commit();
                 break;
+            case R.id.item5:
+                ft = getSupportFragmentManager().beginTransaction();
+                ((FragmentWaypoints) fragmentWaypoints).savedLocations = getSavedLocations();
+                ft.replace(R.id.FrameLayout, fragmentWaypoints);
+                ft.commit();
+                break;
+            case R.id.item6:
+                ft = getSupportFragmentManager().beginTransaction();
+                ft.replace(R.id.FrameLayout, fragmentLinker);
+                ft.commit();
+                break;
+
         }
         return super.onOptionsItemSelected(item);
     }
