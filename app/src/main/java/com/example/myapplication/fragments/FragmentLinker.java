@@ -27,7 +27,7 @@ public class FragmentLinker extends Fragment {
     private static final String ARG_PARAM2 = "param2";
     private static final String ARG_matrixLinker = "matrixLinker";
 
-    int numRows = 12;
+    int numRows = 10;
     int numCols = 8;
 
     float[][] matrixLinker;
@@ -61,23 +61,6 @@ public class FragmentLinker extends Fragment {
         }
 
         matrixLinker = new float[numRows][numCols];
-        //initialiseMatrix();
-    }
-
-    void initialiseMatrix()
-    {
-        for (int i = 1; i < numRows+1; i++) {
-            for (int j = 1; j < numCols+1; j++) {
-                if(i==j)
-                {
-                    matrixLinker[i][j] = 1.f;
-                }
-                else
-                {
-                    matrixLinker[i][j] = 0.f;
-                }
-            }
-        }
     }
 
     void updateValues()
@@ -97,15 +80,6 @@ public class FragmentLinker extends Fragment {
         }
     }
 
-    void updateInput()
-    {
-
-    }
-
-    void updateOutput()
-    {
-
-    }
     public float[][] getValues()
     {
         updateValues();
@@ -131,12 +105,15 @@ public class FragmentLinker extends Fragment {
                 if(i==0 && j!=0){
                     editText.setText("In:"+Integer.toString(j));
                 }
-                else if(j==0 && i!=0){
+                if(j==0 && i!=0){
                     editText.setText("Out:"+Integer.toString(i));
                 }
-                else if(i!=0 && j!=0) {
-                    editText.setText(Float.toString(99.f));
+                if(i!=0 && j!=0) {
+                    editText.setText(Float.toString(0.f));
                 }
+
+                GridLayout.LayoutParams params = new GridLayout.LayoutParams(GridLayout.spec(i),GridLayout.spec(j));
+                gridLayout.addView(editText, params);
             }
         }
         return view;
