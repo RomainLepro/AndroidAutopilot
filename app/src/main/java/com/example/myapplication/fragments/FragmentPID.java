@@ -15,6 +15,7 @@ import android.widget.TableRow;
 
 import com.example.myapplication.R;
 import com.example.myapplication.listValue.PidValue;
+import com.example.myapplication.palne.PidInterface;
 
 import java.util.ArrayList;
 
@@ -35,6 +36,8 @@ public class FragmentPID extends Fragment {
 
     String[] pidNameList =  {"PIDX","PIDY","PIDZ" } ;
 
+    PidInterface pidInterface;
+
     public FragmentPID() {
         // Required empty public constructor
         arrayPidValues = new ArrayList<PidValue>();
@@ -42,7 +45,7 @@ public class FragmentPID extends Fragment {
         arrayPidValues.add(new PidValue(pidNameList[0]));
         arrayPidValues.add(new PidValue(pidNameList[1]));
         arrayPidValues.add(new PidValue(pidNameList[2]));
-        //--arrayPidValues.add(new PidValue("PID_T"));     
+
     }
 
     public static FragmentPID newInstance(String param1, String param2) {
