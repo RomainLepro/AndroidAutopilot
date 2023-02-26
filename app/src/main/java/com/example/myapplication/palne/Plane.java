@@ -42,7 +42,7 @@ public class Plane {
     }
 
     private int format(float output) {
-        int maxValue = 300;
+        int maxValue = 500;
         if (output<=-maxValue)return 500-maxValue;
         if(output>=maxValue)return 500+maxValue;
         return (int)output+500;
