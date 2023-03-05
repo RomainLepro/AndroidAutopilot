@@ -1,21 +1,25 @@
 package com.example.myapplication.palne;
 
+import android.content.SharedPreferences;
 import android.util.Log;
 
 public class Plane {
     PID PIDX,PIDY,PIDZ;
+
+    public LinkerInterface linkerInterface;
 
     public float[] L_val_radio;
     public int[] L_val_radio_int;
     public float[]orientationAngles;
     public Plane()
     {
-
+        linkerInterface = new LinkerInterface();
         PIDX = new PID(2,0.1f,0.1f);
         PIDY = new PID(2,0.1f,0.1f);
         PIDZ = new PID(2,0.1f,0.1f);
         orientationAngles = new float[]{0.f,0.f,0.f};
         L_val_radio = new float[]{0.f,0.f,0.f,0.f};
+
     }
     public void updateDt(int dt_ms){
         PIDX.updateDt(orientationAngles[2]*400,L_val_radio[0],dt_ms);
@@ -53,4 +57,5 @@ public class Plane {
         PIDY.updateGains(values[1]);
         PIDZ.updateGains(values[2]);
     }
+
 }

@@ -3,6 +3,7 @@ package com.example.myapplication;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -40,6 +41,7 @@ import com.google.android.gms.location.Priority;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -108,7 +110,7 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
                 if(fragmentLinker.isVisible())
                 {
                     float[][] values = ((FragmentLinker) fragmentLinker).getValues();
-                    Log.i("LINKER : ",String.valueOf(values[1][1]));
+                    Log.i("LINKER : ",String.valueOf(values[0][0]));
 
                 }
                 handler.postDelayed(this, dtUpdateUI_ms);
@@ -148,8 +150,9 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
     @SuppressLint("ResourceType")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
+        sharedPreferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
         plane = new Plane();
+        loadData();
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -160,7 +163,7 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
         fragmentGps = new FragmentGps();
         fragmentPID = new FragmentPID();
         fragmentWaypoints = new FragmentWaypoints();
-        fragmentLinker = new FragmentLinker();
+        fragmentLinker = new FragmentLinker(plane.linkerInterface);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -194,7 +197,12 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(MainActivity.this);
         requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION},PERMISSION_FINE_LOCATION);
         startLocationUpdate();
+    }
 
+    @Override
+    protected void onStop() {
+        saveData();
+        super.onStop();
     }
 
     @Override
@@ -402,5 +410,45 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
             Toast.makeText(this, "This app requires permission", Toast.LENGTH_SHORT).show();
             finish();
         }
+    }
+
+
+    SharedPreferences sharedPreferences;
+
+    public void loadData(){
+        float[][] linkerMatrix;
+
+
+        String matrixString = sharedPreferences.getString("matrix", null);
+        Log.i("loadData : ",matrixString);
+        if (matrixString != null) {
+            matrixString = matrixString.replace("[[", "[");
+            matrixString = matrixString.replace("]]", "]");
+            String[] rows = matrixString.split("], \\[");
+            linkerMatrix = new float[rows.length][];
+            for (int i = 0; i < rows.length; i++) {
+                rows[i] = rows[i].replace("[","");
+                rows[i] = rows[i].replace("]","");
+                String[] columns = rows[i].split(",");
+                linkerMatrix[i] = new float[columns.length];
+                for (int j = 0; j < columns.length; j++) {
+                    linkerMatrix[i][j] = Float.parseFloat(columns[j]);
+                    Log.i("linkerMatrix",columns[j]);
+                }
+            }
+            Log.i("linkerMatrix",Arrays.deepToString(plane.linkerInterface.getMatrixLinker()));
+            plane.linkerInterface.setMatrixLinker(linkerMatrix);
+            Log.i("linkerMatrix",Arrays.deepToString(plane.linkerInterface.getMatrixLinker()));
+        }
+    }
+
+
+    public void saveData(){
+
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("matrix", Arrays.deepToString(plane.linkerInterface.getMatrixLinker()));
+        editor.apply();
+        Log.i("saveData","QUITTING AFTER SAVING");
+        Log.i("saveData : ",Arrays.deepToString(plane.linkerInterface.getMatrixLinker()));
     }
 }

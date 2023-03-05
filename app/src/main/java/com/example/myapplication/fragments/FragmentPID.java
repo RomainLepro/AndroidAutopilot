@@ -31,12 +31,16 @@ public class FragmentPID extends Fragment {
     ListView simpleList;
     Button btn_update;
 
+
+    //all this is to be removed
     ArrayList<PidValue> arrayPidValues;
     TableLayout tableLayout;
-
     String[] pidNameList =  {"PIDX","PIDY","PIDZ" } ;
 
-    PidInterface pidInterface;
+
+    //this should remove the rest
+
+    PidInterface m_pidInterface;
 
     public FragmentPID() {
         // Required empty public constructor
@@ -46,6 +50,13 @@ public class FragmentPID extends Fragment {
         arrayPidValues.add(new PidValue(pidNameList[1]));
         arrayPidValues.add(new PidValue(pidNameList[2]));
 
+
+        m_pidInterface = new PidInterface();
+    }
+
+    public FragmentPID(PidInterface pidInterface) {
+        // This constructor should be called to allow plane and PID fragment to comunicate
+        m_pidInterface = new PidInterface();
     }
 
     public static FragmentPID newInstance(String param1, String param2) {

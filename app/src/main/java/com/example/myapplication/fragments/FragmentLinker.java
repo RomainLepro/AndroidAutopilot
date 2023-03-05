@@ -52,7 +52,7 @@ public class FragmentLinker extends Fragment {
                 if(viewText instanceof EditText)
                 {
                     String str = ((EditText) viewText).getText().toString();
-                    m_linker.matrixLinker[i-1][j-1] = Float.parseFloat(str);
+                    m_linker.matrixLinker[i-1][j-1] = toFloat(str);
                 }
             }
         }
@@ -105,5 +105,11 @@ public class FragmentLinker extends Fragment {
             }
         }
         return view;
+    }
+
+    float toFloat(String val)
+    {
+        if(val==null || val=="" ||val.isEmpty())  return 0.f;
+        return  Float.parseFloat(val);
     }
 }
