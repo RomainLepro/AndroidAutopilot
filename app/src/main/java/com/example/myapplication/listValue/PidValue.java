@@ -35,6 +35,18 @@ public class PidValue {
         this.invert = false;
     }
 
+    public PidValue(String name,float[] PIDS) {
+        this.name = name;
+        this.Presult = 0.f;
+        this.Iresult = 0.f;
+        this.Dresult = 0.f;
+        this.PIDresult = 123.4f;
+        this.P = PIDS[0];
+        this.I = PIDS[1];
+        this.D = PIDS[2];
+        this.invert = false;
+    }
+
 
     public void init(TableRow rowTitle,TableRow rowP,TableRow rowI,TableRow rowD)
     {

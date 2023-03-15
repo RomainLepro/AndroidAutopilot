@@ -35,7 +35,6 @@ public class FragmentPID extends Fragment {
     //all this is to be removed
     ArrayList<PidValue> arrayPidValues;
     TableLayout tableLayout;
-    String[] pidNameList =  {"PIDX","PIDY","PIDZ" } ;
 
 
     //this should remove the rest
@@ -43,26 +42,27 @@ public class FragmentPID extends Fragment {
     PidInterface m_pidInterface;
 
     public FragmentPID() {
-        // Required empty public constructor
-        arrayPidValues = new ArrayList<PidValue>();
-
-        arrayPidValues.add(new PidValue(pidNameList[0]));
-        arrayPidValues.add(new PidValue(pidNameList[1]));
-        arrayPidValues.add(new PidValue(pidNameList[2]));
-
 
         m_pidInterface = new PidInterface();
+
+        arrayPidValues = new ArrayList<PidValue>();
+        arrayPidValues.add(new PidValue(m_pidInterface.pidNameList[0]));
+        arrayPidValues.add(new PidValue(m_pidInterface.pidNameList[1]));
+        arrayPidValues.add(new PidValue(m_pidInterface.pidNameList[2]));
     }
 
     public FragmentPID(PidInterface pidInterface) {
-        // This constructor should be called to allow plane and PID fragment to comunicate
-        m_pidInterface = new PidInterface();
+
+        m_pidInterface = pidInterface;
+
+        arrayPidValues = new ArrayList<PidValue>();
+        arrayPidValues.add(new PidValue(m_pidInterface.pidNameList[0],pidInterface.outputPids[0]));
+        arrayPidValues.add(new PidValue(m_pidInterface.pidNameList[1],pidInterface.outputPids[1]));
+        arrayPidValues.add(new PidValue(m_pidInterface.pidNameList[2],pidInterface.outputPids[2]));
     }
 
-    public static FragmentPID newInstance(String param1, String param2) {
+    public static FragmentPID newInstance() {
         FragmentPID fragment = new FragmentPID();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
         return fragment;
     }
 
@@ -103,63 +103,21 @@ public class FragmentPID extends Fragment {
         return null;
     }
 
-    //called to update the veiw from main activity
-    public void updateView(float[] results)
-    {
-        for(int i = 0;i<results.length;i++)
-        {
-            arrayPidValues.get(i).PIDresult = results[i];
-            arrayPidValues.get(i).update();
-        }
-
-    }
-
-    public void updateViewByName(float[] results)
-    {
-        assert(results.length==pidNameList.length);
-        for(int i =0;i<pidNameList.length;i++)
-        {
-            if(getPid(pidNameList[i])!=null)
-            {
-                getPid(pidNameList[i]).PIDresult = results[i];
-            }
-            else
-            {
-                Log.w("getValuesByName",pidNameList[i]+" not found");
-            }
-        }
-        for(int i = 0;i<arrayPidValues.size();i++)
-        {
+    //called to update the veiw from main activity (update pid values used in plane and outputs)
+    public void updateView() {
+        for (int i = 0; i < m_pidInterface.pidCount; i++) {
+            arrayPidValues.get(i).PIDresult = m_pidInterface.resultsPids[i];
+            m_pidInterface.outputPids = getValues();
             arrayPidValues.get(i).update();
         }
     }
 
-    public float[][] getValues()
+    private float[][] getValues()
     {
         float[][] output = {null,null,null};
         for(int i =0;i<arrayPidValues.size();i++)
         {
             output[i] =   arrayPidValues.get(i).getPID();
-        }
-        return output;
-    }
-
-    public float[][] getValuesByName()
-    {
-        float[][] output = {null,null,null};
-        float[] vide = {0,0,0};
-        for(int i =0;i<pidNameList.length;i++)
-        {
-            if(getPid(pidNameList[i])!=null)
-            {
-                output[i] =   getPid(pidNameList[i]).getPID();
-            }
-            else
-            {
-                output[i] = vide;
-                Log.w("getValuesByName",pidNameList[i]+" not found");
-            }
-
         }
         return output;
     }

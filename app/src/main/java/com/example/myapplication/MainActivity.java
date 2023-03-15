@@ -43,7 +43,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Logger;
 
 
 public class MainActivity extends AndroidCommunication implements SensorEventListener {
@@ -99,9 +98,9 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
                 if(fragmentPID.isVisible())
                 {
                     // transfert PID values from plane
-                    plane.updatePIDGains(((FragmentPID) fragmentPID).getValues()); // not using by name to enable reordering of list
-
-                    ((FragmentPID) fragmentPID).updateViewByName(plane.getResults());
+                    plane.updatePIDGains(); // not using by name to enable reordering of list
+                    plane.updatePidResults();
+                    ((FragmentPID) fragmentPID).updateView();
 
                     // updates PID gain of plane
 
@@ -161,7 +160,7 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
         fragmentLogger = new FragmentLogger();
         fragmentSensor = new FragmentSensor();
         fragmentGps = new FragmentGps();
-        fragmentPID = new FragmentPID();
+        fragmentPID = new FragmentPID(plane.pidInterface);
         fragmentWaypoints = new FragmentWaypoints();
         fragmentLinker = new FragmentLinker(plane.linkerInterface);
 
@@ -416,39 +415,35 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
     SharedPreferences sharedPreferences;
 
     public void loadData(){
-        float[][] linkerMatrix;
 
+        String linkerInterfaceStringA = sharedPreferences.getString("linkerInterfaceStringA", null);
+        plane.linkerInterfaceA.loadData(linkerInterfaceStringA);
 
-        String matrixString = sharedPreferences.getString("matrix", null);
-        Log.i("loadData : ",matrixString);
-        if (matrixString != null) {
-            matrixString = matrixString.replace("[[", "[");
-            matrixString = matrixString.replace("]]", "]");
-            String[] rows = matrixString.split("], \\[");
-            linkerMatrix = new float[rows.length][];
-            for (int i = 0; i < rows.length; i++) {
-                rows[i] = rows[i].replace("[","");
-                rows[i] = rows[i].replace("]","");
-                String[] columns = rows[i].split(",");
-                linkerMatrix[i] = new float[columns.length];
-                for (int j = 0; j < columns.length; j++) {
-                    linkerMatrix[i][j] = Float.parseFloat(columns[j]);
-                    Log.i("linkerMatrix",columns[j]);
-                }
-            }
-            Log.i("linkerMatrix",Arrays.deepToString(plane.linkerInterface.getMatrixLinker()));
-            plane.linkerInterface.setMatrixLinker(linkerMatrix);
-            Log.i("linkerMatrix",Arrays.deepToString(plane.linkerInterface.getMatrixLinker()));
-        }
+        String linkerInterfaceStringB = sharedPreferences.getString("linkerInterfaceStringB", null);
+        plane.linkerInterfaceB.loadData(linkerInterfaceStringB);
+
+        String linkerInterfaceStringC = sharedPreferences.getString("linkerInterfaceStringC", null);
+        plane.linkerInterfaceC.loadData(linkerInterfaceStringC);
+
+        String pidInterfaceString = sharedPreferences.getString("pidInterfaceString", null);
+        plane.pidInterface.loadData(pidInterfaceString);
+
     }
 
 
     public void saveData(){
 
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("matrix", Arrays.deepToString(plane.linkerInterface.getMatrixLinker()));
+
+
+        editor.putString("linkerInterfaceStringA", Arrays.deepToString(plane.linkerInterfaceA.getMatrixLinker()));
+        editor.putString("linkerInterfaceStringB", Arrays.deepToString(plane.linkerInterfaceB.getMatrixLinker()));
+        editor.putString("linkerInterfaceStringC", Arrays.deepToString(plane.linkerInterfaceC.getMatrixLinker()));
+
+        editor.putString("pidInterfaceString", Arrays.deepToString(plane.pidInterface.getValues()));
+
         editor.apply();
+
         Log.i("saveData","QUITTING AFTER SAVING");
-        Log.i("saveData : ",Arrays.deepToString(plane.linkerInterface.getMatrixLinker()));
     }
 }

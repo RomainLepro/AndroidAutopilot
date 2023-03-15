@@ -43,30 +43,42 @@ public class FragmentLinker extends Fragment {
 
     void updateValues()
     {
-        for (int i = 1; i < m_linker.numRows+1; i++) {
-            for (int j = 1; j < m_linker.numCols+1; j++) {
+        int i=0,j=0;
+        for (i = 2; i < m_linker.numRows+2; i++) {
+            for (j = 2; j < m_linker.numCols+2; j++) {
                 //int rowCount = gridLayout.getRowCount();
                 //int columnCount = gridLayout.getColumnCount();
-                int index = i * (m_linker.numCols+1) + j;
+                int index = i * (m_linker.numCols+2) + j;
                 View viewText = gridLayout.getChildAt(index);
                 if(viewText instanceof EditText)
                 {
                     String str = ((EditText) viewText).getText().toString();
-                    m_linker.matrixLinker[i-1][j-1] = toFloat(str);
+                    m_linker.matrixLinker[i-2][j-2] = toFloat(str);
                 }
             }
         }
+        i=0;j=0;
+        for (i = 2; i < m_linker.numRows+2; i++) {
+            int index = i * (m_linker.numCols+2) + j;
+            View viewText = gridLayout.getChildAt(index);
+            if(viewText instanceof EditText) {
+                ((EditText) viewText).setText(String.format("%4.1f", m_linker.outputLinker[i - 2]));
+                ((EditText) viewText).setWidth(160);
+            }
+        }
+        i=0;j=0;
+        for (j = 2; j < m_linker.numCols+2; j++) {
+            int index = i * (m_linker.numCols+2) + j;
+            View viewText = gridLayout.getChildAt(index);
+            if(viewText instanceof EditText)
+            {
+                ((EditText) viewText).setText(String.format("%4.1f",m_linker.inputLinker[j-2]));
+                ((EditText) viewText).setWidth(160);
+            }
+        }
+
     }
 
-    void updateInput()
-    {
-
-    }
-
-    void updateOutput()
-    {
-
-    }
     public float[][] getValues()
     {
         updateValues();
@@ -82,21 +94,28 @@ public class FragmentLinker extends Fragment {
 
         gridLayout = view.findViewById(R.id.grid_layout);
 
-        gridLayout.setRowCount(m_linker.numRows+1);
-        gridLayout.setColumnCount(m_linker.numCols+1);
+        gridLayout.setRowCount(m_linker.numRows+2);
+        gridLayout.setColumnCount(m_linker.numCols+2);
 
-        for (int i = 0; i < m_linker.numRows+1; i++) {
-            for (int j = 0; j < m_linker.numCols+1; j++) {
+        for (int i = 0; i < m_linker.numRows+2; i++) {
+            for (int j = 0; j < m_linker.numCols+2; j++) {
                 EditText editText = new EditText(getContext());
-                editText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_SIGNED);
-                if(i==0 && j!=0){
-                    editText.setText("In:"+Integer.toString(j));
+                editText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_NUMBER_FLAG_SIGNED );
+
+                if(i==1 && j!=0){
+                    editText.setText("I:"+Integer.toString(j-1));
                 }
-                else if(j==0 && i!=0){
-                    editText.setText("Out:"+Integer.toString(i));
+                else if(j==1 && i!=0){
+                    editText.setText("O:"+Integer.toString(i-1));
                 }
-                else if(i!=0 && j!=0) {
-                    editText.setText(Float.toString(m_linker.matrixLinker[i-1][j-1]));
+                else if(i>=2 && j>=2) {
+                    editText.setText(Float.toString(m_linker.matrixLinker[i-2][j-2]));
+                }
+                else{
+                    editText.setText("");
+                }
+                if(i==1 && j==1) {
+                    editText.setText("XX");
                 }
 
 
