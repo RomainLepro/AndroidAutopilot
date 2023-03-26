@@ -1,9 +1,9 @@
-package com.example.myapplication.palne;
+package com.example.myapplication.Interfaces;
 
 
 import android.util.Log;
 
-public class LinkerInterface {
+public class InterfaceLinker {
     //WARNNING not using getter or setters
     public int numRows = 10;
     public int numCols = 12;
@@ -15,14 +15,14 @@ public class LinkerInterface {
 
 
 
-    public LinkerInterface() {
+    public InterfaceLinker() {
         inputLinker = new float[numCols];
         outputLinker = new float[numRows];
         matrixLinker = new float[numRows][numCols];
         initialiseMatrix();
     }
 
-    public LinkerInterface(int numRows, int numCols) {
+    public InterfaceLinker(int numRows, int numCols) {
         this.numRows = numRows;
         this.numCols = numCols;
         matrixLinker = new float[numRows][numCols];
@@ -80,7 +80,7 @@ public class LinkerInterface {
         }
     }
 
-    void updateOutputs()
+    public void updateOutputs()
     {
         // warning cols and rows are inverted
         for (int i = 0; i < numRows; i++) {

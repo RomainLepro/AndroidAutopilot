@@ -25,13 +25,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.example.myapplication.Interfaces.InterfaceGps;
+import com.example.myapplication.Models.ModelGps;
 import com.example.myapplication.fragments.FragmentGps;
 import com.example.myapplication.fragments.FragmentLogger;
 import com.example.myapplication.fragments.FragmentPID;
 import com.example.myapplication.fragments.FragmentSensor;
 import com.example.myapplication.fragments.FragmentWaypoints;
 import com.example.myapplication.fragments.FragmentLinker;
-import com.example.myapplication.palne.Plane;
+import com.example.myapplication.Models.ModelPlane;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -52,9 +54,8 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
     FusedLocationProviderClient fusedLocationProviderClient;
     LocationCallback locationCallback;
     public LocationRequest locationRequest;
-    List<Location> savedLocations = new ArrayList<>();;
-    private Location currentLocation;
-    private int locationUpdateCount = 0;
+
+    InterfaceGps interfaceGps;
 
 
     Toolbar toolbar;
@@ -74,7 +75,9 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
     private static final int dtUpdateUI_ms = 100;
     private static final int dtUpdateSimulation_ms = 5;
 
-    Plane plane;
+    ModelPlane plane;
+
+    ModelGps gps;
 
     Handler handler;
 
@@ -93,7 +96,8 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
                 }
                 if(fragmentGps.isVisible())
                 {
-                    ((FragmentGps) fragmentGps).updateView(savedLocations,currentLocation,locationUpdateCount);
+                    ((FragmentGps) fragmentGps).updateView(interfaceGps.savedLocations,
+                            interfaceGps.currentLocation,interfaceGps.locationUpdateCount);
                 }
                 if(fragmentPID.isVisible())
                 {
@@ -101,15 +105,12 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
                     plane.updatePIDGains(); // not using by name to enable reordering of list
                     plane.updatePidResults();
                     ((FragmentPID) fragmentPID).updateView();
-
                     // updates PID gain of plane
-
-
                 }
                 if(fragmentLinker.isVisible())
                 {
                     float[][] values = ((FragmentLinker) fragmentLinker).getValues();
-                    Log.i("LINKER : ",String.valueOf(values[0][0]));
+                    //Log.i("LINKER : ",String.valueOf(values[0][0]));
 
                 }
                 handler.postDelayed(this, dtUpdateUI_ms);
@@ -150,7 +151,10 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         sharedPreferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
-        plane = new Plane();
+        plane = new ModelPlane();
+        interfaceGps = plane.gpsInterface;
+        gps = new ModelGps(plane.gpsInterface);
+
         loadData();
 
         super.onCreate(savedInstanceState);
@@ -159,10 +163,10 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
 
         fragmentLogger = new FragmentLogger();
         fragmentSensor = new FragmentSensor();
-        fragmentGps = new FragmentGps();
+        fragmentGps = new FragmentGps(plane.gpsInterface);
         fragmentPID = new FragmentPID(plane.pidInterface);
-        fragmentWaypoints = new FragmentWaypoints();
-        fragmentLinker = new FragmentLinker(plane.linkerInterface);
+        fragmentWaypoints = new FragmentWaypoints(plane.gpsInterface);
+        fragmentLinker = new FragmentLinker(plane.m_InterfaceLinkerSelector);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -242,7 +246,6 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
                 break;
             case R.id.item5:
                 ft = getSupportFragmentManager().beginTransaction();
-                ((FragmentWaypoints) fragmentWaypoints).savedLocations = getSavedLocations();
                 ft.replace(R.id.FrameLayout, fragmentWaypoints);
                 ft.commit();
                 break;
@@ -316,25 +319,12 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
         SensorManager.getOrientation(rotationMatrix, orientationAngles);
     }
 
-
-
-
     //LOCATION
 
 
     public void saveCurrentLocation()
     {
-        savedLocations.add(getCurrentLocation());
-    }
-
-    public List<Location> getSavedLocations()
-    {
-        return savedLocations;
-    }
-
-    public Location getCurrentLocation()
-    {
-        return currentLocation;
+        interfaceGps.savedLocations.add(interfaceGps.currentLocation);
     }
 
     protected void createLocationRequest() {
@@ -376,8 +366,8 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
                     if(location != null) // check that the location isn't null
                     {
                         //Log.i("UpdateGps","not null");
-                        locationUpdateCount++;
-                        currentLocation = location;
+                        interfaceGps.locationUpdateCount++;
+                        interfaceGps.currentLocation = location;
                     }
                     else
                     {
@@ -417,16 +407,18 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
     public void loadData(){
 
         String linkerInterfaceStringA = sharedPreferences.getString("linkerInterfaceStringA", null);
-        plane.linkerInterfaceA.loadData(linkerInterfaceStringA);
+        plane.m_InterfaceLinkerSelector.m_linkerA.loadData(linkerInterfaceStringA);
 
         String linkerInterfaceStringB = sharedPreferences.getString("linkerInterfaceStringB", null);
-        plane.linkerInterfaceB.loadData(linkerInterfaceStringB);
+        plane.m_InterfaceLinkerSelector.m_linkerB.loadData(linkerInterfaceStringB);
 
         String linkerInterfaceStringC = sharedPreferences.getString("linkerInterfaceStringC", null);
-        plane.linkerInterfaceC.loadData(linkerInterfaceStringC);
+        plane.m_InterfaceLinkerSelector.m_linkerC.loadData(linkerInterfaceStringC);
 
         String pidInterfaceString = sharedPreferences.getString("pidInterfaceString", null);
         plane.pidInterface.loadData(pidInterfaceString);
+
+        Log.i("loadingData","LOADING DATA");
 
     }
 
@@ -436,9 +428,9 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
 
-        editor.putString("linkerInterfaceStringA", Arrays.deepToString(plane.linkerInterfaceA.getMatrixLinker()));
-        editor.putString("linkerInterfaceStringB", Arrays.deepToString(plane.linkerInterfaceB.getMatrixLinker()));
-        editor.putString("linkerInterfaceStringC", Arrays.deepToString(plane.linkerInterfaceC.getMatrixLinker()));
+        editor.putString("linkerInterfaceStringA", Arrays.deepToString(plane.m_InterfaceLinkerSelector.m_linkerA.getMatrixLinker()));
+        editor.putString("linkerInterfaceStringB", Arrays.deepToString(plane.m_InterfaceLinkerSelector.m_linkerB.getMatrixLinker()));
+        editor.putString("linkerInterfaceStringC", Arrays.deepToString(plane.m_InterfaceLinkerSelector.m_linkerC.getMatrixLinker()));
 
         editor.putString("pidInterfaceString", Arrays.deepToString(plane.pidInterface.getValues()));
 

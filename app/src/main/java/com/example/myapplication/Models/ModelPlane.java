@@ -1,28 +1,34 @@
-package com.example.myapplication.palne;
+package com.example.myapplication.Models;
 
-public class Plane {
+import com.example.myapplication.Interfaces.InterfaceGps;
+import com.example.myapplication.Interfaces.InterfaceLinker;
+import com.example.myapplication.Interfaces.InterfaceLinkerSelector;
+import com.example.myapplication.Interfaces.InterfacePid;
+import com.example.myapplication.PID.PID;
+
+public class ModelPlane {
     PID PIDX,PIDY,PIDZ;
 
-    public LinkerInterface linkerInterface;
 
-    public LinkerInterface linkerInterfaceA;
-    public LinkerInterface linkerInterfaceB;
-    public LinkerInterface linkerInterfaceC;
-    public PidInterface pidInterface;
+    public InterfaceLinkerSelector m_InterfaceLinkerSelector;
+    public InterfaceLinker linkerInterface;
+    public InterfacePid pidInterface;
+    public InterfaceGps gpsInterface;
+
 
     public float[] L_val_radio;
     public int[] L_val_radio_int;
     public float[]orientationAngles;
-    public Plane()
+    public ModelPlane()
     {
 
-        linkerInterfaceA = new LinkerInterface();
-        linkerInterfaceB = new LinkerInterface();
-        linkerInterfaceC = new LinkerInterface();
+        m_InterfaceLinkerSelector = new InterfaceLinkerSelector();
 
-        linkerInterface = linkerInterfaceA;
+        linkerInterface = m_InterfaceLinkerSelector.m_linker;
 
-        pidInterface = new PidInterface();
+        pidInterface = new InterfacePid();
+
+        gpsInterface = new InterfaceGps();
 
         PIDX = new PID(2,0.1f,0.1f);
         PIDY = new PID(2,0.1f,0.1f);
@@ -72,18 +78,11 @@ public class Plane {
         PIDZ.updateGains(pidInterface.outputPids[2]);
     }
 
-    void switchLinkerInterface(int num){
-        if(num==0)linkerInterface = linkerInterfaceA;
-        else if(num==1)linkerInterface = linkerInterfaceB;
-        else if(num==2)linkerInterface = linkerInterfaceC;
-    }
-
-
-
     public void updateLinkerInputsAndOutputs() {
         linkerInterface.inputLinker[0] = PIDX.output;
         linkerInterface.inputLinker[1] = PIDY.output;
         linkerInterface.inputLinker[2] = PIDZ.output;
+
         linkerInterface.inputLinker[3] = L_val_radio[0];
         linkerInterface.inputLinker[4] = L_val_radio[1];
         linkerInterface.inputLinker[5] = L_val_radio[2];

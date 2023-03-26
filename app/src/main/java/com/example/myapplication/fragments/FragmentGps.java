@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.example.myapplication.Interfaces.InterfaceGps;
 import com.example.myapplication.MainActivity;
 import com.example.myapplication.R;
 import com.google.android.gms.location.Priority;
@@ -33,18 +34,22 @@ public class FragmentGps extends Fragment {
 
     MainActivity myApp;
 
+    InterfaceGps m_gpsInterface;
+
     FragmentWaypoints fragmentWaypoints;
 
     Float lastBearing = 0.f;
 
     public FragmentGps() {
-        // Required empty public constructor
+        m_gpsInterface = new InterfaceGps();
     }
 
-    public static FragmentGps newInstance(String param1, String param2) {
+    public FragmentGps(InterfaceGps gpsInterfaces) {
+        m_gpsInterface = gpsInterfaces;
+    }
+
+    public static FragmentGps newInstance() {
         FragmentGps fragment = new FragmentGps();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
         return fragment;
     }
 
@@ -53,12 +58,10 @@ public class FragmentGps extends Fragment {
         super.onCreate(savedInstanceState);
         Log.i("FragmentGps","onCreate");
         fragmentWaypoints = new FragmentWaypoints();
-
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
 
         myApp = (MainActivity) getActivity();
 
@@ -83,7 +86,7 @@ public class FragmentGps extends Fragment {
             public void onClick(View view) {
                 // get the gps and add it to a global list
                 myApp.saveCurrentLocation();
-                updateView(myApp.getSavedLocations(),myApp.getCurrentLocation(),0);
+                updateView(m_gpsInterface.savedLocations,m_gpsInterface.currentLocation,0);
             }
         });
 
@@ -126,7 +129,6 @@ public class FragmentGps extends Fragment {
         btn_showWaypoints.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                fragmentWaypoints.savedLocations = myApp.getSavedLocations();
                 FragmentTransaction ft =  getActivity().getSupportFragmentManager().beginTransaction();
                 ft.replace(R.id.FrameLayout, fragmentWaypoints);
                 ft.commit();
@@ -155,9 +157,9 @@ public class FragmentGps extends Fragment {
             return;
         }
         float wpO = 0.f;
-        if(myApp.getSavedLocations().size()>0)
+        if(m_gpsInterface.savedLocations.size()>0)
         {
-            wpO = location.bearingTo(myApp.getSavedLocations().get(myApp.getSavedLocations().size()-1));
+            wpO = location.bearingTo(m_gpsInterface.savedLocations.get(m_gpsInterface.savedLocations.size()-1));
         }
 
 

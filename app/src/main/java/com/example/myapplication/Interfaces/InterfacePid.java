@@ -1,9 +1,9 @@
-package com.example.myapplication.palne;
+package com.example.myapplication.Interfaces;
 
 
 import android.util.Log;
 
-public class PidInterface {
+public class InterfacePid {
 
 
 
@@ -18,7 +18,7 @@ public class PidInterface {
 
     float default_PIDX = 1.f,default_PIDY = 0.1f,default_PIDZ = 0.1f;
 
-    public PidInterface() {
+    public InterfacePid() {
         pidCount = pidNameList.length;
         outputPids = new float[pidCount][3];
         resultsPids = new float[pidCount];

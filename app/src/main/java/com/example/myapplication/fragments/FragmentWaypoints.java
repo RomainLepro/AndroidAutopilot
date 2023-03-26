@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.example.myapplication.Interfaces.InterfaceGps;
 import com.example.myapplication.R;
 
 import java.util.List;
@@ -21,10 +22,15 @@ public class FragmentWaypoints extends Fragment {
     public ListView lv_waypointList;
 
     View view;
-    public List<Location> savedLocations;
+
+    InterfaceGps m_gpsInterface;
 
     public FragmentWaypoints() {
-        // Required empty public constructor
+        m_gpsInterface = new InterfaceGps();
+    }
+
+    public FragmentWaypoints(InterfaceGps gpsInterface) {
+        m_gpsInterface = gpsInterface;
     }
 
     public static FragmentWaypoints newInstance(String param1, String param2) {
@@ -47,7 +53,8 @@ public class FragmentWaypoints extends Fragment {
         view = inflater.inflate(R.layout.fragment_waypoints, container, false);
 
         lv_waypointList = view.findViewById(R.id.lv_waypointList);
-        lv_waypointList.setAdapter(new ArrayAdapter<Location>(getActivity(), android.R.layout.simple_list_item_1,savedLocations));
+        lv_waypointList.setAdapter(new ArrayAdapter<Location>(getActivity(),
+                android.R.layout.simple_list_item_1,m_gpsInterface.savedLocations));
 
         return view;
     }

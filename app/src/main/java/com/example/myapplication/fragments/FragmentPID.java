@@ -14,8 +14,8 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 
 import com.example.myapplication.R;
-import com.example.myapplication.listValue.PidValue;
-import com.example.myapplication.palne.PidInterface;
+import com.example.myapplication.PID.PidValue;
+import com.example.myapplication.Interfaces.InterfacePid;
 
 import java.util.ArrayList;
 
@@ -39,11 +39,11 @@ public class FragmentPID extends Fragment {
 
     //this should remove the rest
 
-    PidInterface m_pidInterface;
+    InterfacePid m_pidInterface;
 
     public FragmentPID() {
 
-        m_pidInterface = new PidInterface();
+        m_pidInterface = new InterfacePid();
 
         arrayPidValues = new ArrayList<PidValue>();
         arrayPidValues.add(new PidValue(m_pidInterface.pidNameList[0]));
@@ -51,7 +51,7 @@ public class FragmentPID extends Fragment {
         arrayPidValues.add(new PidValue(m_pidInterface.pidNameList[2]));
     }
 
-    public FragmentPID(PidInterface pidInterface) {
+    public FragmentPID(InterfacePid pidInterface) {
 
         m_pidInterface = pidInterface;
 

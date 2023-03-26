@@ -1,13 +1,10 @@
-package com.example.myapplication.listValue;
+package com.example.myapplication.PID;
 
 import android.util.Log;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TableRow;
 import android.widget.TextView;
-
-import com.example.myapplication.R;
 
 public class PidValue {
     public String name;
