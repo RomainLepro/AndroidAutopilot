@@ -23,11 +23,22 @@
     <SeekBar
         android:id="@+id/seekBar"
         style="@style/Widget.AppCompat.SeekBar.Discrete"
-        android:layout_width="400px"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/horizontal_scroll_view" android:max="3"
+        android:layout_width="600px"
+        android:layout_height="200px"
+        android:layout_below="@+id/horizontal_scroll_view"
+        android:max="3"
         android:progress="0"
         android:background="#0F0"/>
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="200px"
+        android:text="Reset"
+        android:layout_marginStart="0dp"
+        android:layout_below="@+id/horizontal_scroll_view"
+        android:layout_alignParentRight="@+id/seekBar"
+        android:layout_toEndOf="@+id/seekBar" />
 
 
 </RelativeLayout>

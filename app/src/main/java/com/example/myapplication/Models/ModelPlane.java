@@ -79,6 +79,8 @@ public class ModelPlane {
     }
 
     public void updateLinkerInputsAndOutputs() {
+        linkerInterface = m_InterfaceLinkerSelector.m_linker;
+
         linkerInterface.inputLinker[0] = PIDX.output;
         linkerInterface.inputLinker[1] = PIDY.output;
         linkerInterface.inputLinker[2] = PIDZ.output;

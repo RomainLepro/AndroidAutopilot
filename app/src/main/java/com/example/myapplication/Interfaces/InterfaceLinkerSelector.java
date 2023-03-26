@@ -1,5 +1,7 @@
 package com.example.myapplication.Interfaces;
 
+import android.util.Log;
+
 public class InterfaceLinkerSelector {
     public InterfaceLinker m_linkerA;
     public InterfaceLinker m_linkerB;
@@ -15,6 +17,7 @@ public class InterfaceLinkerSelector {
 
     public void selectLinker(int linkerNumber)
     {
+        Log.i("select",Integer.toString(linkerNumber));
         switch(linkerNumber){
             case 0:
                 m_linker = m_linkerA;
@@ -29,5 +32,9 @@ public class InterfaceLinkerSelector {
                 m_linker = m_linkerA;
                 break;
         }
+    }
+
+    public void resetCurrentLinker(){
+        m_linker.initialiseMatrix();
     }
 }
