@@ -62,6 +62,11 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
     //SENSOR VARIABLES
     Sensor sensor;
     private SensorManager sensorManager;
+    private final float[] accelerometerReading = new float[3];
+    private final float[] magnetometerReading = new float[3];
+    private final float[] rotationMatrix = new float[9];
+    private final float[] orientationAngles = new float[3];
+
 
     private static final int dtUpdateUI_ms = 100;
     private static final int dtUpdateSimulation_ms = 5;
