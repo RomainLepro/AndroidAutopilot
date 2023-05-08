@@ -2,26 +2,23 @@ package com.example.myapplication.Models;
 
 import android.location.Location;
 
-import com.example.myapplication.Interfaces.InterfaceGps;
-import com.example.myapplication.Interfaces.InterfaceMacroData;
+import com.example.myapplication.Interfaces.DataGps;
+import com.example.myapplication.Interfaces.DataMacroData;
 import com.example.myapplication.MainActivity;
 
 public class ModelGps implements Model {
 
     MainActivity myApp;
-    public InterfaceGps m_interfaceGps;
+    public DataGps m_interfaceGps;
 
-    public InterfaceMacroData m_interfaceMacroData = null;
     public ModelGps(){
 
-        m_interfaceGps = new InterfaceGps();
-        m_interfaceMacroData = new InterfaceMacroData();
+        m_interfaceGps = new DataGps();
     }
 
-    public ModelGps(InterfaceGps interfaceGps){
+    public ModelGps(DataGps interfaceGps){
 
         m_interfaceGps = interfaceGps;
-        m_interfaceMacroData = new InterfaceMacroData();
     }
 
     public void updateDt(int dt_ms){

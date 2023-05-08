@@ -20,6 +20,8 @@ public class ModelFactory {
     private Fragment m_fragmentWaypoints;
     private Fragment m_fragmentLinker;
 
+    private Fragment m_fragmentMacroData;
+
     public Fragment getFragmentLogger() {
         return m_fragmentLogger;
     }
@@ -48,6 +50,8 @@ public class ModelFactory {
         return m_fragmentMacroData;
     }
 
+
+
     public ModelPlane getPlane() {
         return m_plane;
     }
@@ -56,12 +60,16 @@ public class ModelFactory {
         return m_gps;
     }
 
-    private Fragment m_fragmentMacroData;
+
+
+    private ModelMacroData m_macroData;
     private ModelPlane m_plane;
     private ModelGps m_gps;
     public enum modelType{
         e_modelPlane,
-        e_modelGps
+        e_modelGps,
+
+        e_modelMacroData
     }
 
     public Model createModel(modelType type){
@@ -70,6 +78,8 @@ public class ModelFactory {
                 return new ModelPlane();
             case e_modelGps:
                 return new ModelGps();
+            case e_modelMacroData:
+                return new ModelMacroData();
         };
         return null;
     };
@@ -77,14 +87,15 @@ public class ModelFactory {
     public void createAllModels(){
 
         m_plane = new ModelPlane();
-        m_gps = new ModelGps(m_plane.m_interfaceGps);
+        m_gps = new ModelGps(m_plane.dataGps);
+        m_macroData = new ModelMacroData();
 
         m_fragmentLogger = new FragmentLogger();
-        m_fragmentSensor = new FragmentSensor(m_plane.sensorsInterface, m_plane.radioInterface);
-        m_fragmentGps = new FragmentGps(m_plane.m_interfaceGps);
-        m_fragmentPID = new FragmentPID(m_plane.pidInterface);
-        m_fragmentWaypoints = new FragmentWaypoints(m_plane.m_interfaceGps);
-        m_fragmentLinker = new FragmentLinker(m_plane.m_InterfaceLinkerSelector);
-        m_fragmentMacroData = new FragmentMacroData(m_gps.m_interfaceMacroData);
+        m_fragmentSensor = new FragmentSensor(m_plane.dataSensors, m_plane.dataRadio);
+        m_fragmentGps = new FragmentGps(m_plane.dataGps);
+        m_fragmentPID = new FragmentPID(m_plane.dataPid);
+        m_fragmentWaypoints = new FragmentWaypoints(m_plane.dataGps);
+        m_fragmentLinker = new FragmentLinker(m_plane.dataLinkerSelector);
+        m_fragmentMacroData = new FragmentMacroData(m_macroData.dataMacroData);
     }
 }

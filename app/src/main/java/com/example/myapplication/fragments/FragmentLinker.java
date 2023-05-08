@@ -15,9 +15,9 @@ import android.widget.GridLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.example.myapplication.Interfaces.InterfaceLinkerSelector;
+import com.example.myapplication.Interfaces.DataLinkerSelector;
 import com.example.myapplication.R;
-import com.example.myapplication.Interfaces.InterfaceLinker;
+import com.example.myapplication.Interfaces.DataLinker;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -25,8 +25,8 @@ import com.example.myapplication.Interfaces.InterfaceLinker;
  * create an instance of this fragment.
  */
 public class FragmentLinker extends Fragment implements FragmentInterface {
-    InterfaceLinkerSelector m_interfaceLinkerSelector;
-    InterfaceLinker m_linker;
+    DataLinkerSelector m_interfaceLinkerSelector;
+    DataLinker m_linker;
     GridLayout gridLayout;
     SeekBar m_seekBar;
     Button m_button;
@@ -35,11 +35,11 @@ public class FragmentLinker extends Fragment implements FragmentInterface {
 
     public FragmentLinker() {
         // Required empty public constructor
-        m_interfaceLinkerSelector = new InterfaceLinkerSelector();
+        m_interfaceLinkerSelector = new DataLinkerSelector();
         m_linker = m_interfaceLinkerSelector.m_linker;
     }
 
-    public FragmentLinker(InterfaceLinkerSelector linkerSelector) {
+    public FragmentLinker(DataLinkerSelector linkerSelector) {
         // if a linker is provided, do not initialize the matrix
         m_interfaceLinkerSelector = linkerSelector;
         m_linker = m_interfaceLinkerSelector.m_linker;

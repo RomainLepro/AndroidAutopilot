@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.myapplication.Interfaces.InterfaceLogger;
+import com.example.myapplication.Interfaces.DataLogger;
 import com.example.myapplication.MainActivity;
 import com.example.myapplication.R;
 
@@ -25,7 +25,7 @@ public class FragmentLogger extends Fragment implements FragmentInterface {
     TextView tv_logger,tv_send,tv_debug;
     Button btn_connect,btn_send,btn_debug;
 
-    InterfaceLogger m_interfaceLogger;
+    DataLogger m_interfaceLogger;
 
 
     public FragmentLogger() {

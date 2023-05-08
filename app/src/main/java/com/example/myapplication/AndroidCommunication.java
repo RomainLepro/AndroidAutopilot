@@ -31,8 +31,10 @@ import java.util.TimerTask;
 public class AndroidCommunication extends AppCompatActivity implements SerialInputOutputManager.Listener{
 
 
-    static String L_name_servos[] = {"S1","S2","S3","TH1","TH2","S4","S5"};
 
+    //TODO use data interfaceRadio
+
+    static String L_name_servos[] = {"S1","S2","S3","TH1","TH2","S4","S5"};
     static int L_val_servos[] = {500,500,500,000,000,500,500};
     static String L_name_radio[] = {"OX","OY","OZ","TH","SA","SB","HE","TE"};
     static int L_val_radio[] = {500,500,500,500,500,500,500,500};

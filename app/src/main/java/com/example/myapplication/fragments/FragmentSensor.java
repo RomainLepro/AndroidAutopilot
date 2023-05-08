@@ -19,13 +19,13 @@ import android.widget.TextView;
  */
 
 ;
-import com.example.myapplication.Interfaces.InterfaceSensors;
-import com.example.myapplication.Interfaces.InterfaceRadio;
+import com.example.myapplication.Interfaces.DataSensors;
+import com.example.myapplication.Interfaces.DataRadio;
 import com.example.myapplication.R;
 
 public class FragmentSensor extends Fragment implements FragmentInterface{
-    InterfaceSensors m_interfaceSensors;
-    InterfaceRadio m_interfaceRadio;
+    DataSensors m_interfaceSensors;
+    DataRadio m_interfaceRadio;
     TextView tv_ax,tv_ay,tv_az,tv_gx,tv_gy,tv_gz;
     TextView tv_Rx,tv_Ry,tv_Rz,tv_Th,tv_Sa,tv_Sb,tv_He,tv_Te;
     ImageView imv_arrow1,imv_arrow2;
@@ -33,10 +33,10 @@ public class FragmentSensor extends Fragment implements FragmentInterface{
     View view;
 
     public FragmentSensor() {
-        m_interfaceSensors = new InterfaceSensors();
+        m_interfaceSensors = new DataSensors();
     }
 
-    public FragmentSensor(InterfaceSensors interfaceSensors, InterfaceRadio interfaceRadio) {
+    public FragmentSensor(DataSensors interfaceSensors, DataRadio interfaceRadio) {
         m_interfaceSensors = interfaceSensors;
         m_interfaceRadio =interfaceRadio;
     }
@@ -123,7 +123,7 @@ public class FragmentSensor extends Fragment implements FragmentInterface{
     //called to update the veiw from main activity
     public void updateView()
     {
-        updateView(m_interfaceSensors.accelerometerReading, m_interfaceSensors.orientationAngles,m_interfaceRadio.radioListInputs);
+        updateView(m_interfaceSensors.accelerometerReading, m_interfaceSensors.orientationAngles,m_interfaceRadio.L_val_radio_int);
     }
 
     public void updateArrows(float arrow1Angle_rad,float arrow2Angle_rad)

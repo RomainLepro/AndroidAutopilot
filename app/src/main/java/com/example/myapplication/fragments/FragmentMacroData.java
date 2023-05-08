@@ -8,8 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.myapplication.Interfaces.InterfaceGps;
-import com.example.myapplication.Interfaces.InterfaceMacroData;
+import com.example.myapplication.Interfaces.DataMacroData;
 import com.example.myapplication.R;
 
 /**
@@ -19,13 +18,13 @@ import com.example.myapplication.R;
  */
 public class FragmentMacroData extends Fragment {
     //TODO conect macro data
-    InterfaceMacroData m_interfaceMacroData;
+    DataMacroData m_interfaceMacroData;
 
     public FragmentMacroData() {
-        m_interfaceMacroData = new InterfaceMacroData();
+        m_interfaceMacroData = new DataMacroData();
     }
 
-    public FragmentMacroData(InterfaceMacroData interfaceMacroData) {
+    public FragmentMacroData(DataMacroData interfaceMacroData) {
         m_interfaceMacroData = interfaceMacroData;
     }
 

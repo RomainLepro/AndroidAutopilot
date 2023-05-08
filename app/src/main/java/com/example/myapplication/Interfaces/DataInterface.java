@@ -1,5 +1,5 @@
 package com.example.myapplication.Interfaces;
 
-public interface Interface {
+public interface DataInterface {
 
 }

@@ -11,10 +11,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.example.myapplication.Interfaces.InterfaceGps;
+import com.example.myapplication.Interfaces.DataGps;
 import com.example.myapplication.R;
-
-import java.util.List;
 
 
 public class FragmentWaypoints extends Fragment {
@@ -23,13 +21,13 @@ public class FragmentWaypoints extends Fragment {
 
     View view;
 
-    InterfaceGps m_gpsInterface;
+    DataGps m_gpsInterface;
 
     public FragmentWaypoints() {
-        m_gpsInterface = new InterfaceGps();
+        m_gpsInterface = new DataGps();
     }
 
-    public FragmentWaypoints(InterfaceGps gpsInterface) {
+    public FragmentWaypoints(DataGps gpsInterface) {
         m_gpsInterface = gpsInterface;
     }
 

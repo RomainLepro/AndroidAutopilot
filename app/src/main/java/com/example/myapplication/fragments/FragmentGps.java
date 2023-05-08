@@ -14,7 +14,7 @@ import android.widget.Button;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.example.myapplication.Interfaces.InterfaceGps;
+import com.example.myapplication.Interfaces.DataGps;
 import com.example.myapplication.MainActivity;
 import com.example.myapplication.R;
 import com.google.android.gms.location.Priority;
@@ -35,17 +35,17 @@ public class FragmentGps extends Fragment implements FragmentInterface{
 
     MainActivity myApp;
 
-    InterfaceGps m_gpsInterface;
+    DataGps m_gpsInterface;
 
     FragmentWaypoints fragmentWaypoints;
 
     Float lastBearing = 0.f;
 
     public FragmentGps() {
-        m_gpsInterface = new InterfaceGps();
+        m_gpsInterface = new DataGps();
     }
 
-    public FragmentGps(InterfaceGps gpsInterfaces) {
+    public FragmentGps(DataGps gpsInterfaces) {
         m_gpsInterface = gpsInterfaces;
     }
 

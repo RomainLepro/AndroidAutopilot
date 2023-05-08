@@ -1,12 +1,10 @@
 package com.example.myapplication.Interfaces;
 
-import android.util.Log;
-
-public class InterfaceLinkerSelector implements Interface{
-    public InterfaceLinker m_linkerA;
-    public InterfaceLinker m_linkerB;
-    public InterfaceLinker m_linkerC;
-    public InterfaceLinker m_linker;
+public class DataLinkerSelector implements DataInterface {
+    public DataLinker m_linkerA;
+    public DataLinker m_linkerB;
+    public DataLinker m_linkerC;
+    public DataLinker m_linker;
 
     public boolean forcedLinker = false;
 
@@ -19,16 +17,16 @@ public class InterfaceLinkerSelector implements Interface{
         return m_linker.m_name;
     }
 
-    public InterfaceLinkerSelector(int numInputs,int numOutputs){
-        m_linkerA = new InterfaceLinker(numInputs,numOutputs,"linkerA");
-        m_linkerB = new InterfaceLinker(numInputs,numOutputs,"linkerB");
-        m_linkerC = new InterfaceLinker(numInputs,numOutputs,"linkerC");
+    public DataLinkerSelector(int numInputs, int numOutputs){
+        m_linkerA = new DataLinker(numInputs,numOutputs,"linkerA");
+        m_linkerB = new DataLinker(numInputs,numOutputs,"linkerB");
+        m_linkerC = new DataLinker(numInputs,numOutputs,"linkerC");
         m_linker = m_linkerA;
     }
-    public InterfaceLinkerSelector(){
-        m_linkerA = new InterfaceLinker();
-        m_linkerB = new InterfaceLinker();
-        m_linkerC = new InterfaceLinker();
+    public DataLinkerSelector(){
+        m_linkerA = new DataLinker();
+        m_linkerB = new DataLinker();
+        m_linkerC = new DataLinker();
         m_linker = m_linkerA;
     }
 

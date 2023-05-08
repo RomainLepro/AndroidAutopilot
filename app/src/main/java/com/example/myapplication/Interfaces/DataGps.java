@@ -5,7 +5,7 @@ import android.location.Location;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InterfaceGps implements Interface{
+public class DataGps implements DataInterface {
 
     public boolean startLocationFollowing = false; //TODO create a switch in GPS to connect it in the gps fragment
     public float latitude_deg = 0;

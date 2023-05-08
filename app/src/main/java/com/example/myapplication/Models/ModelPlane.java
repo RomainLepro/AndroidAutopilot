@@ -5,40 +5,39 @@ import static java.lang.Math.min;
 
 import android.util.Log;
 
-import com.example.myapplication.Interfaces.InterfaceGps;
-import com.example.myapplication.Interfaces.InterfaceSensors;
-import com.example.myapplication.Interfaces.InterfaceLinker;
-import com.example.myapplication.Interfaces.InterfaceLinkerSelector;
-import com.example.myapplication.Interfaces.InterfacePid;
-import com.example.myapplication.Interfaces.InterfaceRadio;
+import com.example.myapplication.Interfaces.DataGps;
+import com.example.myapplication.Interfaces.DataSensors;
+import com.example.myapplication.Interfaces.DataLinker;
+import com.example.myapplication.Interfaces.DataLinkerSelector;
+import com.example.myapplication.Interfaces.DataPid;
+import com.example.myapplication.Interfaces.DataRadio;
 import com.example.myapplication.PID.PID;
 
 public class ModelPlane implements Model {
     PID PIDX,PIDY,PIDZ;
-    public InterfaceLinkerSelector m_InterfaceLinkerSelector;
-    public InterfaceLinker linkerInterface;
-    public InterfacePid pidInterface;
-    public InterfaceGps m_interfaceGps;
-    public InterfaceRadio radioInterface;
-    public InterfaceSensors sensorsInterface;
+    public DataLinkerSelector dataLinkerSelector;
+    public DataLinker dataLinker;
+    public DataPid dataPid;
+    public DataGps dataGps;
+    public DataRadio dataRadio;
+    public DataSensors dataSensors;
 
     public ModelPlane()
     {
         int numInputs = 11;
         int numOutputs = 6;
 
+        dataLinkerSelector = new DataLinkerSelector(numInputs,numOutputs);
 
-        m_InterfaceLinkerSelector = new InterfaceLinkerSelector(numInputs,numOutputs);
+        dataLinker = dataLinkerSelector.m_linker;
 
-        linkerInterface = m_InterfaceLinkerSelector.m_linker;
+        dataPid = new DataPid();
 
-        pidInterface = new InterfacePid();
+        dataGps = new DataGps();
 
-        m_interfaceGps = new InterfaceGps();
+        dataRadio = new DataRadio();
 
-        radioInterface = new InterfaceRadio();
-
-        sensorsInterface = new InterfaceSensors();
+        dataSensors = new DataSensors();
 
         PIDX = new PID(2,0.1f,0.1f);
         PIDY = new PID(2,0.1f,0.1f);
@@ -50,7 +49,7 @@ public class ModelPlane implements Model {
         return max(0,min(2,(int)((inputRadio - 500.f)/200.f +1.f)));
     }
 
-    private float[] intToFloatArray(int[] intArray)
+    public float[] intToFloatArray(int[] intArray)
     {
         float[] floatArray = new float[intArray.length];
         for (int i = 0 ; i < intArray.length; i++)
@@ -60,30 +59,30 @@ public class ModelPlane implements Model {
         return floatArray;
     }
     public void updateDt(int dt_ms){
-        Log.i("debug",Float.toString(sensorsInterface.accelerometerReading[0]));
+        Log.i("debug",Float.toString(dataSensors.accelerometerReading[0]));
 
-        PIDX.updateDt(sensorsInterface.orientationAngles[2]*400,radioInterface.L_val_radio[0],dt_ms);
-        PIDY.updateDt(sensorsInterface.orientationAngles[1]*400,radioInterface.L_val_radio[1],dt_ms);
-        PIDZ.updateDt(sensorsInterface.orientationAngles[0]*400,radioInterface.L_val_radio[2],dt_ms);
+        PIDX.updateDt(dataSensors.orientationAngles[2]*400, dataRadio.L_val_radio[0],dt_ms);
+        PIDY.updateDt(dataSensors.orientationAngles[1]*400, dataRadio.L_val_radio[1],dt_ms);
+        PIDZ.updateDt(dataSensors.orientationAngles[0]*400, dataRadio.L_val_radio[2],dt_ms);
 
         updateLinkerInputsAndOutputs();
     }
 
     public void updatePidResults() {
-        pidInterface.resultsPids[0] = PIDX.output;
-        pidInterface.resultsPids[1] = PIDY.output;
-        pidInterface.resultsPids[2] = PIDZ.output;
+        dataPid.resultsPids[0] = PIDX.output;
+        dataPid.resultsPids[1] = PIDY.output;
+        dataPid.resultsPids[2] = PIDZ.output;
     }
 
     public int[] getResultsInt() {
 
-        int[] L = radioInterface.L_val_radio_int.clone();
-        L[0] = format(linkerInterface.outputLinker[0]);
-        L[1] = format(linkerInterface.outputLinker[1]);
-        L[2] = format(linkerInterface.outputLinker[2]);
-        L[3] = format(linkerInterface.outputLinker[3]);
-        L[4] = format(linkerInterface.outputLinker[4]);
-        L[5] = format(linkerInterface.outputLinker[5]);
+        int[] L = dataRadio.L_val_radio_int.clone();
+        L[0] = format(dataLinker.outputLinker[0]);
+        L[1] = format(dataLinker.outputLinker[1]);
+        L[2] = format(dataLinker.outputLinker[2]);
+        L[3] = format(dataLinker.outputLinker[3]);
+        L[4] = format(dataLinker.outputLinker[4]);
+        L[5] = format(dataLinker.outputLinker[5]);
         return L;
     }
 
@@ -95,31 +94,31 @@ public class ModelPlane implements Model {
     }
 
     public void updatePIDGains() {
-        PIDX.updateGains(pidInterface.outputPids[0]);
-        PIDY.updateGains(pidInterface.outputPids[1]);
-        PIDZ.updateGains(pidInterface.outputPids[2]);
+        PIDX.updateGains(dataPid.outputPids[0]);
+        PIDY.updateGains(dataPid.outputPids[1]);
+        PIDZ.updateGains(dataPid.outputPids[2]);
     }
 
     public void updateLinkerInputsAndOutputs() {
-        m_InterfaceLinkerSelector.requestSelectLinker(analogToInt(radioInterface.L_val_radio[5]));
+        dataLinkerSelector.requestSelectLinker(analogToInt(dataRadio.L_val_radio[5]));
 
-        linkerInterface = m_InterfaceLinkerSelector.m_linker;
+        dataLinker = dataLinkerSelector.m_linker;
 
-        linkerInterface.inputLinker[0] = PIDX.output;
-        linkerInterface.inputLinker[1] = PIDY.output;
-        linkerInterface.inputLinker[2] = PIDZ.output;
+        dataLinker.inputLinker[0] = PIDX.output;
+        dataLinker.inputLinker[1] = PIDY.output;
+        dataLinker.inputLinker[2] = PIDZ.output;
 
-        linkerInterface.inputLinker[3] = radioInterface.L_val_radio[0]-500;
-        linkerInterface.inputLinker[4] = radioInterface.L_val_radio[1]-500;
-        linkerInterface.inputLinker[5] = radioInterface.L_val_radio[2]-500;
-        linkerInterface.inputLinker[6] = radioInterface.L_val_radio[3]-500;
-        linkerInterface.inputLinker[7] = radioInterface.L_val_radio[4]-500;
-        linkerInterface.inputLinker[8] = radioInterface.L_val_radio[5]-500;
-        linkerInterface.inputLinker[9] = analogToInt(radioInterface.L_val_radio[5]);
+        dataLinker.inputLinker[3] = dataRadio.L_val_radio[0]-500;
+        dataLinker.inputLinker[4] = dataRadio.L_val_radio[1]-500;
+        dataLinker.inputLinker[5] = dataRadio.L_val_radio[2]-500;
+        dataLinker.inputLinker[6] = dataRadio.L_val_radio[3]-500;
+        dataLinker.inputLinker[7] = dataRadio.L_val_radio[4]-500;
+        dataLinker.inputLinker[8] = dataRadio.L_val_radio[5]-500;
+        dataLinker.inputLinker[9] = analogToInt(dataRadio.L_val_radio[5]);
 
 
-        linkerInterface.inputLinker[10] = m_interfaceGps.deltaCourseToNextWaypoint_deg;
-        linkerInterface.updateOutputs();
+        dataLinker.inputLinker[10] = dataGps.deltaCourseToNextWaypoint_deg;
+        dataLinker.updateOutputs();
     }
 
 }

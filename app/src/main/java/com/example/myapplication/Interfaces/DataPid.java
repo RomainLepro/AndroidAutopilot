@@ -3,10 +3,7 @@ package com.example.myapplication.Interfaces;
 
 import android.util.Log;
 
-public class InterfacePid implements Interface{
-
-
-
+public class DataPid implements DataInterface {
     public float[][] outputPids;
 
     public float[] resultsPids;
@@ -18,7 +15,7 @@ public class InterfacePid implements Interface{
 
     float default_PIDX = 1.f,default_PIDY = 0.1f,default_PIDZ = 0.1f;
 
-    public InterfacePid() {
+    public DataPid() {
         pidCount = pidNameList.length;
         outputPids = new float[pidCount][3];
         resultsPids = new float[pidCount];

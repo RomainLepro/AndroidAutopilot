@@ -3,7 +3,7 @@ package com.example.myapplication.Interfaces;
 
 import android.util.Log;
 
-public class InterfaceLinker implements Interface{
+public class DataLinker implements DataInterface {
     //WARNNING not using getter or setters
     public String m_name = "DefaultName";
     public int numRows = 10;// number of outputs
@@ -14,14 +14,14 @@ public class InterfaceLinker implements Interface{
 
     public float[] outputLinker;
 
-    public InterfaceLinker() {
+    public DataLinker() {
         inputLinker = new float[numCols];
         outputLinker = new float[numRows];
         matrixLinker = new float[numRows][numCols];
         initialiseMatrix();
     }
 
-    public InterfaceLinker( int numInputs,int numOutputs) {
+    public DataLinker(int numInputs, int numOutputs) {
         this.numRows = numOutputs;
         this.numCols = numInputs;
         inputLinker = new float[numCols];
@@ -30,7 +30,7 @@ public class InterfaceLinker implements Interface{
         initialiseMatrix();
     }
 
-    public InterfaceLinker( int numInputs,int numOutputs,String name) {
+    public DataLinker(int numInputs, int numOutputs, String name) {
         this.numRows = numOutputs;
         this.numCols = numInputs;
         m_name = name;

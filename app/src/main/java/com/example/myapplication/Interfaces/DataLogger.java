@@ -1,5 +1,5 @@
 package com.example.myapplication.Interfaces;
 
-public class InterfaceLogger implements Interface{
+public class DataLogger implements DataInterface {
     public String logger, debug;
 }

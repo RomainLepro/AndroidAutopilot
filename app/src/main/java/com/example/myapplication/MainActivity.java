@@ -15,7 +15,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Handler;
@@ -25,17 +24,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.example.myapplication.Models.Model;
 import com.example.myapplication.Models.ModelFactory;
-import com.example.myapplication.Models.ModelGps;
 import com.example.myapplication.fragments.FragmentGps;
 import com.example.myapplication.fragments.FragmentLogger;
-import com.example.myapplication.fragments.FragmentMacroData;
 import com.example.myapplication.fragments.FragmentPID;
 import com.example.myapplication.fragments.FragmentSensor;
-import com.example.myapplication.fragments.FragmentWaypoints;
 import com.example.myapplication.fragments.FragmentLinker;
-import com.example.myapplication.Models.ModelPlane;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -114,6 +108,8 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
             {
                 handler.postDelayed(this, dtUpdateSimulation_ms);
                 extractData();
+                modelFactory.getPlane().dataRadio.L_val_radio = modelFactory.getPlane().intToFloatArray(L_val_radio);
+                modelFactory.getPlane().dataRadio.L_val_radio_int = L_val_radio;
                 // update plane and its PIDS (with radio and gyros)
                 modelFactory.getPlane().updateDt(dtUpdateSimulation_ms);
                 modelFactory.getGps().updateDt(dtUpdateSimulation_ms);
@@ -275,10 +271,10 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
     public void onSensorChanged(SensorEvent event) {
         if (event.sensor.getType() == android.hardware.Sensor.TYPE_ACCELEROMETER) {
 
-            float[] accelerometerReading = modelFactory.getPlane().sensorsInterface.accelerometerReading;
+            float[] accelerometerReading = modelFactory.getPlane().dataSensors.accelerometerReading;
             System.arraycopy(event.values, 0, accelerometerReading, 0, accelerometerReading.length);
         } else if (event.sensor.getType() == android.hardware.Sensor.TYPE_MAGNETIC_FIELD) {
-            float[] magnetometerReading = modelFactory.getPlane().sensorsInterface.magnetometerReading;
+            float[] magnetometerReading = modelFactory.getPlane().dataSensors.magnetometerReading;
             System.arraycopy(event.values, 0, magnetometerReading, 0, magnetometerReading.length);
         }
         updateOrientationAngles();
@@ -288,10 +284,10 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
     // the device's accelerometer and magnetometer.
     public void updateOrientationAngles() {
         // Update rotation matrix, which is needed to update orientation angles.
-        float[] orientationAngles = modelFactory.getPlane().sensorsInterface.orientationAngles;
-        float[] rotationMatrix = modelFactory.getPlane().sensorsInterface.rotationMatrix;
-        float[] magnetometerReading = modelFactory.getPlane().sensorsInterface.magnetometerReading;
-        float[] accelerometerReading = modelFactory.getPlane().sensorsInterface.accelerometerReading;
+        float[] orientationAngles = modelFactory.getPlane().dataSensors.orientationAngles;
+        float[] rotationMatrix = modelFactory.getPlane().dataSensors.rotationMatrix;
+        float[] magnetometerReading = modelFactory.getPlane().dataSensors.magnetometerReading;
+        float[] accelerometerReading = modelFactory.getPlane().dataSensors.accelerometerReading;
         SensorManager.getRotationMatrix(rotationMatrix, null,
                 accelerometerReading, magnetometerReading);
         // "rotationMatrix" now has up-to-date information.
@@ -303,7 +299,7 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
 
     public void saveCurrentLocation()
     {
-        modelFactory.getPlane().m_interfaceGps.savedLocations.add(modelFactory.getPlane().m_interfaceGps.currentLocation);
+        modelFactory.getPlane().dataGps.savedLocations.add(modelFactory.getPlane().dataGps.currentLocation);
     }
 
     protected void createLocationRequest() {
@@ -345,8 +341,8 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
                     if(location != null) // check that the location isn't null
                     {
                         //Log.i("UpdateGps","not null");
-                        modelFactory.getPlane().m_interfaceGps.locationUpdateCount++;
-                        modelFactory.getPlane().m_interfaceGps.currentLocation = location;
+                        modelFactory.getPlane().dataGps.locationUpdateCount++;
+                        modelFactory.getPlane().dataGps.currentLocation = location;
                     }
                     else
                     {
@@ -386,16 +382,16 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
     public void loadData(){
 
         String linkerInterfaceStringA = sharedPreferences.getString("linkerInterfaceStringA", null);
-        modelFactory.getPlane().m_InterfaceLinkerSelector.m_linkerA.loadData(linkerInterfaceStringA);
+        modelFactory.getPlane().dataLinkerSelector.m_linkerA.loadData(linkerInterfaceStringA);
 
         String linkerInterfaceStringB = sharedPreferences.getString("linkerInterfaceStringB", null);
-        modelFactory.getPlane().m_InterfaceLinkerSelector.m_linkerB.loadData(linkerInterfaceStringB);
+        modelFactory.getPlane().dataLinkerSelector.m_linkerB.loadData(linkerInterfaceStringB);
 
         String linkerInterfaceStringC = sharedPreferences.getString("linkerInterfaceStringC", null);
-        modelFactory.getPlane().m_InterfaceLinkerSelector.m_linkerC.loadData(linkerInterfaceStringC);
+        modelFactory.getPlane().dataLinkerSelector.m_linkerC.loadData(linkerInterfaceStringC);
 
         String pidInterfaceString = sharedPreferences.getString("pidInterfaceString", null);
-        modelFactory.getPlane().pidInterface.loadData(pidInterfaceString);
+        modelFactory.getPlane().dataPid.loadData(pidInterfaceString);
 
         Log.i("loadingData","LOADING DATA");
 
@@ -407,11 +403,11 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
 
-        editor.putString("linkerInterfaceStringA", Arrays.deepToString(modelFactory.getPlane().m_InterfaceLinkerSelector.m_linkerA.getMatrixLinker()));
-        editor.putString("linkerInterfaceStringB", Arrays.deepToString(modelFactory.getPlane().m_InterfaceLinkerSelector.m_linkerB.getMatrixLinker()));
-        editor.putString("linkerInterfaceStringC", Arrays.deepToString(modelFactory.getPlane().m_InterfaceLinkerSelector.m_linkerC.getMatrixLinker()));
+        editor.putString("linkerInterfaceStringA", Arrays.deepToString(modelFactory.getPlane().dataLinkerSelector.m_linkerA.getMatrixLinker()));
+        editor.putString("linkerInterfaceStringB", Arrays.deepToString(modelFactory.getPlane().dataLinkerSelector.m_linkerB.getMatrixLinker()));
+        editor.putString("linkerInterfaceStringC", Arrays.deepToString(modelFactory.getPlane().dataLinkerSelector.m_linkerC.getMatrixLinker()));
 
-        editor.putString("pidInterfaceString", Arrays.deepToString(modelFactory.getPlane().pidInterface.getValues()));
+        editor.putString("pidInterfaceString", Arrays.deepToString(modelFactory.getPlane().dataPid.getValues()));
 
         editor.apply();
 
