@@ -3,7 +3,7 @@ package com.example.myapplication.Interfaces;
 
 import android.util.Log;
 
-public class InterfacePid {
+public class InterfacePid implements Interface{
 
 
 

@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
@@ -17,19 +18,27 @@ import android.widget.TextView;
  * create an instance of this fragment.
  */
 
-;import com.example.myapplication.R;
+;
+import com.example.myapplication.Interfaces.InterfaceSensors;
+import com.example.myapplication.Interfaces.InterfaceRadio;
+import com.example.myapplication.R;
 
-public class FragmentSensor extends Fragment {
-
+public class FragmentSensor extends Fragment implements FragmentInterface{
+    InterfaceSensors m_interfaceSensors;
+    InterfaceRadio m_interfaceRadio;
     TextView tv_ax,tv_ay,tv_az,tv_gx,tv_gy,tv_gz;
     TextView tv_Rx,tv_Ry,tv_Rz,tv_Th,tv_Sa,tv_Sb,tv_He,tv_Te;
-
+    ImageView imv_arrow1,imv_arrow2;
     Button btn_update;
-
     View view;
 
     public FragmentSensor() {
-        // Required empty public constructor
+        m_interfaceSensors = new InterfaceSensors();
+    }
+
+    public FragmentSensor(InterfaceSensors interfaceSensors, InterfaceRadio interfaceRadio) {
+        m_interfaceSensors = interfaceSensors;
+        m_interfaceRadio =interfaceRadio;
     }
 
     public static FragmentSensor newInstance(String param1, String param2) {
@@ -71,6 +80,9 @@ public class FragmentSensor extends Fragment {
 
         btn_update = view.findViewById(R.id.btn_update);
 
+        imv_arrow1 = view.findViewById(R.id.imv_arrow1);
+        imv_arrow2 = view.findViewById(R.id.imv_arrow2);
+
         btn_update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -83,7 +95,6 @@ public class FragmentSensor extends Fragment {
         return view;
     }
 
-    //called to update the veiw from main activity
     public void updateView(float[] accelerometerReading,float[] orientationAngles)
     {
         tv_ax.setText(String.format("%.2f",accelerometerReading[0]));
@@ -108,6 +119,19 @@ public class FragmentSensor extends Fragment {
         tv_He.setText(String.valueOf(radioListInputs[6]));
         tv_Te.setText(String.valueOf(radioListInputs[7]));
     }
+
+    //called to update the veiw from main activity
+    public void updateView()
+    {
+        updateView(m_interfaceSensors.accelerometerReading, m_interfaceSensors.orientationAngles,m_interfaceRadio.radioListInputs);
+    }
+
+    public void updateArrows(float arrow1Angle_rad,float arrow2Angle_rad)
+    {
+        imv_arrow1.setRotation(arrow1Angle_rad);
+        imv_arrow2.setRotation(arrow2Angle_rad);
+    }
+
 
     public static float radToangle(float rad)
     {

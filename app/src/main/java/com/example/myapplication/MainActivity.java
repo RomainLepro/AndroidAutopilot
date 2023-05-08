@@ -25,10 +25,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.example.myapplication.Interfaces.InterfaceGps;
+import com.example.myapplication.Models.Model;
+import com.example.myapplication.Models.ModelFactory;
 import com.example.myapplication.Models.ModelGps;
 import com.example.myapplication.fragments.FragmentGps;
 import com.example.myapplication.fragments.FragmentLogger;
+import com.example.myapplication.fragments.FragmentMacroData;
 import com.example.myapplication.fragments.FragmentPID;
 import com.example.myapplication.fragments.FragmentSensor;
 import com.example.myapplication.fragments.FragmentWaypoints;
@@ -42,9 +44,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.Priority;
 import com.google.android.gms.tasks.OnSuccessListener;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 
 public class MainActivity extends AndroidCommunication implements SensorEventListener {
@@ -55,30 +55,18 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
     LocationCallback locationCallback;
     public LocationRequest locationRequest;
 
-    InterfaceGps interfaceGps;
-
-
     Toolbar toolbar;
-    Fragment fragmentLogger, fragmentSensor, fragmentGps, fragmentPID, fragmentWaypoints, fragmentLinker;
     FragmentTransaction ft;
 
 
     //SENSOR VARIABLES
     Sensor sensor;
     private SensorManager sensorManager;
-    private final float[] accelerometerReading = new float[3];
-    private final float[] magnetometerReading = new float[3];
-    private final float[] rotationMatrix = new float[9];
-    private final float[] orientationAngles = new float[3];
-
 
     private static final int dtUpdateUI_ms = 100;
     private static final int dtUpdateSimulation_ms = 5;
 
-    ModelPlane plane;
-
-    ModelGps gps;
-
+    ModelFactory modelFactory;
     Handler handler;
 
     final Runnable taskUpdateUi = new Runnable() {
@@ -86,30 +74,31 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
             Runnable activity = this;
             if(activity!=null)
             {
-                if(fragmentLogger.isVisible())
+                if(modelFactory.getFragmentLogger().isVisible())
                 {
-                    ((FragmentLogger) fragmentLogger).updateView(getLogger(),getDebug());
+                    ((FragmentLogger) modelFactory.getFragmentLogger()).updateView(getLogger(),getDebug());
                 }
-                if(fragmentSensor.isVisible())
+                if(modelFactory.getFragmentSensor().isVisible())
                 {
-                    ((FragmentSensor) fragmentSensor).updateView(accelerometerReading, orientationAngles,L_val_radio);
+                    ((FragmentSensor) modelFactory.getFragmentSensor()).updateView(accelerometerReading, orientationAngles,L_val_radio);
+                    ((FragmentSensor) modelFactory.getFragmentSensor()).updateArrows(-modelFactory.getGps().m_interfaceGps.currentCourse_deg, modelFactory.getGps().m_interfaceGps.deltaCourseToNextWaypoint_deg);
+                    //((FragmentSensor) fragmentSensor).updateArrows(480, -90);
                 }
-                if(fragmentGps.isVisible())
+                if(modelFactory.getFragmentGps().isVisible())
                 {
-                    ((FragmentGps) fragmentGps).updateView(interfaceGps.savedLocations,
-                            interfaceGps.currentLocation,interfaceGps.locationUpdateCount);
+                    ((FragmentGps) modelFactory.getFragmentGps()).updateView();
                 }
-                if(fragmentPID.isVisible())
+                if(modelFactory.getFragmentPID().isVisible())
                 {
                     // transfert PID values from plane
-                    plane.updatePIDGains(); // not using by name to enable reordering of list
-                    plane.updatePidResults();
-                    ((FragmentPID) fragmentPID).updateView();
+                    modelFactory.getPlane().updatePIDGains(); // not using by name to enable reordering of list
+                    modelFactory.getPlane().updatePidResults();
+                    ((FragmentPID) modelFactory.getFragmentPID()).updateView();
                     // updates PID gain of plane
                 }
-                if(fragmentLinker.isVisible())
+                if(modelFactory.getFragmentLinker().isVisible())
                 {
-                    float[][] values = ((FragmentLinker) fragmentLinker).getValues();
+                    float[][] values = ((FragmentLinker) modelFactory.getFragmentLinker()).getValues();
                     //Log.i("LINKER : ",String.valueOf(values[0][0]));
 
                 }
@@ -125,12 +114,13 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
             {
                 handler.postDelayed(this, dtUpdateSimulation_ms);
                 extractData();
-                plane.orientationAngles = orientationAngles;
-                plane.L_val_radio = intToFloatArray(L_val_radio);
-                plane.L_val_radio_int = L_val_radio;
+                modelFactory.getPlane().orientationAngles = orientationAngles;
+                modelFactory.getPlane().L_val_radio = intToFloatArray(L_val_radio);
+                modelFactory.getPlane().L_val_radio_int = L_val_radio;
                 // update plane and its PIDS (with radio and gyros)
-                plane.updateDt(dtUpdateSimulation_ms);
-                L_val_servos = plane.getResultsInt();
+                modelFactory.getPlane().updateDt(dtUpdateSimulation_ms);
+                modelFactory.getGps().updateDt(dtUpdateSimulation_ms);
+                L_val_servos = modelFactory.getPlane().getResultsInt();
                 sendData();
             }
         }
@@ -150,23 +140,15 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
     @SuppressLint("ResourceType")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        modelFactory = new ModelFactory();
+        modelFactory.createAllModels();
+
         sharedPreferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
-        plane = new ModelPlane();
-        interfaceGps = plane.gpsInterface;
-        gps = new ModelGps(plane.gpsInterface);
-
         loadData();
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         invalidateOptionsMenu();
-
-        fragmentLogger = new FragmentLogger();
-        fragmentSensor = new FragmentSensor();
-        fragmentGps = new FragmentGps(plane.gpsInterface);
-        fragmentPID = new FragmentPID(plane.pidInterface);
-        fragmentWaypoints = new FragmentWaypoints(plane.gpsInterface);
-        fragmentLinker = new FragmentLinker(plane.m_InterfaceLinkerSelector);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -175,7 +157,7 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
         toolbar.inflateMenu(R.menu.option_menu);
 
         ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.FrameLayout, fragmentLogger);
+        ft.replace(R.id.FrameLayout, modelFactory.getFragmentLogger());
         ft.commit();
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -183,9 +165,6 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
         handler = new Handler(Looper.getMainLooper());
         handler.postDelayed(taskUpdateUi,dtUpdateUI_ms);
         handler.postDelayed(taskUpdateSimulation,dtUpdateSimulation_ms);
-
-
-
         //LOCATION
         createLocationRequest();
         //this event is triggered every time the condition are met (here the timer)
@@ -222,36 +201,41 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
                 Toast.makeText(getApplicationContext(),"LOGGER",Toast.LENGTH_SHORT).show();
 
                 ft = getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.FrameLayout, fragmentLogger);
+                ft.replace(R.id.FrameLayout, modelFactory.getFragmentLogger());
                 ft.commit();
                 break;
             case R.id.item2:
                 Toast.makeText(getApplicationContext(),"SENSOR",Toast.LENGTH_SHORT).show();
 
                 ft = getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.FrameLayout, fragmentSensor);
+                ft.replace(R.id.FrameLayout, modelFactory.getFragmentSensor());
                 ft.commit();
                 break;
             case R.id.item3:
                 Toast.makeText(getApplicationContext(),"GPS",Toast.LENGTH_SHORT).show();
                 ft = getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.FrameLayout, fragmentGps);
+                ft.replace(R.id.FrameLayout, modelFactory.getFragmentGps());
                 ft.commit();
                 break;
             case R.id.item4:
                 Toast.makeText(getApplicationContext(),"PID",Toast.LENGTH_SHORT).show();
                 ft = getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.FrameLayout, fragmentPID);
+                ft.replace(R.id.FrameLayout, modelFactory.getFragmentPID());
                 ft.commit();
                 break;
             case R.id.item5:
                 ft = getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.FrameLayout, fragmentWaypoints);
+                ft.replace(R.id.FrameLayout, modelFactory.getFragmentWaypoints());
                 ft.commit();
                 break;
             case R.id.item6:
                 ft = getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.FrameLayout, fragmentLinker);
+                ft.replace(R.id.FrameLayout, modelFactory.getFragmentLinker());
+                ft.commit();
+                break;
+            case R.id.item7:
+                ft = getSupportFragmentManager().beginTransaction();
+                ft.replace(R.id.FrameLayout, modelFactory.getFragmentMacroData());
                 ft.commit();
                 break;
 
@@ -324,7 +308,7 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
 
     public void saveCurrentLocation()
     {
-        interfaceGps.savedLocations.add(interfaceGps.currentLocation);
+        modelFactory.getPlane().m_interfaceGps.savedLocations.add(modelFactory.getPlane().m_interfaceGps.currentLocation);
     }
 
     protected void createLocationRequest() {
@@ -366,8 +350,8 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
                     if(location != null) // check that the location isn't null
                     {
                         //Log.i("UpdateGps","not null");
-                        interfaceGps.locationUpdateCount++;
-                        interfaceGps.currentLocation = location;
+                        modelFactory.getPlane().m_interfaceGps.locationUpdateCount++;
+                        modelFactory.getPlane().m_interfaceGps.currentLocation = location;
                     }
                     else
                     {
@@ -407,16 +391,16 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
     public void loadData(){
 
         String linkerInterfaceStringA = sharedPreferences.getString("linkerInterfaceStringA", null);
-        plane.m_InterfaceLinkerSelector.m_linkerA.loadData(linkerInterfaceStringA);
+        modelFactory.getPlane().m_InterfaceLinkerSelector.m_linkerA.loadData(linkerInterfaceStringA);
 
         String linkerInterfaceStringB = sharedPreferences.getString("linkerInterfaceStringB", null);
-        plane.m_InterfaceLinkerSelector.m_linkerB.loadData(linkerInterfaceStringB);
+        modelFactory.getPlane().m_InterfaceLinkerSelector.m_linkerB.loadData(linkerInterfaceStringB);
 
         String linkerInterfaceStringC = sharedPreferences.getString("linkerInterfaceStringC", null);
-        plane.m_InterfaceLinkerSelector.m_linkerC.loadData(linkerInterfaceStringC);
+        modelFactory.getPlane().m_InterfaceLinkerSelector.m_linkerC.loadData(linkerInterfaceStringC);
 
         String pidInterfaceString = sharedPreferences.getString("pidInterfaceString", null);
-        plane.pidInterface.loadData(pidInterfaceString);
+        modelFactory.getPlane().pidInterface.loadData(pidInterfaceString);
 
         Log.i("loadingData","LOADING DATA");
 
@@ -428,11 +412,11 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
 
-        editor.putString("linkerInterfaceStringA", Arrays.deepToString(plane.m_InterfaceLinkerSelector.m_linkerA.getMatrixLinker()));
-        editor.putString("linkerInterfaceStringB", Arrays.deepToString(plane.m_InterfaceLinkerSelector.m_linkerB.getMatrixLinker()));
-        editor.putString("linkerInterfaceStringC", Arrays.deepToString(plane.m_InterfaceLinkerSelector.m_linkerC.getMatrixLinker()));
+        editor.putString("linkerInterfaceStringA", Arrays.deepToString(modelFactory.getPlane().m_InterfaceLinkerSelector.m_linkerA.getMatrixLinker()));
+        editor.putString("linkerInterfaceStringB", Arrays.deepToString(modelFactory.getPlane().m_InterfaceLinkerSelector.m_linkerB.getMatrixLinker()));
+        editor.putString("linkerInterfaceStringC", Arrays.deepToString(modelFactory.getPlane().m_InterfaceLinkerSelector.m_linkerC.getMatrixLinker()));
 
-        editor.putString("pidInterfaceString", Arrays.deepToString(plane.pidInterface.getValues()));
+        editor.putString("pidInterfaceString", Arrays.deepToString(modelFactory.getPlane().pidInterface.getValues()));
 
         editor.apply();
 

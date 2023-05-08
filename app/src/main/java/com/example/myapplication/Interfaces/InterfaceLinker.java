@@ -3,17 +3,16 @@ package com.example.myapplication.Interfaces;
 
 import android.util.Log;
 
-public class InterfaceLinker {
+public class InterfaceLinker implements Interface{
     //WARNNING not using getter or setters
-    public int numRows = 10;
-    public int numCols = 12;
+    public String m_name = "DefaultName";
+    public int numRows = 10;// number of outputs
+    public int numCols = 12;// number of inputs
     public float[][] matrixLinker;
 
     public float[] inputLinker;
 
     public float[] outputLinker;
-
-
 
     public InterfaceLinker() {
         inputLinker = new float[numCols];
@@ -22,18 +21,28 @@ public class InterfaceLinker {
         initialiseMatrix();
     }
 
-    public InterfaceLinker(int numRows, int numCols) {
-        this.numRows = numRows;
-        this.numCols = numCols;
+    public InterfaceLinker( int numInputs,int numOutputs) {
+        this.numRows = numOutputs;
+        this.numCols = numInputs;
+        inputLinker = new float[numCols];
+        outputLinker = new float[numRows];
         matrixLinker = new float[numRows][numCols];
         initialiseMatrix();
     }
 
+    public InterfaceLinker( int numInputs,int numOutputs,String name) {
+        this.numRows = numOutputs;
+        this.numCols = numInputs;
+        m_name = name;
+        inputLinker = new float[numCols];
+        outputLinker = new float[numRows];
+        matrixLinker = new float[numRows][numCols];
+        initialiseMatrix();
+    }
 
     public float[][] getMatrixLinker() {
         return matrixLinker;
     }
-
 
     public void setMatrixLinker(float[][] matrixLinker) {
         this.matrixLinker = matrixLinker;

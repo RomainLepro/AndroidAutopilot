@@ -23,4 +23,8 @@
         android:id="@+id/item6"
         android:title="LINKER"/>
 
+    <item
+        android:id="@+id/item7"
+        android:title="MACRO DATA"/>
+
 </menu>

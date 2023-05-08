@@ -1,19 +1,27 @@
 package com.example.myapplication.Models;
 
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+
 import com.example.myapplication.Interfaces.InterfaceGps;
+import com.example.myapplication.Interfaces.InterfaceSensors;
 import com.example.myapplication.Interfaces.InterfaceLinker;
 import com.example.myapplication.Interfaces.InterfaceLinkerSelector;
 import com.example.myapplication.Interfaces.InterfacePid;
+import com.example.myapplication.Interfaces.InterfaceRadio;
 import com.example.myapplication.PID.PID;
 
-public class ModelPlane {
+public class ModelPlane implements Model {
     PID PIDX,PIDY,PIDZ;
-
 
     public InterfaceLinkerSelector m_InterfaceLinkerSelector;
     public InterfaceLinker linkerInterface;
     public InterfacePid pidInterface;
-    public InterfaceGps gpsInterface;
+    public InterfaceGps m_interfaceGps;
+    public InterfaceSensors gyroInterface;
+    public InterfaceRadio radioInterface;
+
+    public InterfaceSensors sensorsInterface;
 
 
     public float[] L_val_radio;
@@ -21,14 +29,23 @@ public class ModelPlane {
     public float[]orientationAngles;
     public ModelPlane()
     {
+        int numInputs = 11;
+        int numOutputs = 6;
 
-        m_InterfaceLinkerSelector = new InterfaceLinkerSelector();
+
+        m_InterfaceLinkerSelector = new InterfaceLinkerSelector(numInputs,numOutputs);
 
         linkerInterface = m_InterfaceLinkerSelector.m_linker;
 
         pidInterface = new InterfacePid();
 
-        gpsInterface = new InterfaceGps();
+        m_interfaceGps = new InterfaceGps();
+
+        gyroInterface = new InterfaceSensors();
+
+        radioInterface = new InterfaceRadio();
+
+        sensorsInterface = new InterfaceSensors();
 
         PIDX = new PID(2,0.1f,0.1f);
         PIDY = new PID(2,0.1f,0.1f);
@@ -37,6 +54,11 @@ public class ModelPlane {
         orientationAngles = new float[]{0.f,0.f,0.f};
         L_val_radio = new float[]{0.f,0.f,0.f,0.f};
 
+    }
+
+    public int analogToInt(float inputRadio)
+    {
+        return max(0,min(2,(int)((inputRadio - 500.f)/200.f +1.f)));
     }
     public void updateDt(int dt_ms){
         PIDX.updateDt(orientationAngles[2]*400,L_val_radio[0],dt_ms);
@@ -50,18 +72,17 @@ public class ModelPlane {
         pidInterface.resultsPids[0] = PIDX.output;
         pidInterface.resultsPids[1] = PIDY.output;
         pidInterface.resultsPids[2] = PIDZ.output;
-
     }
 
     public int[] getResultsInt() {
-        //TODO use linker here
 
         int[] L = L_val_radio_int.clone();
-        L[0] = format(PIDX.output);
-        L[1] = format(PIDY.output);
-        L[2] = format(PIDZ.output);
-        L[3] = L_val_radio_int[3];
-        L[4] = L_val_radio_int[3];
+        L[0] = format(linkerInterface.outputLinker[0]);
+        L[1] = format(linkerInterface.outputLinker[1]);
+        L[2] = format(linkerInterface.outputLinker[2]);
+        L[3] = format(linkerInterface.outputLinker[3]);
+        L[4] = format(linkerInterface.outputLinker[4]);
+        L[5] = format(linkerInterface.outputLinker[5]);
         return L;
     }
 
@@ -79,20 +100,24 @@ public class ModelPlane {
     }
 
     public void updateLinkerInputsAndOutputs() {
+        m_InterfaceLinkerSelector.requestSelectLinker(analogToInt(L_val_radio[5]));
+
         linkerInterface = m_InterfaceLinkerSelector.m_linker;
 
         linkerInterface.inputLinker[0] = PIDX.output;
         linkerInterface.inputLinker[1] = PIDY.output;
         linkerInterface.inputLinker[2] = PIDZ.output;
 
-        linkerInterface.inputLinker[3] = L_val_radio[0];
-        linkerInterface.inputLinker[4] = L_val_radio[1];
-        linkerInterface.inputLinker[5] = L_val_radio[2];
-        linkerInterface.inputLinker[6] = L_val_radio[3];
-        linkerInterface.inputLinker[7] = L_val_radio[4];
-        linkerInterface.inputLinker[8] = L_val_radio[5];
-        linkerInterface.inputLinker[9] = L_val_radio[6];
+        linkerInterface.inputLinker[3] = L_val_radio[0]-500;
+        linkerInterface.inputLinker[4] = L_val_radio[1]-500;
+        linkerInterface.inputLinker[5] = L_val_radio[2]-500;
+        linkerInterface.inputLinker[6] = L_val_radio[3]-500;
+        linkerInterface.inputLinker[7] = L_val_radio[4]-500;
+        linkerInterface.inputLinker[8] = L_val_radio[5]-500;
+        linkerInterface.inputLinker[9] = analogToInt(L_val_radio[5]);
 
+
+        linkerInterface.inputLinker[10] = m_interfaceGps.deltaCourseToNextWaypoint_deg;
         linkerInterface.updateOutputs();
     }
 

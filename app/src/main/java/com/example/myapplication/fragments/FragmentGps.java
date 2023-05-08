@@ -19,14 +19,15 @@ import com.example.myapplication.MainActivity;
 import com.example.myapplication.R;
 import com.google.android.gms.location.Priority;
 
-import java.util.List;
-
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link FragmentGps#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FragmentGps extends Fragment {
+public class FragmentGps extends Fragment implements FragmentInterface{
+
+    //TODO make show waypoints work
+    //TODO allow use of google map to add waypoints
     View view;
     Switch sw_locationsupdates,sw_gps;
     TextView tv_lat,tv_lon,tv_accuracy,tv_speed,tv_altitude,tv_sensor,tv_updates,tv_waypointCount,tv_bearing,tv_bearingWp,tv_updateCount;
@@ -86,7 +87,7 @@ public class FragmentGps extends Fragment {
             public void onClick(View view) {
                 // get the gps and add it to a global list
                 myApp.saveCurrentLocation();
-                updateView(m_gpsInterface.savedLocations,m_gpsInterface.currentLocation,0);
+                updateView();
             }
         });
 
@@ -146,56 +147,23 @@ public class FragmentGps extends Fragment {
     }
 
 
-    public void updateView(List<Location> savedLocations, Location currentLocation, int updateCount)
+    public void updateView()
     {
-        Location location = currentLocation;
-        //Log.i("UI","updates UI");
+        Location location = m_gpsInterface.currentLocation;
         // UPDATES THE UI LOCATION
         if(location == null)
         {
-            //Log.i("UI","no location");
             return;
         }
-        float wpO = 0.f;
-        if(m_gpsInterface.savedLocations.size()>0)
-        {
-            wpO = location.bearingTo(m_gpsInterface.savedLocations.get(m_gpsInterface.savedLocations.size()-1));
-        }
-
-
-        tv_lat.setText(String.valueOf(location.getLatitude()));
-        tv_lon.setText(String.valueOf(location.getLongitude()));
-        tv_accuracy.setText(String.valueOf(location.getAccuracy()));
-        tv_bearingWp.setText(String.valueOf(wpO)+" delta : "+String.valueOf(wpO-lastBearing));
-        tv_updateCount.setText(String.valueOf(updateCount));
-
-        if(location.hasAltitude())
-        {
-            tv_altitude.setText(String.valueOf(location.getAltitude()));
-        }
-        else
-        {
-            tv_altitude.setText("altitude not working");
-        }
-        if(location.hasSpeed())
-        {
-            tv_speed.setText(String.valueOf(location.getSpeed()));
-        }
-        else
-        {
-            tv_speed.setText("speed not working");
-        }
-        if(location.hasBearing())
-        {
-            lastBearing = location.getBearing();
-            tv_bearing.setText(String.valueOf(location.getBearing()));
-        }
-        else
-        {
-            tv_bearing.setText("bearing not working");
-        }
-
-
-        tv_waypointCount.setText(String.valueOf(savedLocations.size()));
+        tv_lat.setText(String.valueOf(m_gpsInterface.latitude_deg));
+        tv_lon.setText(String.valueOf(m_gpsInterface.longitude_deg));
+        tv_accuracy.setText(String.valueOf(m_gpsInterface.accuracy));
+        tv_updateCount.setText(String.valueOf(m_gpsInterface.locationUpdateCount));
+        tv_altitude.setText(String.valueOf(m_gpsInterface.altitude_m));
+        tv_speed.setText(String.valueOf(m_gpsInterface.speed_ms));
+        tv_bearing.setText(String.valueOf(m_gpsInterface.currentCourse_deg));
+        tv_bearingWp.setText(String.valueOf(m_gpsInterface.courseToNextWaypoint_deg)
+                +" delta : "+String.valueOf(m_gpsInterface.deltaCourseToNextWaypoint_deg));
+        tv_waypointCount.setText(String.valueOf(m_gpsInterface.savedLocations.size()));
     }
 }

@@ -6,7 +6,6 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
 import android.text.InputType;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +15,6 @@ import android.widget.GridLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.example.myapplication.Interfaces.InterfaceGps;
 import com.example.myapplication.Interfaces.InterfaceLinkerSelector;
 import com.example.myapplication.R;
 import com.example.myapplication.Interfaces.InterfaceLinker;
@@ -26,12 +24,13 @@ import com.example.myapplication.Interfaces.InterfaceLinker;
  * Use the {@link FragmentLinker#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FragmentLinker extends Fragment {
+public class FragmentLinker extends Fragment implements FragmentInterface {
     InterfaceLinkerSelector m_interfaceLinkerSelector;
     InterfaceLinker m_linker;
     GridLayout gridLayout;
     SeekBar m_seekBar;
     Button m_button;
+    EditText m_editText;
     boolean m_linkerHasChanged = false;
 
     public FragmentLinker() {
@@ -51,8 +50,14 @@ public class FragmentLinker extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
-    void updateValues()
+    public void updateView()
     {
+        m_editText.setText(m_interfaceLinkerSelector.getLinkerName());
+        if(!m_interfaceLinkerSelector.forcedLinker)
+        {
+            m_linkerHasChanged=true;//if in auto mode, value are not modifiable
+        }
+        m_linker = m_interfaceLinkerSelector.m_linker;
         int i=0,j=0;
         for (i = 2; i < m_linker.numRows+2; i++) {
             for (j = 2; j < m_linker.numCols+2; j++) {
@@ -95,7 +100,7 @@ public class FragmentLinker extends Fragment {
     }
     public float[][] getValues()
     {
-        updateValues();
+        updateView();
         return m_linker.matrixLinker;
     }
     @Override
@@ -109,10 +114,8 @@ public class FragmentLinker extends Fragment {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 boolean hasBeenUpdated = false;
-                if(progress != 0)
-                {
-                    m_interfaceLinkerSelector.selectLinker(progress-1);
-                }
+
+                m_interfaceLinkerSelector.selectLinker(progress);
                 m_linker = m_interfaceLinkerSelector.m_linker;
                 m_linkerHasChanged = true;
             }
@@ -134,6 +137,8 @@ public class FragmentLinker extends Fragment {
                 m_linkerHasChanged = true;
             }
         });
+
+        m_editText = (EditText) view.findViewById(R.id.tv_linkerName);
 
         gridLayout.setRowCount(m_linker.numRows+2);
         gridLayout.setColumnCount(m_linker.numCols+2);

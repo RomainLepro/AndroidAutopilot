@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.myapplication.Interfaces.InterfaceLogger;
 import com.example.myapplication.MainActivity;
 import com.example.myapplication.R;
 
@@ -19,10 +20,13 @@ import com.example.myapplication.R;
  * Use the {@link FragmentLogger#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FragmentLogger extends Fragment {
+public class FragmentLogger extends Fragment implements FragmentInterface {
 
     TextView tv_logger,tv_send,tv_debug;
     Button btn_connect,btn_send,btn_debug;
+
+    InterfaceLogger m_interfaceLogger;
+
 
     public FragmentLogger() {
         // Required empty public constructor
@@ -102,5 +106,12 @@ public class FragmentLogger extends Fragment {
         updateView(logger);
         tv_debug.setText(debug);
     }
+    public void updateView()
+    {
+        tv_debug.setText(m_interfaceLogger.debug);
+        tv_logger.setText(m_interfaceLogger.logger);
+    }
+
+
 
 }
