@@ -62,11 +62,6 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
     //SENSOR VARIABLES
     Sensor sensor;
     private SensorManager sensorManager;
-    private final float[] accelerometerReading = new float[3];
-    private final float[] magnetometerReading = new float[3];
-    private final float[] rotationMatrix = new float[9];
-    private final float[] orientationAngles = new float[3];
-
 
     private static final int dtUpdateUI_ms = 100;
     private static final int dtUpdateSimulation_ms = 5;
@@ -85,7 +80,7 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
                 }
                 if(modelFactory.getFragmentSensor().isVisible())
                 {
-                    ((FragmentSensor) modelFactory.getFragmentSensor()).updateView(accelerometerReading, orientationAngles,L_val_radio);
+                    ((FragmentSensor) modelFactory.getFragmentSensor()).updateView();
                     ((FragmentSensor) modelFactory.getFragmentSensor()).updateArrows(-modelFactory.getGps().m_interfaceGps.currentCourse_deg, modelFactory.getGps().m_interfaceGps.deltaCourseToNextWaypoint_deg);
                     //((FragmentSensor) fragmentSensor).updateArrows(480, -90);
                 }
@@ -119,27 +114,15 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
             {
                 handler.postDelayed(this, dtUpdateSimulation_ms);
                 extractData();
-                modelFactory.getPlane().orientationAngles = orientationAngles;
-                modelFactory.getPlane().L_val_radio = intToFloatArray(L_val_radio);
-                modelFactory.getPlane().L_val_radio_int = L_val_radio;
                 // update plane and its PIDS (with radio and gyros)
                 modelFactory.getPlane().updateDt(dtUpdateSimulation_ms);
                 modelFactory.getGps().updateDt(dtUpdateSimulation_ms);
-                L_val_servos = modelFactory.getPlane().getResultsInt();
                 sendData();
             }
         }
     };
 
-    private float[] intToFloatArray(int[] intArray)
-    {
-        float[] floatArray = new float[intArray.length];
-        for (int i = 0 ; i < intArray.length; i++)
-        {
-            floatArray[i] = (float) intArray[i];
-        }
-        return floatArray;
-    }
+
 
 
     @SuppressLint("ResourceType")
@@ -291,8 +274,11 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
     @Override
     public void onSensorChanged(SensorEvent event) {
         if (event.sensor.getType() == android.hardware.Sensor.TYPE_ACCELEROMETER) {
+
+            float[] accelerometerReading = modelFactory.getPlane().sensorsInterface.accelerometerReading;
             System.arraycopy(event.values, 0, accelerometerReading, 0, accelerometerReading.length);
         } else if (event.sensor.getType() == android.hardware.Sensor.TYPE_MAGNETIC_FIELD) {
+            float[] magnetometerReading = modelFactory.getPlane().sensorsInterface.magnetometerReading;
             System.arraycopy(event.values, 0, magnetometerReading, 0, magnetometerReading.length);
         }
         updateOrientationAngles();
@@ -302,6 +288,10 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
     // the device's accelerometer and magnetometer.
     public void updateOrientationAngles() {
         // Update rotation matrix, which is needed to update orientation angles.
+        float[] orientationAngles = modelFactory.getPlane().sensorsInterface.orientationAngles;
+        float[] rotationMatrix = modelFactory.getPlane().sensorsInterface.rotationMatrix;
+        float[] magnetometerReading = modelFactory.getPlane().sensorsInterface.magnetometerReading;
+        float[] accelerometerReading = modelFactory.getPlane().sensorsInterface.accelerometerReading;
         SensorManager.getRotationMatrix(rotationMatrix, null,
                 accelerometerReading, magnetometerReading);
         // "rotationMatrix" now has up-to-date information.
