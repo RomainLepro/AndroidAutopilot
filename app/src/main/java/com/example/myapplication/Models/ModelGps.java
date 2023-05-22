@@ -3,88 +3,87 @@ package com.example.myapplication.Models;
 import android.location.Location;
 
 import com.example.myapplication.Interfaces.DataGps;
-import com.example.myapplication.Interfaces.DataMacroData;
 import com.example.myapplication.MainActivity;
 
 public class ModelGps implements Model {
 
     MainActivity myApp;
-    public DataGps m_interfaceGps;
+    public DataGps dataGps;
 
     public ModelGps(){
 
-        m_interfaceGps = new DataGps();
+        dataGps = new DataGps();
     }
 
-    public ModelGps(DataGps interfaceGps){
+    public ModelGps(DataGps gps){
 
-        m_interfaceGps = interfaceGps;
+        dataGps = gps;
     }
 
     public void updateDt(int dt_ms){
-        Location location = m_interfaceGps.currentLocation;
+        Location location = dataGps.currentLocation;
         if(location == null)
         {
             return;
         }
 
-        m_interfaceGps.latitude_deg = (float)location.getLatitude();
-        m_interfaceGps.longitude_deg = (float)location.getLongitude();
-        m_interfaceGps.accuracy = (float)location.getAccuracy();
+        dataGps.latitude_deg = (float)location.getLatitude();
+        dataGps.longitude_deg = (float)location.getLongitude();
+        dataGps.accuracy = (float)location.getAccuracy();
 
         //computation of the corse to the next wp
         float wpO = 0.f;
-        if(m_interfaceGps.savedLocations.size()>0)
+        if(dataGps.savedLocations.size()>0)
         {
-            wpO = location.bearingTo(m_interfaceGps.savedLocations.get(m_interfaceGps.savedLocations.size()-1));
-            m_interfaceGps.courseToNextWaypoint_deg = wpO;
+            wpO = location.bearingTo(dataGps.savedLocations.get(dataGps.savedLocations.size()-1));
+            dataGps.courseToNextWaypoint_deg = wpO;
         }
 
         if(location.hasAltitude())
         {
-            m_interfaceGps.altitude_m = (float)location.getAltitude();
+            dataGps.altitude_m = (float)location.getAltitude();
         }
         else
         {
-            m_interfaceGps.altitude_m = -1f;
+            dataGps.altitude_m = -1f;
         }
         if(location.hasSpeed())
         {
-            m_interfaceGps.speed_ms = (float)location.getSpeed();
+            dataGps.speed_ms = (float)location.getSpeed();
         }
         else
         {
-            m_interfaceGps.speed_ms = 0;
+            dataGps.speed_ms = 0;
         }
         if(location.hasBearing())
         {
-            m_interfaceGps.currentCourse_deg = location.getBearing();
+            dataGps.currentCourse_deg = location.getBearing();
         }
         else
         {
-            m_interfaceGps.currentCourse_deg = 0;
+            dataGps.currentCourse_deg = 0;
         }
 
-        m_interfaceGps.deltaCourseToNextWaypoint_deg = m_interfaceGps.courseToNextWaypoint_deg -m_interfaceGps.currentCourse_deg;
-        if(m_interfaceGps.savedLocations.size()==0)
+        dataGps.deltaCourseToNextWaypoint_deg = dataGps.courseToNextWaypoint_deg - dataGps.currentCourse_deg;
+        if(dataGps.savedLocations.size()==0)
         {
-            m_interfaceGps.waypointDistance_m = 0;
+            dataGps.waypointDistance_m = 0;
             return;
         }
 
-        m_interfaceGps.waypointDistance_m = m_interfaceGps.currentLocation.distanceTo(m_interfaceGps.savedLocations.get(m_interfaceGps.nexLocationId));
+        dataGps.waypointDistance_m = dataGps.currentLocation.distanceTo(dataGps.savedLocations.get(dataGps.nexLocationId));
 
 
-        if(!m_interfaceGps.startLocationFollowing)
+        if(!dataGps.startLocationFollowing)
         {
             return;
         }
-        if(m_interfaceGps.waypointDistance_m< m_interfaceGps.waypointValidationDistance_m)
+        if(dataGps.waypointDistance_m< dataGps.waypointValidationDistance_m)
         {
-            m_interfaceGps.nexLocationId = m_interfaceGps.nexLocationId+1;
-            if(m_interfaceGps.nexLocationId>=m_interfaceGps.savedLocations.size())
+            dataGps.nexLocationId = dataGps.nexLocationId+1;
+            if(dataGps.nexLocationId>= dataGps.savedLocations.size())
             {
-                m_interfaceGps.nexLocationId=0;
+                dataGps.nexLocationId=0;
             }
         }
     }

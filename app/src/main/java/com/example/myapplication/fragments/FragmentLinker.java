@@ -100,7 +100,6 @@ public class FragmentLinker extends Fragment implements FragmentInterface {
     }
     public float[][] getValues()
     {
-        updateView();
         return m_linker.matrixLinker;
     }
     @Override

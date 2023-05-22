@@ -27,6 +27,7 @@ import android.widget.Toast;
 import com.example.myapplication.Models.ModelFactory;
 import com.example.myapplication.fragments.FragmentGps;
 import com.example.myapplication.fragments.FragmentLogger;
+import com.example.myapplication.fragments.FragmentMacroData;
 import com.example.myapplication.fragments.FragmentPID;
 import com.example.myapplication.fragments.FragmentSensor;
 import com.example.myapplication.fragments.FragmentLinker;
@@ -68,6 +69,7 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
             Runnable activity = this;
             if(activity!=null)
             {
+                //TODO all this shit should be in the implementation of the factory
                 if(modelFactory.getFragmentLogger().isVisible())
                 {
                     ((FragmentLogger) modelFactory.getFragmentLogger()).updateView(getLogger(),getDebug());
@@ -75,7 +77,7 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
                 if(modelFactory.getFragmentSensor().isVisible())
                 {
                     ((FragmentSensor) modelFactory.getFragmentSensor()).updateView();
-                    ((FragmentSensor) modelFactory.getFragmentSensor()).updateArrows(-modelFactory.getGps().m_interfaceGps.currentCourse_deg, modelFactory.getGps().m_interfaceGps.deltaCourseToNextWaypoint_deg);
+                    ((FragmentSensor) modelFactory.getFragmentSensor()).updateArrows(-modelFactory.getGps().dataGps.currentCourse_deg, modelFactory.getGps().dataGps.deltaCourseToNextWaypoint_deg);
                     //((FragmentSensor) fragmentSensor).updateArrows(480, -90);
                 }
                 if(modelFactory.getFragmentGps().isVisible())
@@ -93,8 +95,12 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
                 if(modelFactory.getFragmentLinker().isVisible())
                 {
                     float[][] values = ((FragmentLinker) modelFactory.getFragmentLinker()).getValues();
+                    ((FragmentLinker)modelFactory.getFragmentLinker()).updateView();
                     //Log.i("LINKER : ",String.valueOf(values[0][0]));
-
+                }
+                if(modelFactory.getFragmentMacroData().isVisible())
+                {
+                    ((FragmentMacroData)modelFactory.getFragmentMacroData()).updateView();
                 }
                 handler.postDelayed(this, dtUpdateUI_ms);
             }
@@ -111,8 +117,7 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
                 modelFactory.getPlane().dataRadio.L_val_radio = modelFactory.getPlane().intToFloatArray(L_val_radio);
                 modelFactory.getPlane().dataRadio.L_val_radio_int = L_val_radio;
                 // update plane and its PIDS (with radio and gyros)
-                modelFactory.getPlane().updateDt(dtUpdateSimulation_ms);
-                modelFactory.getGps().updateDt(dtUpdateSimulation_ms);
+                modelFactory.updateDt(dtUpdateSimulation_ms);
                 sendData();
             }
         }
@@ -222,7 +227,6 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
                 ft.replace(R.id.FrameLayout, modelFactory.getFragmentMacroData());
                 ft.commit();
                 break;
-
         }
         return super.onOptionsItemSelected(item);
     }
