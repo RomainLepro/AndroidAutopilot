@@ -384,6 +384,8 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
     SharedPreferences sharedPreferences;
 
     public void loadData(){
+        
+        //TODO make load and save data methode in Interfaces data
 
         String linkerInterfaceStringA = sharedPreferences.getString("linkerInterfaceStringA", null);
         modelFactory.getPlane().dataLinkerSelector.m_linkerA.loadData(linkerInterfaceStringA);
