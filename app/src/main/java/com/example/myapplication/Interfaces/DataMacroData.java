@@ -7,6 +7,21 @@ import java.util.List;
 
 public class DataMacroData implements DataInterface {
 
+    @Override
+    public void saveData() {
+
+    }
+
+    @Override
+    public void loadData() {
+
+    }
+
+    @Override
+    public void loadData(String dataName) {
+
+    }
+
     public class DataStruct
     {
         public DataStruct(String name,float value,String unit)

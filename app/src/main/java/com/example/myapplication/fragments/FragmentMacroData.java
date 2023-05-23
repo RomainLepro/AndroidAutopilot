@@ -64,9 +64,9 @@ public class FragmentMacroData extends Fragment implements FragmentInterface {
             GridLayout.LayoutParams paramData = new GridLayout.LayoutParams(GridLayout.spec(i),GridLayout.spec(1));
             GridLayout.LayoutParams paramUnit = new GridLayout.LayoutParams(GridLayout.spec(i),GridLayout.spec(2));
 
-            textViewName.setWidth(600);
-            textViewData.setWidth(400);
-            textViewUnit.setWidth(200);
+            textViewName.setWidth(300);
+            textViewData.setWidth(250);
+            textViewUnit.setWidth(100);
 
             gridLayout.addView(textViewName, paramName);
             gridLayout.addView(textViewData, paramData);

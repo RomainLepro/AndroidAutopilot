@@ -135,6 +135,7 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
 
         sharedPreferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
         loadData();
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         invalidateOptionsMenu();
@@ -407,8 +408,6 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
     public void saveData(){
 
         SharedPreferences.Editor editor = sharedPreferences.edit();
-
-
         editor.putString("linkerInterfaceStringA", Arrays.deepToString(modelFactory.getPlane().dataLinkerSelector.m_linkerA.getMatrixLinker()));
         editor.putString("linkerInterfaceStringB", Arrays.deepToString(modelFactory.getPlane().dataLinkerSelector.m_linkerB.getMatrixLinker()));
         editor.putString("linkerInterfaceStringC", Arrays.deepToString(modelFactory.getPlane().dataLinkerSelector.m_linkerC.getMatrixLinker()));

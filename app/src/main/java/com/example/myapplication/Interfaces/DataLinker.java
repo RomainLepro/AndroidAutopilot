@@ -1,6 +1,7 @@
 package com.example.myapplication.Interfaces;
 
 
+import android.content.SharedPreferences;
 import android.util.Log;
 
 public class DataLinker implements DataInterface {
@@ -98,5 +99,16 @@ public class DataLinker implements DataInterface {
                 outputLinker[i] += inputLinker[j] * matrixLinker[i][j];
             }
         }
+    }
+
+    @Override
+    public void saveData() {
+        SharedPreferences s;
+
+    }
+
+    @Override
+    public void loadData() {
+
     }
 }

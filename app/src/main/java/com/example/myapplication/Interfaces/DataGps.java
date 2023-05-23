@@ -30,4 +30,19 @@ public class DataGps implements DataInterface {
     public List<Location> savedLocations = new ArrayList<>();
     public Location currentLocation;
     public int locationUpdateCount = 0;
+
+    @Override
+    public void saveData() {
+
+    }
+
+    @Override
+    public void loadData() {
+
+    }
+
+    @Override
+    public void loadData(String dataName) {
+
+    }
 }

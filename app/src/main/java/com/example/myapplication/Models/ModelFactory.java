@@ -84,6 +84,8 @@ public class ModelFactory implements Model{
 
     public void createAllModels(){
 
+        //TODO data and frament must not be associations
+
         m_plane = new ModelPlane();
         m_gps = new ModelGps(m_plane.dataGps);
         m_macroData = new ModelMacroData(m_gps.dataGps);

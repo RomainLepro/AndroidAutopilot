@@ -27,7 +27,7 @@ public class ModelMacroData implements Model {
 
         dataMacroData.maxSpeed.DataValue = (float) max(dataMacroData.maxSpeed.DataValue,dataGps.speed_ms);
 
-        if(dataGps.speed_ms> 1)
+        if(dataGps.speed_ms> 0.5)
         {
             dataMacroData.distanceTraveled.DataValue += dataGps.speed_ms*(float)dt_ms / 1000.0;
             dataMacroData.movingTime.DataValue += (float)dt_ms / 1000.0;

@@ -1,5 +1,8 @@
 package com.example.myapplication.Interfaces;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+
 public class DataLinkerSelector implements DataInterface {
     public DataLinker m_linkerA;
     public DataLinker m_linkerB;
@@ -74,5 +77,20 @@ public class DataLinkerSelector implements DataInterface {
 
     public void resetCurrentLinker(){
         m_linker.initialiseMatrix();
+    }
+
+    @Override
+    public void saveData() {
+
+    }
+
+    @Override
+    public void loadData() {
+
+    }
+
+    @Override
+    public void loadData(String dataName) {
+
     }
 }
