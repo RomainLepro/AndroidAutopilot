@@ -77,6 +77,7 @@ public class ModelPlane implements Model {
     public int[] getResultsInt() {
 
         int[] L = dataRadio.L_val_radio_int.clone();
+        // formated data must be between -500 and 500
         L[0] = format(dataLinker.outputLinker[0]);
         L[1] = format(dataLinker.outputLinker[1]);
         L[2] = format(dataLinker.outputLinker[2]);

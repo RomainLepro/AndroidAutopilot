@@ -56,6 +56,8 @@ public class FragmentSms extends Fragment implements FragmentInterface{
 
         btn_send = view.findViewById(R.id.btn_send);
 
+        //TODO set update rate
+
         //TODO refresh rate
 
         return view;

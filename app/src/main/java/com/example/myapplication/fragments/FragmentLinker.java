@@ -165,7 +165,13 @@ public class FragmentLinker extends Fragment implements FragmentInterface {
                     textView.setText("");
                 }
                 if(i==1 && j==1) {
-                    textView.setText("XX");
+                    textView.setText("XXX");
+                }
+                if(i==0 && j==1) { //works but isn't elegant
+                    textView.setText("input");
+                }
+                if(i==1 && j==0) {
+                    textView.setText("output");
                 }
                 if(i>=2 && j>=2){
                     editText.setWidth(160);

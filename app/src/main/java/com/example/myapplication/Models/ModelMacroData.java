@@ -29,11 +29,11 @@ public class ModelMacroData implements Model {
 
         if(dataGps.speed_ms> 0.5)
         {
-            dataMacroData.distanceTraveled.DataValue += dataGps.speed_ms*(float)dt_ms / 1000.0;
-            dataMacroData.movingTime.DataValue += (float)dt_ms / 1000.0;
+            dataMacroData.distanceTraveled.DataValue += dataGps.speed_ms*dt_ms / 1000.0;
+            dataMacroData.movingTime.DataValue += dt_ms / 1000.0;
         }
 
-        dataMacroData.runningTime.DataValue += (float)dt_ms / 1000.0;
+        dataMacroData.runningTime.DataValue += dt_ms / 1000.0;
         dataMacroData.averageSpeed.DataValue = dataMacroData.distanceTraveled.DataValue / (float)max(dataMacroData.movingTime.DataValue,0.1f);
 
     }

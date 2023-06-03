@@ -133,9 +133,11 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
                 // update plane and its PIDS (with radio and gyros)
 
                 endTime_us = System.nanoTime();
-                float dt_ms = (endTime_us - startTime_us) / 1000;
-                dt_ms = min(dtUpdateSimulation_ms/10,dt_ms);
-                dt_ms = max(dtUpdateSimulation_ms*10,dt_ms);
+                float dt_ms = (endTime_us - startTime_us) / 1000000.f;
+                startTime_us = endTime_us;
+                
+                dt_ms = max((float)dtUpdateSimulation_ms/10.f,dt_ms);
+                dt_ms = min((float)dtUpdateSimulation_ms*10.f,dt_ms);
 
                 modelFactory.updateDt(dt_ms);
                 sendData();
