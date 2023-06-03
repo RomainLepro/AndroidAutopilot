@@ -3,6 +3,7 @@ package com.example.myapplication.Models;
 
 import androidx.fragment.app.Fragment;
 
+import com.example.myapplication.ContextProvider;
 import com.example.myapplication.fragments.FragmentGps;
 import com.example.myapplication.fragments.FragmentInterface;
 import com.example.myapplication.fragments.FragmentLinker;
@@ -10,6 +11,7 @@ import com.example.myapplication.fragments.FragmentLogger;
 import com.example.myapplication.fragments.FragmentMacroData;
 import com.example.myapplication.fragments.FragmentPID;
 import com.example.myapplication.fragments.FragmentSensor;
+import com.example.myapplication.fragments.FragmentSms;
 import com.example.myapplication.fragments.FragmentWaypoints;
 
 public class ModelFactory implements Model{
@@ -20,6 +22,7 @@ public class ModelFactory implements Model{
     private Fragment m_fragmentWaypoints;
     private Fragment m_fragmentLinker;
     private Fragment m_fragmentMacroData;
+    private Fragment m_fragmentSms;
     public Fragment getFragmentLogger() {
         return m_fragmentLogger;
     }
@@ -41,11 +44,11 @@ public class ModelFactory implements Model{
     public Fragment getFragmentMacroData() {
         return m_fragmentMacroData;
     }
+    public Fragment getFragmentSms() {return m_fragmentSms;}
 
     public ModelPlane getPlane() {
         return m_plane;
     }
-
     public ModelGps getGps() {
         return m_gps;
     }
@@ -53,14 +56,23 @@ public class ModelFactory implements Model{
     private ModelMacroData m_macroData;
     private ModelPlane m_plane;
     private ModelGps m_gps;
+    private ModelSms m_sms;
+
+
+    private ContextProvider m_contextProvider = null;
+
+    public ModelFactory(ContextProvider contextProvider){
+        m_contextProvider = contextProvider;
+    }
 
     @Override
-    public void updateDt(int dt_ms) {
+    public void updateDt(float dt_ms) {
         // Here alla model update
         //TODO need ordonnacer here
         m_macroData.updateDt(dt_ms);
         m_plane.updateDt(dt_ms);
         m_gps.updateDt(dt_ms);
+        m_sms.updateDt(dt_ms);
 
     }
 
@@ -89,6 +101,7 @@ public class ModelFactory implements Model{
         m_plane = new ModelPlane();
         m_gps = new ModelGps(m_plane.dataGps);
         m_macroData = new ModelMacroData(m_gps.dataGps);
+        m_sms = new ModelSms(m_contextProvider,m_gps.dataGps);
 
         m_fragmentLogger = new FragmentLogger();
         m_fragmentSensor = new FragmentSensor(m_plane.dataSensors, m_plane.dataRadio);
@@ -97,6 +110,7 @@ public class ModelFactory implements Model{
         m_fragmentWaypoints = new FragmentWaypoints(m_plane.dataGps);
         m_fragmentLinker = new FragmentLinker(m_plane.dataLinkerSelector);
         m_fragmentMacroData = new FragmentMacroData(m_macroData.dataMacroData);
+        m_fragmentSms = new FragmentSms(m_sms.dataSms);
     }
 
 

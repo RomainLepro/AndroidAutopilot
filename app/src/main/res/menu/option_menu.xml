@@ -27,4 +27,8 @@
         android:id="@+id/item7"
         android:title="MACRO DATA"/>
 
+    <item
+        android:id="@+id/item8"
+        android:title="SMS"/>
+
 </menu>

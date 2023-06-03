@@ -58,7 +58,7 @@ public class ModelPlane implements Model {
         }
         return floatArray;
     }
-    public void updateDt(int dt_ms){
+    public void updateDt(float dt_ms){
         //Log.i("debug",Float.toString(dataSensors.accelerometerReading[0]));
 
         PIDX.updateDt(dataSensors.orientationAngles[2]*400, dataRadio.L_val_radio[0],dt_ms);

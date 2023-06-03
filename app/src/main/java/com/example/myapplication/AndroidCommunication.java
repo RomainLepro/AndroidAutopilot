@@ -1,7 +1,5 @@
 package com.example.myapplication;
 
-import static java.lang.Long.min;
-
 import android.Manifest;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -22,7 +20,6 @@ import com.hoho.android.usbserial.driver.UsbSerialProber;
 import com.hoho.android.usbserial.util.SerialInputOutputManager;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -318,4 +315,6 @@ public class AndroidCommunication extends AppCompatActivity implements SerialInp
         }
 
     }
+
+
 }

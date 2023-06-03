@@ -27,11 +27,11 @@ public class PID {
         return updateDt(position,goal,dt_ms);
     }
 
-    public float updateDt(float position,float goal,int dt_ms)
+    public float updateDt(float position,float goal,float dt_ms)
     {
         goal-=500;
         float result = 0;
-        float dt = (float)(dt_ms)/1000;
+        float dt = dt_ms/1000;
         float derivative = (position - previous_position)/dt;
         previous_position = position;
         integral += (goal - position)*dt;

@@ -20,7 +20,7 @@ public class ModelGps implements Model {
         dataGps = gps;
     }
 
-    public void updateDt(int dt_ms){
+    public void updateDt(float dt_ms){
         Location location = dataGps.currentLocation;
         if(location == null)
         {

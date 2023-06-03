@@ -23,7 +23,7 @@ public class ModelMacroData implements Model {
     }
 
     @Override
-    public void updateDt(int dt_ms) {
+    public void updateDt(float dt_ms) {
 
         dataMacroData.maxSpeed.DataValue = (float) max(dataMacroData.maxSpeed.DataValue,dataGps.speed_ms);
 

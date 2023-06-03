@@ -1,7 +1,11 @@
 package com.example.myapplication;
 
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -19,6 +23,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,6 +36,7 @@ import com.example.myapplication.fragments.FragmentMacroData;
 import com.example.myapplication.fragments.FragmentPID;
 import com.example.myapplication.fragments.FragmentSensor;
 import com.example.myapplication.fragments.FragmentLinker;
+import com.example.myapplication.fragments.FragmentSms;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -42,7 +48,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import java.util.Arrays;
 
 
-public class MainActivity extends AndroidCommunication implements SensorEventListener {
+public class MainActivity extends AndroidCommunication implements SensorEventListener,ContextProvider {
 
     public static final int MILLIS = 1000;
     private static final int PERMISSION_FINE_LOCATION = 99;
@@ -60,6 +66,9 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
 
     private static final int dtUpdateUI_ms = 100;
     private static final int dtUpdateSimulation_ms = 5;
+    long startTime_us = 0;
+    long endTime_us = 0;
+
 
     ModelFactory modelFactory;
     Handler handler;
@@ -102,6 +111,11 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
                 {
                     ((FragmentMacroData)modelFactory.getFragmentMacroData()).updateView();
                 }
+                if(modelFactory.getFragmentSms().isVisible())
+                {
+                    ((FragmentSms)modelFactory.getFragmentSms()).updateView();
+                }
+
                 handler.postDelayed(this, dtUpdateUI_ms);
             }
         }
@@ -117,7 +131,13 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
                 modelFactory.getPlane().dataRadio.L_val_radio = modelFactory.getPlane().intToFloatArray(L_val_radio);
                 modelFactory.getPlane().dataRadio.L_val_radio_int = L_val_radio;
                 // update plane and its PIDS (with radio and gyros)
-                modelFactory.updateDt(dtUpdateSimulation_ms);
+
+                endTime_us = System.nanoTime();
+                float dt_ms = (endTime_us - startTime_us) / 1000;
+                dt_ms = min(dtUpdateSimulation_ms/10,dt_ms);
+                dt_ms = max(dtUpdateSimulation_ms*10,dt_ms);
+
+                modelFactory.updateDt(dt_ms);
                 sendData();
             }
         }
@@ -130,7 +150,7 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        modelFactory = new ModelFactory();
+        modelFactory = new ModelFactory(this);
         modelFactory.createAllModels();
 
         sharedPreferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
@@ -185,6 +205,7 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        //TODO move into factory
         switch (item.getItemId())
         {
             case R.id.item1:
@@ -228,6 +249,11 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
                 ft.replace(R.id.FrameLayout, modelFactory.getFragmentMacroData());
                 ft.commit();
                 break;
+            case R.id.item8:
+                ft = getSupportFragmentManager().beginTransaction();
+                ft.replace(R.id.FrameLayout, modelFactory.getFragmentSms());
+                ft.commit();
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -242,7 +268,6 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
     @Override
     protected void onResume() {
         super.onResume();
-
         // Get updates from the accelerometer and magnetometer at a constant rate.
         // To make batch operations more efficient and reduce power consumption,
         // provide support for delaying updates to the application.
@@ -265,7 +290,6 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
     @Override
     protected void onPause() {
         super.onPause();
-
         // Don't receive any more updates from either sensor.
         sensorManager.unregisterListener(this);
     }
@@ -302,8 +326,7 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
     //LOCATION
 
 
-    public void saveCurrentLocation()
-    {
+    public void saveCurrentLocation(){
         modelFactory.getPlane().dataGps.savedLocations.add(modelFactory.getPlane().dataGps.currentLocation);
     }
 
@@ -320,8 +343,7 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
             updateGps();
             Log.i("update","start location update");
         }
-        else
-        {
+        else{
             Log.i("update","start location update FAILED");
         }
     }
@@ -349,8 +371,7 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
                         modelFactory.getPlane().dataGps.locationUpdateCount++;
                         modelFactory.getPlane().dataGps.currentLocation = location;
                     }
-                    else
-                    {
+                    else{
                         //Log.i("UpdateGps","null");
                     }
                 }
@@ -358,8 +379,7 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
         }
         else
         {
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-            {
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
                 Log.e("UpdateGps","No permission");
                 requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION},PERMISSION_FINE_LOCATION);
             }
@@ -417,5 +437,15 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
         editor.apply();
 
         Log.i("saveData","QUITTING AFTER SAVING");
+    }
+
+    @Override
+    public Context getContext() {
+        return this;
+    }
+
+    @Override
+    public Activity getActivity() {
+        return this;
     }
 }

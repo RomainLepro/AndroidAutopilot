@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.FragmentSms">
+
+
+    <TextView
+        android:layout_marginTop="16dp"
+        android:id="@+id/tv_phone_self"
+        android:text="this phone number :"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        />
+
+
+    <EditText
+        android:id="@+id/tv_phone_self_val"
+        android:text="0780373319"
+        android:layout_below="@+id/tv_phone_self"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+
+
+    <TextView
+        android:id="@+id/tv_phone_target"
+        android:text="target phone number :"
+        android:layout_below="@+id/tv_phone_self_val"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        />
+
+
+    <EditText
+        android:id="@+id/tv_phone_target_val"
+        android:text="0780373319"
+        android:layout_below="@+id/tv_phone_target"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+
+    <Switch
+        android:id="@+id/sw_enableSend"
+        android:layout_below="@+id/tv_phone_target_val"
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:checked="false"
+        android:text="send data" />
+
+    <Switch
+        android:id="@+id/sw_enableGps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/sw_enableSend"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="16dp"
+        android:checked="false"
+        android:text="send gps" />
+
+
+    <Button
+        android:id="@+id/btn_send"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/sw_enableGps"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="16dp"
+        android:text="test send" />
+
+
+
+</RelativeLayout>
