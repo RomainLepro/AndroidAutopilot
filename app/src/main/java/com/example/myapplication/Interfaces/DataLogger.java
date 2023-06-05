@@ -9,6 +9,11 @@ public class DataLogger implements DataInterface {
     }
 
     @Override
+    public void reset() {
+
+    }
+
+    @Override
     public void loadData() {
 
     }

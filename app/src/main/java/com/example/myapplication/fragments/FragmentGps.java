@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.example.myapplication.Interfaces.DataGps;
 import com.example.myapplication.MainActivity;
+import com.example.myapplication.Models.ModelGps;
 import com.example.myapplication.R;
 import com.google.android.gms.location.Priority;
 
@@ -33,7 +34,7 @@ public class FragmentGps extends Fragment implements FragmentInterface{
     TextView tv_lat,tv_lon,tv_accuracy,tv_speed,tv_altitude,tv_sensor,tv_updates,tv_waypointCount,tv_bearing,tv_bearingWp,tv_updateCount;
     Button btn_showWaypoints,btn_addWaypoint,btn_showMap,btn_showSensor,btn_showArduino;
 
-    MainActivity myApp;
+    ModelGps myApp = null;
 
     DataGps m_gpsInterface;
 
@@ -45,7 +46,8 @@ public class FragmentGps extends Fragment implements FragmentInterface{
         m_gpsInterface = new DataGps();
     }
 
-    public FragmentGps(DataGps gpsInterfaces) {
+    public FragmentGps(DataGps gpsInterfaces,ModelGps gps) {
+        myApp = gps;
         m_gpsInterface = gpsInterfaces;
     }
 
@@ -63,10 +65,7 @@ public class FragmentGps extends Fragment implements FragmentInterface{
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
-
-        myApp = (MainActivity) getActivity();
-
-        // Inflate the layout for this fragment
+                // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_gps, container, false);
 
         tv_lat = view.findViewById(R.id.tv_lat);

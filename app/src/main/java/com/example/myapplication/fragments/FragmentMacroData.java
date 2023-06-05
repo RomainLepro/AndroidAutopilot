@@ -6,9 +6,11 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.TextView;
@@ -26,6 +28,8 @@ public class FragmentMacroData extends Fragment implements FragmentInterface {
     DataMacroData m_interfaceMacroData;
 
     GridLayout gridLayout;
+
+    Button btn_reset;
 
     public FragmentMacroData() {
         m_interfaceMacroData = new DataMacroData();
@@ -72,6 +76,17 @@ public class FragmentMacroData extends Fragment implements FragmentInterface {
             gridLayout.addView(textViewData, paramData);
             gridLayout.addView(textViewUnit, paramUnit);
         }
+
+        btn_reset = view.findViewById(R.id.btn_reset);
+
+        btn_reset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                m_interfaceMacroData.resetRequest = true;
+            }
+        });
+
+
         updateView();
 
         return view;

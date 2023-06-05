@@ -66,6 +66,11 @@ public class DataPid implements DataInterface {
     }
 
     @Override
+    public void reset() {
+
+    }
+
+    @Override
     public void loadData() {
 
     }

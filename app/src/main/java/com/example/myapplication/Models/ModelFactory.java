@@ -58,6 +58,8 @@ public class ModelFactory implements Model{
     private ModelGps m_gps;
     private ModelSms m_sms;
 
+    private ModelImu m_imu;
+
 
     private ContextProvider m_contextProvider = null;
 
@@ -73,6 +75,7 @@ public class ModelFactory implements Model{
         m_plane.updateDt(dt_ms);
         m_gps.updateDt(dt_ms);
         m_sms.updateDt(dt_ms);
+        m_imu.updateDt(dt_ms);
 
     }
 
@@ -86,8 +89,6 @@ public class ModelFactory implements Model{
         switch (type){
             case e_modelPlane:
                 return new ModelPlane();
-            case e_modelGps:
-                return new ModelGps();
             case e_modelMacroData:
                 return new ModelMacroData();
         };
@@ -97,15 +98,17 @@ public class ModelFactory implements Model{
     public void createAllModels(){
 
         //TODO data and frament must not be associations
+        //TODO data must be created outside of models and then associated
 
         m_plane = new ModelPlane();
-        m_gps = new ModelGps(m_plane.dataGps);
+        m_gps = new ModelGps(m_contextProvider,m_plane.dataGps);
         m_macroData = new ModelMacroData(m_gps.dataGps);
         m_sms = new ModelSms(m_contextProvider,m_gps.dataGps);
+        m_imu = new ModelImu(m_contextProvider, m_plane.dataSensors);
 
         m_fragmentLogger = new FragmentLogger();
         m_fragmentSensor = new FragmentSensor(m_plane.dataSensors, m_plane.dataRadio);
-        m_fragmentGps = new FragmentGps(m_plane.dataGps);
+        m_fragmentGps = new FragmentGps(m_plane.dataGps, m_gps);
         m_fragmentPID = new FragmentPID(m_plane.dataPid);
         m_fragmentWaypoints = new FragmentWaypoints(m_plane.dataGps);
         m_fragmentLinker = new FragmentLinker(m_plane.dataLinkerSelector);
@@ -119,6 +122,8 @@ public class ModelFactory implements Model{
         //TODO implement this and use it in main activity
         return null;
     }
+
+
 
 
 }

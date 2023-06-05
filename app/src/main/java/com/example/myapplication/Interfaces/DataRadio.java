@@ -11,6 +11,11 @@ public class DataRadio implements DataInterface {
     }
 
     @Override
+    public void reset() {
+
+    }
+
+    @Override
     public void loadData() {
 
     }

@@ -48,21 +48,13 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import java.util.Arrays;
 
 
-public class MainActivity extends AndroidCommunication implements SensorEventListener,ContextProvider {
+public class MainActivity extends AndroidCommunication implements ContextProvider {
 
     public static final int MILLIS = 1000;
-    private static final int PERMISSION_FINE_LOCATION = 99;
-    FusedLocationProviderClient fusedLocationProviderClient;
-    LocationCallback locationCallback;
-    public LocationRequest locationRequest;
+    public static final int PERMISSION_FINE_LOCATION = 99;
 
     Toolbar toolbar;
     FragmentTransaction ft;
-
-
-    //SENSOR VARIABLES
-    Sensor sensor;
-    private SensorManager sensorManager;
 
     private static final int dtUpdateUI_ms = 100;
     private static final int dtUpdateSimulation_ms = 5;
@@ -135,7 +127,7 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
                 endTime_us = System.nanoTime();
                 float dt_ms = (endTime_us - startTime_us) / 1000000.f;
                 startTime_us = endTime_us;
-                
+
                 dt_ms = max((float)dtUpdateSimulation_ms/10.f,dt_ms);
                 dt_ms = min((float)dtUpdateSimulation_ms*10.f,dt_ms);
 
@@ -172,25 +164,10 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
         ft.replace(R.id.FrameLayout, modelFactory.getFragmentLogger());
         ft.commit();
 
-        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-
         handler = new Handler(Looper.getMainLooper());
         handler.postDelayed(taskUpdateUi,dtUpdateUI_ms);
         handler.postDelayed(taskUpdateSimulation,dtUpdateSimulation_ms);
-        //LOCATION
-        createLocationRequest();
-        //this event is triggered every time the condition are met (here the timer)
-        locationCallback = new LocationCallback() {
-            @Override
-            public void onLocationResult(@NonNull LocationResult locationResult) {
-                updateGps();
-                super.onLocationResult(locationResult);
-                Location location = locationResult.getLastLocation();
-            }
-        };
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(MainActivity.this);
-        requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION},PERMISSION_FINE_LOCATION);
-        startLocationUpdate();
+
     }
 
     @Override
@@ -260,132 +237,15 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
         return super.onOptionsItemSelected(item);
     }
 
-
-    @Override
-    public void onAccuracyChanged(android.hardware.Sensor sensor, int accuracy) {
-        // Do something here if sensor accuracy changes.
-        // You must implement this callback in your code.
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
-        // Get updates from the accelerometer and magnetometer at a constant rate.
-        // To make batch operations more efficient and reduce power consumption,
-        // provide support for delaying updates to the application.
-        //
-        // In this example, the sensor reporting delay is small enough such that
-        // the application receives an update before the system checks the sensor
-        // readings again.
-        android.hardware.Sensor accelerometer = sensorManager.getDefaultSensor(android.hardware.Sensor.TYPE_ACCELEROMETER);
-        if (accelerometer != null) {
-            sensorManager.registerListener(this, accelerometer,
-                    SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_UI);
-        }
-        android.hardware.Sensor magneticField = sensorManager.getDefaultSensor(android.hardware.Sensor.TYPE_MAGNETIC_FIELD);
-        if (magneticField != null) {
-            sensorManager.registerListener(this, magneticField,
-                    SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_UI);
-        }
+
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        // Don't receive any more updates from either sensor.
-        sensorManager.unregisterListener(this);
-    }
-
-    // Get readings from accelerometer and magnetometer. To simplify calculations,
-    // consider storing these readings as unit vectors.
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-        if (event.sensor.getType() == android.hardware.Sensor.TYPE_ACCELEROMETER) {
-
-            float[] accelerometerReading = modelFactory.getPlane().dataSensors.accelerometerReading;
-            System.arraycopy(event.values, 0, accelerometerReading, 0, accelerometerReading.length);
-        } else if (event.sensor.getType() == android.hardware.Sensor.TYPE_MAGNETIC_FIELD) {
-            float[] magnetometerReading = modelFactory.getPlane().dataSensors.magnetometerReading;
-            System.arraycopy(event.values, 0, magnetometerReading, 0, magnetometerReading.length);
-        }
-        updateOrientationAngles();
-    }
-
-    // Compute the three orientation angles based on the most recent readings from
-    // the device's accelerometer and magnetometer.
-    public void updateOrientationAngles() {
-        // Update rotation matrix, which is needed to update orientation angles.
-        float[] orientationAngles = modelFactory.getPlane().dataSensors.orientationAngles;
-        float[] rotationMatrix = modelFactory.getPlane().dataSensors.rotationMatrix;
-        float[] magnetometerReading = modelFactory.getPlane().dataSensors.magnetometerReading;
-        float[] accelerometerReading = modelFactory.getPlane().dataSensors.accelerometerReading;
-        SensorManager.getRotationMatrix(rotationMatrix, null,
-                accelerometerReading, magnetometerReading);
-        // "rotationMatrix" now has up-to-date information.
-        SensorManager.getOrientation(rotationMatrix, orientationAngles);
-    }
-
-    //LOCATION
-
-
-    public void saveCurrentLocation(){
-        modelFactory.getPlane().dataGps.savedLocations.add(modelFactory.getPlane().dataGps.currentLocation);
-    }
-
-    protected void createLocationRequest() {
-        locationRequest = LocationRequest.create();
-        locationRequest.setInterval(10*MILLIS);
-        locationRequest.setFastestInterval(3*MILLIS);
-        locationRequest.setPriority(Priority.PRIORITY_HIGH_ACCURACY);
-    }
-
-    public void startLocationUpdate() {
-        if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback,  Looper.getMainLooper());
-            updateGps();
-            Log.i("update","start location update");
-        }
-        else{
-            Log.i("update","start location update FAILED");
-        }
-    }
-
-    public void stopLocationUpdate() {
-        fusedLocationProviderClient.removeLocationUpdates(locationCallback);
-        Log.i("update","stop location update");
-    }
-
-    private void updateGps()
-    {
-        //Log.i("UpdateGps","Update GPS");
-
-        if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
-        )
-        {
-            fusedLocationProviderClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                @Override
-                public void onSuccess(Location location) {
-                    if(location != null) // check that the location isn't null
-                    {
-                        //Log.i("UpdateGps","not null");
-                        modelFactory.getPlane().dataGps.locationUpdateCount++;
-                        modelFactory.getPlane().dataGps.currentLocation = location;
-                    }
-                    else{
-                        //Log.i("UpdateGps","null");
-                    }
-                }
-            });
-        }
-        else
-        {
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-                Log.e("UpdateGps","No permission");
-                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION},PERMISSION_FINE_LOCATION);
-            }
-        }
     }
 
     @Override
@@ -394,7 +254,8 @@ public class MainActivity extends AndroidCommunication implements SensorEventLis
 
         if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
         {
-            updateGps();
+            Log.i("Main activity gpas permission","Permission Granted");
+            //TODO update position
         }
         else
         {

@@ -13,6 +13,13 @@ public class DataMacroData implements DataInterface {
     }
 
     @Override
+    public void reset() {
+        for (DataStruct data:m_dataList) {
+            data.DataValue = 0.f;
+        }
+    }
+
+    @Override
     public void loadData() {
 
     }
@@ -50,5 +57,7 @@ public class DataMacroData implements DataInterface {
     public DataStruct distanceTraveled = new DataStruct("distanceTraveled","m");
 
     public List<DataStruct> m_dataList = Arrays.asList(averageSpeed,maxSpeed,runningTime,movingTime,distanceTraveled);
+
+    public boolean resetRequest = false;
 
 }

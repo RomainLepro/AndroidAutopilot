@@ -8,6 +8,7 @@ import java.util.List;
 public class DataGps implements DataInterface {
 
     public boolean startLocationFollowing = false; //TODO create a switch in GPS to connect it in the gps fragment
+    public boolean requestSaveCurentLocation = false;
     public float latitude_deg = 0;
     public float longitude_deg = 0;
     public float accuracy = 0;
@@ -33,6 +34,11 @@ public class DataGps implements DataInterface {
 
     @Override
     public void saveData() {
+
+    }
+
+    @Override
+    public void reset() {
 
     }
 

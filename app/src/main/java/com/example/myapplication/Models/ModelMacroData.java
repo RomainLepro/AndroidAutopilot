@@ -36,5 +36,11 @@ public class ModelMacroData implements Model {
         dataMacroData.runningTime.DataValue += dt_ms / 1000.0;
         dataMacroData.averageSpeed.DataValue = dataMacroData.distanceTraveled.DataValue / (float)max(dataMacroData.movingTime.DataValue,0.1f);
 
+
+        if(dataMacroData.resetRequest == true){
+            dataMacroData.resetRequest = false;
+            dataMacroData.reset();
+        }
+
     }
 }
