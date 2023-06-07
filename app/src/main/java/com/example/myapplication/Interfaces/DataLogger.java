@@ -1,7 +1,9 @@
 package com.example.myapplication.Interfaces;
 
 public class DataLogger implements DataInterface {
-    public String logger, debug;
+    public String logger_in = "",logger_out = "", debug = "";
+
+    public int maxLogSize = 400;
 
     @Override
     public void saveData() {

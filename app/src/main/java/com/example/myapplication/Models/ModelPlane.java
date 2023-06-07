@@ -3,6 +3,7 @@ package com.example.myapplication.Models;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
+import android.os.Debug;
 import android.util.Log;
 
 import com.example.myapplication.Interfaces.DataGps;
@@ -61,9 +62,9 @@ public class ModelPlane implements Model {
     public void updateDt(float dt_ms){
         //Log.i("debug",Float.toString(dataSensors.accelerometerReading[0]));
 
-        PIDX.updateDt(dataSensors.orientationAngles[2]*400, dataRadio.L_val_radio[0],dt_ms);
-        PIDY.updateDt(dataSensors.orientationAngles[1]*400, dataRadio.L_val_radio[1],dt_ms);
-        PIDZ.updateDt(dataSensors.orientationAngles[0]*400, dataRadio.L_val_radio[2],dt_ms);
+        PIDX.updateDt(dataSensors.orientationAngles[2]*400, dataRadio.L_val_radio_int[0],dt_ms);
+        PIDY.updateDt(dataSensors.orientationAngles[1]*400, dataRadio.L_val_radio_int[1],dt_ms);
+        PIDZ.updateDt(dataSensors.orientationAngles[0]*400, dataRadio.L_val_radio_int[2],dt_ms);
 
         updateLinkerInputsAndOutputs();
     }
@@ -78,6 +79,7 @@ public class ModelPlane implements Model {
 
         int[] L = dataRadio.L_val_radio_int.clone();
         // formated data must be between -500 and 500
+
         L[0] = format(dataLinker.outputLinker[0]);
         L[1] = format(dataLinker.outputLinker[1]);
         L[2] = format(dataLinker.outputLinker[2]);
@@ -101,7 +103,7 @@ public class ModelPlane implements Model {
     }
 
     public void updateLinkerInputsAndOutputs() {
-        dataLinkerSelector.requestSelectLinker(analogToInt(dataRadio.L_val_radio[5]));
+        dataLinkerSelector.requestSelectLinker(dataRadio.L_val_radio_int[5]);
 
         dataLinker = dataLinkerSelector.m_linker;
 
@@ -109,13 +111,13 @@ public class ModelPlane implements Model {
         dataLinker.inputLinker[1] = PIDY.output;
         dataLinker.inputLinker[2] = PIDZ.output;
 
-        dataLinker.inputLinker[3] = dataRadio.L_val_radio[0]-500;
-        dataLinker.inputLinker[4] = dataRadio.L_val_radio[1]-500;
-        dataLinker.inputLinker[5] = dataRadio.L_val_radio[2]-500;
-        dataLinker.inputLinker[6] = dataRadio.L_val_radio[3]-500;
-        dataLinker.inputLinker[7] = dataRadio.L_val_radio[4]-500;
-        dataLinker.inputLinker[8] = dataRadio.L_val_radio[5]-500;
-        dataLinker.inputLinker[9] = analogToInt(dataRadio.L_val_radio[5]);
+        dataLinker.inputLinker[3] = dataRadio.L_val_radio_int[0]-500;
+        dataLinker.inputLinker[4] = dataRadio.L_val_radio_int[1]-500;
+        dataLinker.inputLinker[5] = dataRadio.L_val_radio_int[2]-500;
+        dataLinker.inputLinker[6] = dataRadio.L_val_radio_int[3]-500;
+        dataLinker.inputLinker[7] = dataRadio.L_val_radio_int[4]-500;
+        dataLinker.inputLinker[8] = dataRadio.L_val_radio_int[5]-500;
+        dataLinker.inputLinker[9] = analogToInt(dataRadio.L_val_radio_int[5]);
 
 
         dataLinker.inputLinker[10] = dataGps.deltaCourseToNextWaypoint_deg;

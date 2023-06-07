@@ -22,16 +22,21 @@ import com.example.myapplication.R;
  */
 public class FragmentLogger extends Fragment implements FragmentInterface {
 
-    TextView tv_logger,tv_send,tv_debug;
+    TextView tv_logger_in,tv_logger_out,tv_send,tv_debug;
     Button btn_connect,btn_send,btn_debug;
 
-    DataLogger m_interfaceLogger;
+    public DataLogger m_interfaceLogger;
 
 
     public FragmentLogger() {
         // Required empty public constructor
+        m_interfaceLogger = new DataLogger();
     }
 
+    public FragmentLogger(DataLogger interfaceLogger) {
+        // Required empty public constructor
+        m_interfaceLogger = interfaceLogger;
+    }
 
     public static FragmentLogger newInstance() {
         FragmentLogger fragment = new FragmentLogger();
@@ -54,8 +59,9 @@ public class FragmentLogger extends Fragment implements FragmentInterface {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_logger, container, false);
 
-        tv_logger = view.findViewById(R.id.tv_logger);
-        tv_logger.setSelected(true);
+        tv_logger_in = view.findViewById(R.id.tv_logger_in);
+        tv_logger_in.setSelected(true);
+        tv_logger_out = view.findViewById(R.id.tv_logger_out);
         tv_debug = view.findViewById(R.id.tv_debug);
         //tv__debug.setSelected(true);
 
@@ -68,7 +74,7 @@ public class FragmentLogger extends Fragment implements FragmentInterface {
                 Log.i("btn_connect","btn_connect");
                 MainActivity activity = (MainActivity)getActivity();
                 activity.startUsb();
-                tv_logger.setText(activity.getLogger());
+                tv_logger_in.setText(activity.getLogger_in());
             }
         });
 
@@ -80,7 +86,7 @@ public class FragmentLogger extends Fragment implements FragmentInterface {
                 String message = tv_send.getText().toString() + '\n';
                 MainActivity activity = (MainActivity)getActivity();
                 activity.send(message);
-                tv_logger.setText(activity.getLogger());
+                tv_logger_in.setText(activity.getLogger_in());
             }
         });
 
@@ -97,19 +103,11 @@ public class FragmentLogger extends Fragment implements FragmentInterface {
         return view;
     }
 
-    public void updateView(String logger)
-    {
-        tv_logger.setText(logger);
-    }
-    public void updateView(String logger,String debug)
-    {
-        updateView(logger);
-        tv_debug.setText(debug);
-    }
     public void updateView()
     {
         tv_debug.setText(m_interfaceLogger.debug);
-        tv_logger.setText(m_interfaceLogger.logger);
+        tv_logger_in.setText(m_interfaceLogger.logger_in);
+        tv_logger_out.setText(m_interfaceLogger.logger_out);
     }
 
 

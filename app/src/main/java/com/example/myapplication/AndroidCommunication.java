@@ -14,6 +14,8 @@ import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.myapplication.Interfaces.DataLogger;
+import com.example.myapplication.Interfaces.DataRadio;
 import com.hoho.android.usbserial.driver.UsbSerialDriver;
 import com.hoho.android.usbserial.driver.UsbSerialPort;
 import com.hoho.android.usbserial.driver.UsbSerialProber;
@@ -21,27 +23,24 @@ import com.hoho.android.usbserial.util.SerialInputOutputManager;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 
 public class AndroidCommunication extends AppCompatActivity implements SerialInputOutputManager.Listener{
 
 
 
-    //TODO use data interfaceRadio
+    //TODO use data interfaceRadio, should be a model
 
-    static String L_name_servos[] = {"S1","S2","S3","TH1","TH2","S4","S5"};
-    static int L_val_servos[] = {500,500,500,000,000,500,500};
-    static String L_name_radio[] = {"OX","OY","OZ","TH","SA","SB","HE","TE"};
-    static int L_val_radio[] = {500,500,500,500,500,500,500,500};
+    public DataRadio dataRadio = new DataRadio();
+
+    public DataLogger dataLogger = new DataLogger();
+
+
 
     private static final int READ_WAIT_MILLIS = 100;
     private static final int WRITE_WAIT_MILLIS = 100;
     private static final String ACTION_USB_PERMISSION = "com.android.example.USB_PERMISSION";
-    private String logger = "" ,debug =  "";
     private String word = "";
-
 
     /*
     Manage all the usb stuff
@@ -61,21 +60,6 @@ public class AndroidCommunication extends AppCompatActivity implements SerialInp
     }
 
 
-    TimerTask timer= new TimerTask(){
-
-        @Override
-        public void run() {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    //do something periodically
-                }
-            });
-
-        }
-    };
-
-
     private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -90,16 +74,21 @@ public class AndroidCommunication extends AppCompatActivity implements SerialInp
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         startUsb();
-        Timer t = new Timer();
-        t.scheduleAtFixedRate(timer , 0 , 1000);
     }
 
     @Override
     public void onNewData(byte[] data) {
         runOnUiThread(() -> {
             String message = (new String(data));
-            logger += message;
+            dataLogger.logger_in += message;
         });
+    }
+
+    public void updateDt(float dt_ms)
+    {
+        getLogger_in();
+        getLogger_out();
+        getDebug();
     }
 
     public void send(String message)
@@ -109,6 +98,7 @@ public class AndroidCommunication extends AppCompatActivity implements SerialInp
         {
             byte[] request;
             String sendString = message;
+            dataLogger.logger_out += message;0
             request = sendString.getBytes();
             try {
                 port.write(request, WRITE_WAIT_MILLIS);
@@ -118,7 +108,7 @@ public class AndroidCommunication extends AppCompatActivity implements SerialInp
         }
         else
         {
-            debug+=("send failed\n");
+            dataLogger.debug+=("send failed\n");
         }
     }
 
@@ -129,9 +119,9 @@ public class AndroidCommunication extends AppCompatActivity implements SerialInp
             return;
         }
         String mot = "";
-        for(int i = 0;i<L_val_servos.length;i++)
+        for(int i = 0;i<dataRadio.L_val_servos_int.length;i++)
         {
-            mot += Integer.toString(L_val_servos[i]);
+            mot += Integer.toString(dataRadio.L_val_servos_int[i]);
             mot += ";";
         }
         mot += '\n';
@@ -143,9 +133,9 @@ public class AndroidCommunication extends AppCompatActivity implements SerialInp
         Log.i("startUsb","startUsb");
         manager = (UsbManager) getSystemService(Context.USB_SERVICE);
         availableDrivers = UsbSerialProber.getDefaultProber().findAllDrivers(manager);
-        debug+=("starting USB\n");
+        dataLogger.debug+=("starting USB\n");
         if (availableDrivers.isEmpty()) {
-            debug+=("no available driver\n");
+            dataLogger.debug+=("no available driver\n");
             return;
         }
 
@@ -156,28 +146,28 @@ public class AndroidCommunication extends AppCompatActivity implements SerialInp
         if (connection == null) {
             PendingIntent permissionIntent = PendingIntent.getBroadcast(this, 0, new Intent(ACTION_USB_PERMISSION), 0);
             manager.requestPermission(driver.getDevice(),permissionIntent);
-            debug+=("asked permission\n");
+            dataLogger.debug+=("asked permission\n");
             connection = manager.openDevice(driver.getDevice());
             if (connection == null) {
-                debug+=("failed to connect\n");
+                dataLogger.debug+=("failed to connect\n");
                 return;
             }
         }
 
         port = driver.getPorts().get(0); // Most devices have just one port (port 0)
-        debug+=("opening port\n");
+        dataLogger.debug+=("opening port\n");
 
         try {
             port.open(connection);
             port.setParameters(115200, 8, UsbSerialPort.STOPBITS_1, UsbSerialPort.PARITY_NONE);
         } catch (IOException e) {
             e.printStackTrace();
-            debug+=("failed to open connection with port\n");
+            dataLogger.debug+=("failed to open connection with port\n");
         }
 
         if(port.isOpen())
         {
-            debug+=("connection succeeded !\n");
+            dataLogger.debug+=("connection succeeded !\n");
             byte[] response = new byte[100];
             try {
                 int len = port.read(response, READ_WAIT_MILLIS);
@@ -190,7 +180,7 @@ public class AndroidCommunication extends AppCompatActivity implements SerialInp
         }
         else
         {
-            debug+=("port not open\n");
+            dataLogger.debug+=("port not open\n");
         }
     }
 
@@ -200,24 +190,34 @@ public class AndroidCommunication extends AppCompatActivity implements SerialInp
         Log.e("onRunError","ERROR in arduino");
     }
 
-    public String getLogger()
+    public String getLogger_in()
     {
-        if(logger.length()>500)
+        if(dataLogger.logger_in.length()>dataLogger.maxLogSize)
         {
-            int remove =  logger.length()- 500;
-            logger = logger.substring(remove,logger.length());
+            int remove =  dataLogger.logger_in.length()- dataLogger.maxLogSize;
+            dataLogger.logger_in = dataLogger.logger_in.substring(remove, dataLogger.logger_in.length());
         }
-        return logger;
+        return dataLogger.logger_in;
+    }
+
+    public String getLogger_out()
+    {
+        if(dataLogger.logger_out.length()>dataLogger.maxLogSize)
+        {
+            int remove =  dataLogger.logger_out.length()- dataLogger.maxLogSize;
+            dataLogger.logger_out = dataLogger.logger_out.substring(remove, dataLogger.logger_out.length());
+        }
+        return dataLogger.logger_out;
     }
 
     public String getDebug()
     {
-        if(debug.length()>500)
+        if(dataLogger.debug.length()>dataLogger.maxLogSize)
         {
-            int remove =  debug.length()- 500;
-            debug = debug.substring(remove,debug.length());
+            int remove =  dataLogger.debug.length()- dataLogger.maxLogSize;
+            dataLogger.debug = dataLogger.debug.substring(remove,dataLogger.debug.length());
         }
-        return debug;
+        return dataLogger.debug;
     }
 
     public boolean isConnected() {
@@ -232,12 +232,12 @@ public class AndroidCommunication extends AppCompatActivity implements SerialInp
 
     public void extractData_old()
     {
-        if(logger.length()<100)
+        if(dataLogger.logger_in.length()<100)
         {
             return;
         }
-        int ind = (int) (logger.length()-50);
-        String L[] = logger.substring(ind).split(String.valueOf('\n'));
+        int ind = (int) (dataLogger.logger_in.length()-50);
+        String L[] = dataLogger.logger_in.substring(ind).split(String.valueOf('\n'));
 
 
         for(int j=0;j< L.length-1;j++)
@@ -249,26 +249,26 @@ public class AndroidCommunication extends AppCompatActivity implements SerialInp
                 String NAME = word.substring(0,2);
                 String VAL = word.substring(3,word.length()-1);
 
-                for (int i =0;i<L_name_radio.length;i++) {
-                    if(L_name_radio[i].equals(NAME))
+                for (int i =0;i< dataRadio.L_name_radio.length;i++) {
+                    if(dataRadio.L_name_radio[i].equals(NAME))
                     {
                         try {
-                            L_val_radio[i] = Integer.parseInt(VAL);
+                            dataRadio.L_val_radio_int[i] = Integer.parseInt(VAL);
                         }
                         catch(Exception e){
-                            debug+='\n'+"value gotten : " + VAL + " IS NOT A NUMBER" +'\n';
-                            debug+="size : " + VAL.length() +'\n';
+                            dataLogger.debug+='\n'+"value gotten : " + VAL + " IS NOT A NUMBER" +'\n';
+                            dataLogger.debug+="size : " + VAL.length() +'\n';
                             return;
                         }
 
-                        debug+="value gotten : " + NAME +'\n';
-                        debug+="value gotten : " + Integer.toString(L_val_radio[i])+'\n';
-                        debug+="value gotten : " + VAL+'\n';
+                        dataLogger.debug+="value gotten : " + NAME +'\n';
+                        dataLogger.debug+="value gotten : " + Integer.toString(dataRadio.L_val_radio_int[i])+'\n';
+                        dataLogger.debug+="value gotten : " + VAL+'\n';
                         return;
                     }
                 }
                 Log.i("name not found : ",NAME);
-                debug+="name not found"+'\n';
+                dataLogger.debug+="name not found"+'\n';
                 return;
             }
         }
@@ -278,38 +278,38 @@ public class AndroidCommunication extends AppCompatActivity implements SerialInp
     public void extractData()
     {
         int dataSize = 40;
-        if(logger.length()<=dataSize*2)
+        if(dataLogger.logger_in.length()<=dataSize*2)
         {
             return;
         }
 
-        String sub = logger.substring(logger.length()-dataSize*2);
+        String sub = dataLogger.logger_in.substring(dataLogger.logger_in.length()-dataSize*2);
         String[] lines = sub.split(Character.toString('\n'));
         if(lines.length <1)
         {
-            debug+=("not enough lines, size : " + lines.length + '\n');
+            dataLogger.debug+=("not enough lines, size : " + lines.length + '\n');
             return;
         }
         String[] split = (lines[1]).split(";");
 
         if(split.length < 5)
         {
-            debug+=("not enough data, size : " + split.length + '\n');
+            dataLogger.debug+=("not enough data, size : " + split.length + '\n');
             return;
         }
-        if(split.length > L_val_radio.length+1)
+        if(split.length > dataRadio.L_val_radio_int.length+1)
         {
-            debug+=("too much data, size : " + split.length + '\n');
+            dataLogger.debug+=("too much data, size : " + split.length + '\n');
             return;
         }
         for(int i=0;i<split.length-1;i++)
         {
-            System.out.println(split[i]);
+            //System.out.println(split[i]); TODO useless ?
             try {
-                L_val_radio[i] = Integer.parseInt(split[i]);
+                dataRadio.L_val_radio_int[i] = Integer.parseInt(split[i]);
             }
             catch(Exception e){
-                debug+='\n'+"value gotten : " + split[i] + " IS NOT A NUMBER" +'\n';
+                dataLogger.debug+='\n'+"value gotten : " + split[i] + " IS NOT A NUMBER" +'\n';
                 return;
             }
         }

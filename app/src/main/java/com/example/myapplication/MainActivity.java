@@ -3,27 +3,19 @@ package com.example.myapplication;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
-import android.location.Location;
-import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Handler;
 import android.os.Looper;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -37,13 +29,6 @@ import com.example.myapplication.fragments.FragmentPID;
 import com.example.myapplication.fragments.FragmentSensor;
 import com.example.myapplication.fragments.FragmentLinker;
 import com.example.myapplication.fragments.FragmentSms;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.Priority;
-import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.Arrays;
 
@@ -73,7 +58,7 @@ public class MainActivity extends AndroidCommunication implements ContextProvide
                 //TODO all this shit should be in the implementation of the factory
                 if(modelFactory.getFragmentLogger().isVisible())
                 {
-                    ((FragmentLogger) modelFactory.getFragmentLogger()).updateView(getLogger(),getDebug());
+                    ((FragmentLogger) modelFactory.getFragmentLogger()).updateView();
                 }
                 if(modelFactory.getFragmentSensor().isVisible())
                 {
@@ -120,8 +105,8 @@ public class MainActivity extends AndroidCommunication implements ContextProvide
             {
                 handler.postDelayed(this, dtUpdateSimulation_ms);
                 extractData();
-                modelFactory.getPlane().dataRadio.L_val_radio = modelFactory.getPlane().intToFloatArray(L_val_radio);
-                modelFactory.getPlane().dataRadio.L_val_radio_int = L_val_radio;
+                //modelFactory.getPlane().dataRadio.L_val_radio = modelFactory.getPlane().intToFloatArray(L_val_radio);
+                //modelFactory.getPlane().dataRadio.L_val_radio_int = L_val_radio;
                 // update plane and its PIDS (with radio and gyros)
 
                 endTime_us = System.nanoTime();
@@ -146,6 +131,9 @@ public class MainActivity extends AndroidCommunication implements ContextProvide
 
         modelFactory = new ModelFactory(this);
         modelFactory.createAllModels();
+
+        dataRadio = modelFactory.getPlane().dataRadio; // TODO be removed (see AndroidComunication-
+        dataLogger = ((FragmentLogger)(modelFactory.getFragmentLogger())).m_interfaceLogger; // TODO be removed (see AndroidComunication-
 
         sharedPreferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
         loadData();
