@@ -67,6 +67,7 @@ public class ModelPlane implements Model {
         PIDZ.updateDt(dataSensors.orientationAngles[0]*400, dataRadio.L_val_radio_int[2],dt_ms);
 
         updateLinkerInputsAndOutputs();
+        dataRadio.L_val_servos_int = getResultsInt();
     }
 
     public void updatePidResults() {
