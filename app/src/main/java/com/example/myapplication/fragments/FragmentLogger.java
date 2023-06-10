@@ -79,6 +79,7 @@ public class FragmentLogger extends Fragment implements FragmentInterface {
         });
 
         btn_send = view.findViewById(R.id.btn_send);
+        /*
         btn_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -89,7 +90,7 @@ public class FragmentLogger extends Fragment implements FragmentInterface {
                 tv_logger_in.setText(activity.getLogger_in());
             }
         });
-
+        */
         btn_debug = view.findViewById(R.id.btn_debug);
         btn_debug.setOnClickListener(new View.OnClickListener() {
             @Override

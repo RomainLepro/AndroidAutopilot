@@ -86,6 +86,7 @@ public class AndroidCommunication extends AppCompatActivity implements SerialInp
 
     public void updateDt(float dt_ms)
     {
+        extractData();
         getLogger_in();
         getLogger_out();
         getDebug();
@@ -98,7 +99,7 @@ public class AndroidCommunication extends AppCompatActivity implements SerialInp
         {
             byte[] request;
             String sendString = message;
-            dataLogger.logger_out += message;0
+            dataLogger.logger_out += message;
             request = sendString.getBytes();
             try {
                 port.write(request, WRITE_WAIT_MILLIS);

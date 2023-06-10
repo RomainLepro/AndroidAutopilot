@@ -104,7 +104,7 @@ public class MainActivity extends AndroidCommunication implements ContextProvide
             if(activity!=null)
             {
                 handler.postDelayed(this, dtUpdateSimulation_ms);
-                extractData();
+
                 //modelFactory.getPlane().dataRadio.L_val_radio = modelFactory.getPlane().intToFloatArray(L_val_radio);
                 //modelFactory.getPlane().dataRadio.L_val_radio_int = L_val_radio;
                 // update plane and its PIDS (with radio and gyros)
@@ -116,6 +116,7 @@ public class MainActivity extends AndroidCommunication implements ContextProvide
                 dt_ms = max((float)dtUpdateSimulation_ms/10.f,dt_ms);
                 dt_ms = min((float)dtUpdateSimulation_ms*10.f,dt_ms);
 
+                updateDt(dt_ms); //TODO put this inside a model in factory
                 modelFactory.updateDt(dt_ms);
                 sendData();
             }
