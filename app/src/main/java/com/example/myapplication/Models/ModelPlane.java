@@ -23,6 +23,7 @@ public class ModelPlane implements Model {
     public DataRadio dataRadio;
     public DataSensors dataSensors;
 
+    @Deprecated
     public ModelPlane()
     {
         int numInputs = 11;
@@ -39,6 +40,28 @@ public class ModelPlane implements Model {
         dataRadio = new DataRadio();
 
         dataSensors = new DataSensors();
+
+        PIDX = new PID(2,0.1f,0.1f);
+        PIDY = new PID(2,0.1f,0.1f);
+        PIDZ = new PID(2,0.1f,0.1f);
+    }
+
+    public ModelPlane(DataLinkerSelector dataLinkerSelector,DataPid dataPid,DataGps dataGps,DataRadio dataRadio,DataSensors dataSensors)
+    {
+        int numInputs = 11;
+        int numOutputs = 6;
+
+        this.dataLinkerSelector = dataLinkerSelector;
+
+        dataLinker = dataLinkerSelector.m_linker; // just for convenience
+
+        this.dataPid = dataPid;
+
+        this.dataGps = dataGps;
+
+        this.dataRadio = dataRadio;
+
+        this.dataSensors = dataSensors;
 
         PIDX = new PID(2,0.1f,0.1f);
         PIDY = new PID(2,0.1f,0.1f);

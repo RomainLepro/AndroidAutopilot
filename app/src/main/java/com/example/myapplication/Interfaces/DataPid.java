@@ -39,7 +39,7 @@ public class DataPid implements DataInterface {
 
     public void loadData(String matrixString)
     {
-        //Log.d("PID DATA",matrixString);
+        Log.d("PID DATA",matrixString);
         float[][] linkerMatrix;
         if (matrixString != null) {
             matrixString = matrixString.replace("[[", "[");

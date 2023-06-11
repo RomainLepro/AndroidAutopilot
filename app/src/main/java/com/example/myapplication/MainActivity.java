@@ -259,6 +259,7 @@ public class MainActivity extends AndroidCommunication implements ContextProvide
     public void loadData(){
         
         //TODO make load and save data methode in Interfaces data
+        Log.i("loadingData","LOADING DATA");
 
         String linkerInterfaceStringA = sharedPreferences.getString("linkerInterfaceStringA", null);
         modelFactory.getPlane().dataLinkerSelector.m_linkerA.loadData(linkerInterfaceStringA);
@@ -272,7 +273,7 @@ public class MainActivity extends AndroidCommunication implements ContextProvide
         String pidInterfaceString = sharedPreferences.getString("pidInterfaceString", null);
         modelFactory.getPlane().dataPid.loadData(pidInterfaceString);
 
-        Log.i("loadingData","LOADING DATA");
+
 
     }
 
@@ -284,6 +285,7 @@ public class MainActivity extends AndroidCommunication implements ContextProvide
         editor.putString("linkerInterfaceStringB", Arrays.deepToString(modelFactory.getPlane().dataLinkerSelector.m_linkerB.getMatrixLinker()));
         editor.putString("linkerInterfaceStringC", Arrays.deepToString(modelFactory.getPlane().dataLinkerSelector.m_linkerC.getMatrixLinker()));
 
+        Log.d("PID DATA save",Arrays.deepToString(modelFactory.getPlane().dataPid.getValues()));
         editor.putString("pidInterfaceString", Arrays.deepToString(modelFactory.getPlane().dataPid.getValues()));
 
         editor.apply();

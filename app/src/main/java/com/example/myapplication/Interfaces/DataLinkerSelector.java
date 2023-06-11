@@ -91,7 +91,6 @@ public class DataLinkerSelector implements DataInterface {
 
     @Override
     public void loadData() {
-
     }
 
     @Override

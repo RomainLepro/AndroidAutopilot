@@ -33,7 +33,6 @@ public class ModelGps implements Model, SensorEventListener {
 
     MainActivity myApp;
     public DataGps dataGps;
-
     public FusedLocationProviderClient fusedLocationProviderClient;
     public LocationRequest locationRequest;
     private ContextProvider m_contextProvider = null;
@@ -43,6 +42,7 @@ public class ModelGps implements Model, SensorEventListener {
 
     public ModelGps(ContextProvider contextProvider,DataGps gps){
         dataGps = gps;
+        dataGps.saveData();
         m_contextProvider = contextProvider;
         createLocationRequest();
         locationCallback = new LocationCallback() {
