@@ -1,5 +1,8 @@
 package com.example.myapplication.Interfaces;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+
 public interface DataInterface {
 
     void saveData();
@@ -7,6 +10,6 @@ public interface DataInterface {
     void loadData();
     void loadData(String dataName);
 
-    //TODO may be complication to get sharedPreferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
+    void loadSharedPreferences(SharedPreferences sharedPreferences);
 
 }

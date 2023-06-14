@@ -1,6 +1,6 @@
 package com.example.myapplication.Interfaces;
 
-public class DataRadio implements DataInterface {
+public class DataRadio extends DataDefault {
 
 
 

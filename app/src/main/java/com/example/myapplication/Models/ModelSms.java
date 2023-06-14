@@ -71,6 +71,16 @@ public class ModelSms extends BroadcastReceiver implements Model {
         }
     }
 
+    @Override
+    public void saveData() {
+
+    }
+
+    @Override
+    public void loadData() {
+
+    }
+
     public void sendMessage(){
         if(time_ms-prev_time_ms > dataSms.refreshRate_ms) {
             prev_time_ms = time_ms;

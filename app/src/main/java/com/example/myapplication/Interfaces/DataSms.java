@@ -1,6 +1,6 @@
 package com.example.myapplication.Interfaces;
 
-public class DataSms implements DataInterface{
+public class DataSms extends DataDefault{
 
     public String fromNumber = "0780373319";
     public String toNumber = "0780373319";

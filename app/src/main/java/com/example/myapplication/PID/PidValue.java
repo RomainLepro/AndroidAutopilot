@@ -20,18 +20,6 @@ public class PidValue {
 
     boolean invert;
 
-    public PidValue(String name) {
-        this.name = name;
-        this.Presult = 0.f;
-        this.Iresult = 0.f;
-        this.Dresult = 0.f;
-        this.PIDresult = 123.4f;
-        this.P = 1.f;
-        this.I = 0.1f;
-        this.D = 0.1f;
-        this.invert = false;
-    }
-
     public PidValue(String name,float[] PIDS) {
         this.name = name;
         this.Presult = 0.f;
@@ -88,6 +76,13 @@ public class PidValue {
         //Log.i("update",Float.toString(P));
     }
 
+    public void setUpdate()
+    {
+        tv_p.setText(Float.toString(P));
+        tv_i.setText(Float.toString(I));
+        tv_d.setText(Float.toString(D));
+    }
+
 
     float toFloat(String val)
     {
@@ -104,6 +99,14 @@ public class PidValue {
         }
         float[] res = {P,I,D};
         return res;
+    }
+
+    public void setPID(float P,float I,float D)
+    {
+        this.P = P;
+        this.I = I;
+        this.D = D;
+        setUpdate();
     }
 
 

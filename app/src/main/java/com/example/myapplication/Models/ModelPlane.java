@@ -14,7 +14,7 @@ import com.example.myapplication.Interfaces.DataPid;
 import com.example.myapplication.Interfaces.DataRadio;
 import com.example.myapplication.PID.PID;
 
-public class ModelPlane implements Model {
+public class ModelPlane extends ModelDefault {
     PID PIDX,PIDY,PIDZ;
     public DataLinkerSelector dataLinkerSelector;
     public DataLinker dataLinker;

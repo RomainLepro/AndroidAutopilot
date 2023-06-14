@@ -41,16 +41,6 @@ public class FragmentPID extends Fragment {
 
     DataPid m_pidInterface;
 
-    public FragmentPID() {
-
-        m_pidInterface = new DataPid();
-
-        arrayPidValues = new ArrayList<PidValue>();
-        arrayPidValues.add(new PidValue(m_pidInterface.pidNameList[0]));
-        arrayPidValues.add(new PidValue(m_pidInterface.pidNameList[1]));
-        arrayPidValues.add(new PidValue(m_pidInterface.pidNameList[2]));
-    }
-
     public FragmentPID(DataPid pidInterface) {
 
         m_pidInterface = pidInterface;
@@ -59,11 +49,6 @@ public class FragmentPID extends Fragment {
         arrayPidValues.add(new PidValue(m_pidInterface.pidNameList[0],pidInterface.outputPids[0]));
         arrayPidValues.add(new PidValue(m_pidInterface.pidNameList[1],pidInterface.outputPids[1]));
         arrayPidValues.add(new PidValue(m_pidInterface.pidNameList[2],pidInterface.outputPids[2]));
-    }
-
-    public static FragmentPID newInstance() {
-        FragmentPID fragment = new FragmentPID();
-        return fragment;
     }
 
     @Override
@@ -88,26 +73,26 @@ public class FragmentPID extends Fragment {
             arrayPidValues.get(i).init(row,rowP,rowI,rowD);
         }
 
+
+        setValues();
+
         return view;
     }
 
-    private PidValue getPid(String pidName)
-    {
-        for(int i =0;i<arrayPidValues.size();i++)
-        {
-            if(arrayPidValues.get(i).name.equalsIgnoreCase(pidName))
-            {
-                return arrayPidValues.get(i);
-            };
-        }
-        return null;
-    }
 
     //called to update the veiw from main activity (update pid values used in plane and outputs)
     public void updateView() {
+        //If the model has modified the gain, dont read from ihm
+        if(m_pidInterface.updatedFromModel)
+        {
+            setValues();
+            m_pidInterface.updatedFromModel = false;
+            return;
+        }
+
+        m_pidInterface.outputPids = getValues();
         for (int i = 0; i < m_pidInterface.pidCount; i++) {
             arrayPidValues.get(i).PIDresult = m_pidInterface.resultsPids[i];
-            m_pidInterface.outputPids = getValues();
             arrayPidValues.get(i).update();
         }
     }
@@ -120,6 +105,15 @@ public class FragmentPID extends Fragment {
             output[i] =   arrayPidValues.get(i).getPID();
         }
         return output;
+    }
+
+    private void setValues()
+    {
+        Log.i("setValues",Float.toString(m_pidInterface.outputPids[0][1]));
+        float[][] output = {null,null,null};
+        for(int i =0;i<arrayPidValues.size();i++) {
+            arrayPidValues.get(i).setPID(m_pidInterface.outputPids[i][0],m_pidInterface.outputPids[i][1],m_pidInterface.outputPids[i][2]);
+        }
     }
 
 }

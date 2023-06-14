@@ -1,6 +1,6 @@
 package com.example.myapplication.Interfaces;
 
-public class DataSensors implements DataInterface {
+public class DataSensors extends DataDefault {
 
     public float Gx=0;
     public float Gy=0;

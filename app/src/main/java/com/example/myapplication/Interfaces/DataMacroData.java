@@ -5,7 +5,7 @@ import android.provider.ContactsContract;
 import java.util.Arrays;
 import java.util.List;
 
-public class DataMacroData implements DataInterface {
+public class DataMacroData extends DataDefault {
 
     @Override
     public void saveData() {

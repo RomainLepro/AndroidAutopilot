@@ -2,8 +2,11 @@ package com.example.myapplication.Interfaces;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
-public class DataLinkerSelector implements DataInterface {
+import java.util.Arrays;
+
+public class DataLinkerSelector extends DataDefault {
     public DataLinker m_linkerA;
     public DataLinker m_linkerB;
     public DataLinker m_linkerC;
@@ -81,7 +84,11 @@ public class DataLinkerSelector implements DataInterface {
 
     @Override
     public void saveData() {
+        editor.putString("linkerInterfaceStringA", Arrays.deepToString(m_linkerA.getMatrixLinker()));
+        editor.putString("linkerInterfaceStringB", Arrays.deepToString(m_linkerB.getMatrixLinker()));
+        editor.putString("linkerInterfaceStringC", Arrays.deepToString(m_linkerC.getMatrixLinker()));
 
+        editor.apply();
     }
 
     @Override
@@ -91,10 +98,20 @@ public class DataLinkerSelector implements DataInterface {
 
     @Override
     public void loadData() {
+
+        String linkerInterfaceStringA = sharedPreferences.getString("linkerInterfaceStringA", null);
+        m_linkerA.loadData(linkerInterfaceStringA);
+
+        String linkerInterfaceStringB = sharedPreferences.getString("linkerInterfaceStringB", null);
+        m_linkerB.loadData(linkerInterfaceStringB);
+
+        String linkerInterfaceStringC = sharedPreferences.getString("linkerInterfaceStringC", null);
+        m_linkerC.loadData(linkerInterfaceStringC);
+
+        forcedLinker = true;
     }
 
     @Override
     public void loadData(String dataName) {
-
     }
 }

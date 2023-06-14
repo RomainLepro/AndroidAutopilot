@@ -6,7 +6,7 @@ import static java.lang.Double.min;
 import com.example.myapplication.Interfaces.DataGps;
 import com.example.myapplication.Interfaces.DataMacroData;
 
-public class ModelMacroData implements Model {
+public class ModelMacroData extends ModelDefault {
 
     public DataMacroData dataMacroData;
 

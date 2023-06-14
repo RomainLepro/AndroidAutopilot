@@ -8,7 +8,7 @@ import android.hardware.SensorManager;
 import com.example.myapplication.ContextProvider;
 import com.example.myapplication.Interfaces.DataSensors;
 
-public class ModelImu implements Model, SensorEventListener {
+public class ModelImu extends ModelDefault implements SensorEventListener {
 
     DataSensors m_dataSensors;
     private ContextProvider m_contextProvider = null;

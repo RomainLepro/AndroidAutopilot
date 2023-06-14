@@ -1,6 +1,6 @@
 package com.example.myapplication.Interfaces;
 
-public class DataLogger implements DataInterface {
+public class DataLogger extends DataDefault {
     public String logger_in = "",logger_out = "", debug = "";
 
     public int maxLogSize = 400;

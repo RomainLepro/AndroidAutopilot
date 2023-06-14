@@ -29,7 +29,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.Priority;
 import com.google.android.gms.tasks.OnSuccessListener;
 
-public class ModelGps implements Model, SensorEventListener {
+public class ModelGps extends ModelDefault implements  SensorEventListener {
 
     MainActivity myApp;
     public DataGps dataGps;

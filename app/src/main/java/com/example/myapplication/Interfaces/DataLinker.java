@@ -4,9 +4,9 @@ package com.example.myapplication.Interfaces;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-public class DataLinker implements DataInterface {
+public class DataLinker extends DataDefault {
     //WARNNING not using getter or setters
-    public String m_name = "DefaultName";
+    public String m_name = "Data Linker";
     public int numRows = 10;// number of outputs
     public int numCols = 12;// number of inputs
     public float[][] matrixLinker;
@@ -16,15 +16,6 @@ public class DataLinker implements DataInterface {
     public float[] outputLinker;
 
     public DataLinker() {
-        inputLinker = new float[numCols];
-        outputLinker = new float[numRows];
-        matrixLinker = new float[numRows][numCols];
-        initialiseMatrix();
-    }
-
-    public DataLinker(int numInputs, int numOutputs) {
-        this.numRows = numOutputs;
-        this.numCols = numInputs;
         inputLinker = new float[numCols];
         outputLinker = new float[numRows];
         matrixLinker = new float[numRows][numCols];
@@ -43,10 +34,6 @@ public class DataLinker implements DataInterface {
 
     public float[][] getMatrixLinker() {
         return matrixLinker;
-    }
-
-    public void setMatrixLinker(float[][] matrixLinker) {
-        this.matrixLinker = matrixLinker;
     }
 
     void initialiseMatrix()
@@ -103,7 +90,6 @@ public class DataLinker implements DataInterface {
 
     @Override
     public void saveData() {
-        SharedPreferences s;
 
     }
 

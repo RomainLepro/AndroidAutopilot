@@ -132,12 +132,11 @@ public class MainActivity extends AndroidCommunication implements ContextProvide
 
         modelFactory = new ModelFactory(this);
         modelFactory.createAllModels();
+        modelFactory.loadSharedPreferences( getSharedPreferences("MyPreferences", Context.MODE_PRIVATE));
+        modelFactory.loadData();
 
         dataRadio = modelFactory.getPlane().dataRadio; // TODO be removed (see AndroidComunication-
         dataLogger = ((FragmentLogger)(modelFactory.getFragmentLogger())).m_interfaceLogger; // TODO be removed (see AndroidComunication-
-
-        sharedPreferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
-        loadData();
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -161,7 +160,7 @@ public class MainActivity extends AndroidCommunication implements ContextProvide
 
     @Override
     protected void onStop() {
-        saveData();
+        modelFactory.saveData();
         super.onStop();
     }
 
@@ -228,12 +227,14 @@ public class MainActivity extends AndroidCommunication implements ContextProvide
 
     @Override
     protected void onResume() {
+        modelFactory.loadData();
         super.onResume();
 
     }
 
     @Override
     protected void onPause() {
+        modelFactory.saveData();
         super.onPause();
     }
 
@@ -261,37 +262,10 @@ public class MainActivity extends AndroidCommunication implements ContextProvide
         //TODO make load and save data methode in Interfaces data
         Log.i("loadingData","LOADING DATA");
 
-        String linkerInterfaceStringA = sharedPreferences.getString("linkerInterfaceStringA", null);
-        modelFactory.getPlane().dataLinkerSelector.m_linkerA.loadData(linkerInterfaceStringA);
-
-        String linkerInterfaceStringB = sharedPreferences.getString("linkerInterfaceStringB", null);
-        modelFactory.getPlane().dataLinkerSelector.m_linkerB.loadData(linkerInterfaceStringB);
-
-        String linkerInterfaceStringC = sharedPreferences.getString("linkerInterfaceStringC", null);
-        modelFactory.getPlane().dataLinkerSelector.m_linkerC.loadData(linkerInterfaceStringC);
-
-        String pidInterfaceString = sharedPreferences.getString("pidInterfaceString", null);
-        modelFactory.getPlane().dataPid.loadData(pidInterfaceString);
-
 
 
     }
 
-
-    public void saveData(){
-
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("linkerInterfaceStringA", Arrays.deepToString(modelFactory.getPlane().dataLinkerSelector.m_linkerA.getMatrixLinker()));
-        editor.putString("linkerInterfaceStringB", Arrays.deepToString(modelFactory.getPlane().dataLinkerSelector.m_linkerB.getMatrixLinker()));
-        editor.putString("linkerInterfaceStringC", Arrays.deepToString(modelFactory.getPlane().dataLinkerSelector.m_linkerC.getMatrixLinker()));
-
-        Log.d("PID DATA save",Arrays.deepToString(modelFactory.getPlane().dataPid.getValues()));
-        editor.putString("pidInterfaceString", Arrays.deepToString(modelFactory.getPlane().dataPid.getValues()));
-
-        editor.apply();
-
-        Log.i("saveData","QUITTING AFTER SAVING");
-    }
 
     @Override
     public Context getContext() {

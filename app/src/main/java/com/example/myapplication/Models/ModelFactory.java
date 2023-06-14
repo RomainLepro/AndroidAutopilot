@@ -1,6 +1,9 @@
 package com.example.myapplication.Models;
 
 
+import android.content.SharedPreferences;
+import android.util.Log;
+
 import androidx.fragment.app.Fragment;
 
 import com.example.myapplication.ContextProvider;
@@ -26,7 +29,7 @@ import com.example.myapplication.fragments.FragmentWaypoints;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ModelFactory implements Model{
+public class ModelFactory extends ModelDefault{
 
     private DataInterface dataGps,dataLinkerSelector,dataLogger,
             dataMacroData,dataPid,dataRadio,dataSensors,dataSms;
@@ -64,10 +67,10 @@ public class ModelFactory implements Model{
 
     public List<Fragment> m_listFragments = new ArrayList<Fragment>();
     public List<Model> m_listModels = new ArrayList<Model>();
-    public List<DataInterface> m_listData = new ArrayList<DataInterface >();
     private ContextProvider m_contextProvider = null;
     public ModelFactory(ContextProvider contextProvider){
         m_contextProvider = contextProvider;
+        m_listData = new ArrayList<DataInterface>();
     }
 
     @Override
@@ -79,6 +82,7 @@ public class ModelFactory implements Model{
     }
 
     public void createAllModels(){
+        Log.i("createAllModels","createAllModels");
 
         dataGps = new DataGps();m_listData.add(dataGps);
         dataLinkerSelector = new DataLinkerSelector();m_listData.add(dataLinkerSelector);
@@ -88,6 +92,8 @@ public class ModelFactory implements Model{
         dataRadio = new DataRadio();m_listData.add(dataRadio);
         dataSensors = new DataSensors();m_listData.add(dataSensors);
         dataSms = new DataSms();m_listData.add(dataSms);
+
+        Log.i("dataListSize",Integer.toString(m_listData.size()));
 
         m_plane = new ModelPlane((DataLinkerSelector)dataLinkerSelector,(DataPid) dataPid,(DataGps) dataGps,
                 (DataRadio) dataRadio,(DataSensors) dataSensors);m_listModels.add(m_plane);
@@ -105,7 +111,13 @@ public class ModelFactory implements Model{
         m_fragmentMacroData = new FragmentMacroData((DataMacroData) dataMacroData);m_listFragments.add(m_fragmentMacroData);
         m_fragmentSms = new FragmentSms((DataSms) dataSms);m_listFragments.add(m_fragmentSms);
 
-        loadData();
+
+    }
+
+    public void loadSharedPreferences(SharedPreferences sharedPreferences) {
+        for(DataInterface data:m_listData){
+            data.loadSharedPreferences(sharedPreferences);
+        }
     }
 
 }
