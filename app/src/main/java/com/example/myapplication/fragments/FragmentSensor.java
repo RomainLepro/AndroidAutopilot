@@ -26,7 +26,7 @@ import com.example.myapplication.R;
 public class FragmentSensor extends Fragment implements FragmentInterface{
     DataSensors m_interfaceSensors;
     DataRadio m_interfaceRadio;
-    TextView tv_ax,tv_ay,tv_az,tv_gx,tv_gy,tv_gz;
+    TextView tv_ax,tv_ay,tv_az,tv_gx,tv_gy,tv_gz,tv_magx,tv_magy,tv_magz;
     TextView tv_Rx,tv_Ry,tv_Rz,tv_Th,tv_Sa,tv_Sb,tv_He,tv_Te;
     ImageView imv_arrow1,imv_arrow2;
     Button btn_update;
@@ -68,6 +68,10 @@ public class FragmentSensor extends Fragment implements FragmentInterface{
         tv_gy = view.findViewById(R.id.tv_gy);
         tv_gz = view.findViewById(R.id.tv_gz);
 
+        tv_magx = view.findViewById(R.id.tv_Magx);
+        tv_magy = view.findViewById(R.id.tv_Magy);
+        tv_magz = view.findViewById(R.id.tv_Magz);
+
         tv_Rx = view.findViewById(R.id.tv_Rx);
         tv_Ry = view.findViewById(R.id.tv_Ry);
         tv_Rz = view.findViewById(R.id.tv_Rz);
@@ -104,6 +108,10 @@ public class FragmentSensor extends Fragment implements FragmentInterface{
         tv_gx.setText(String.format("%.2f",radToangle(orientationAngles[0])));
         tv_gy.setText(String.format("%.2f",radToangle(orientationAngles[1])));
         tv_gz.setText(String.format("%.2f",radToangle(orientationAngles[2])));
+
+        tv_magx.setText(String.format("%.2f",radToangle(m_interfaceSensors.magnetometerReading[0])));
+        tv_magy.setText(String.format("%.2f",radToangle(m_interfaceSensors.magnetometerReading[1])));
+        tv_magz.setText(String.format("%.2f",radToangle(m_interfaceSensors.magnetometerReading[2])));
     }
 
     public void updateView(float[] accelerometerReading,float[] orientationAngles,int[] radioListInputs)

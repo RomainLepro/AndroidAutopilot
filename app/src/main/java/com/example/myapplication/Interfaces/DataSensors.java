@@ -2,10 +2,6 @@ package com.example.myapplication.Interfaces;
 
 public class DataSensors extends DataDefault {
 
-    public float Gx=0;
-    public float Gy=0;
-    public float Gz=0;
-
     public final float[] accelerometerReading = new float[3];
     public final float[] magnetometerReading = new float[3];
     public final float[] rotationMatrix = new float[9];

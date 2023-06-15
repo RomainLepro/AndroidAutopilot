@@ -17,18 +17,15 @@ public class DataGps extends DataDefault {
     public float deltaCourseToNextWaypoint_deg = 0;
 
     public float deltaCourseToNextWaypointGyro_deg = 0; // same has before but with gyro
-
     public float waypointDistance_m = 0;
     public float waypointValidationDistance_m = 0;
-
     public float altitude_m = 0;
     public float baseAltitude_m = 0;
-
     public float speed_ms = 0;
     public float speedToWaypoint = 0;
-
     public int nexLocationId = 0;
     public List<Location> savedLocations = new ArrayList<>();
+    public List<Location> allLocations   = new ArrayList<>();
     public Location currentLocation;
     public int locationUpdateCount = 0;
 

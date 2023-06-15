@@ -184,6 +184,7 @@ public class ModelGps extends ModelDefault implements  SensorEventListener {
                         //Log.i("UpdateGps","not null");
                         dataGps.locationUpdateCount++;
                         dataGps.currentLocation = location;
+                        dataGps.allLocations.add(location);
                     }
                     else{
                         //Log.i("UpdateGps","null");

@@ -263,6 +263,57 @@
         app:layout_constraintStart_toEndOf="@+id/tv_labelGz"
         app:layout_constraintTop_toTopOf="@+id/tv_labelGz" />
 
+    <TextView
+        android:id="@+id/tv_labelMagx"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Magx:"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_labelGz" />
+
+    <TextView
+        android:id="@+id/tv_Magx"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0.00"
+        app:layout_constraintStart_toEndOf="@+id/tv_labelMagx"
+        app:layout_constraintTop_toTopOf="@+id/tv_labelMagx" />
+
+    <TextView
+        android:id="@+id/tv_labelMagy"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Magy:"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_labelMagx" />
+
+    <TextView
+        android:id="@+id/tv_Magy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0.00"
+        app:layout_constraintStart_toEndOf="@+id/tv_labelMagy"
+        app:layout_constraintTop_toTopOf="@+id/tv_labelMagy" />
+
+    <TextView
+        android:id="@+id/tv_labelMagz"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Magz:"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_labelMagy" />
+
+    <TextView
+        android:id="@+id/tv_Magz"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0.00"
+        app:layout_constraintStart_toEndOf="@+id/tv_labelMagz"
+        app:layout_constraintTop_toTopOf="@+id/tv_labelMagz" />
+
     <Button
         android:id="@+id/btn_update"
         android:layout_width="wrap_content"

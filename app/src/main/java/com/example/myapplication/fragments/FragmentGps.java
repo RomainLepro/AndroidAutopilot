@@ -60,7 +60,7 @@ public class FragmentGps extends Fragment implements FragmentInterface{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.i("FragmentGps","onCreate");
-        fragmentWaypoints = new FragmentWaypoints();
+        fragmentWaypoints = new FragmentWaypoints(myApp.dataGps); //TODO : warnning this is a duplicate of the factory fragment
     }
 
     @Override
@@ -89,6 +89,15 @@ public class FragmentGps extends Fragment implements FragmentInterface{
                 updateView();
             }
         });
+
+        btn_showMap     = view.findViewById(R.id.btn_showMap);
+        btn_addWaypoint.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // show the map with all the waypoints
+            }
+        });
+
 
         sw_locationsupdates = view.findViewById(R.id.sw_locationsupdates);
         sw_locationsupdates.setOnClickListener(new View.OnClickListener() {
