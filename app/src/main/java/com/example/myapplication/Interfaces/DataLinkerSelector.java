@@ -30,9 +30,9 @@ public class DataLinkerSelector extends DataDefault {
         m_linker = m_linkerA;
     }
     public DataLinkerSelector(){
-        m_linkerA = new DataLinker();
-        m_linkerB = new DataLinker();
-        m_linkerC = new DataLinker();
+        m_linkerA = new DataLinker("linkerA");
+        m_linkerB = new DataLinker("linkerB");
+        m_linkerC = new DataLinker("linkerC");
         m_linker = m_linkerA;
     }
 

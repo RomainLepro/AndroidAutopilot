@@ -15,7 +15,8 @@ public class DataLinker extends DataDefault {
 
     public float[] outputLinker;
 
-    public DataLinker() {
+    public DataLinker(String name) {
+        m_name = name;
         inputLinker = new float[numCols];
         outputLinker = new float[numRows];
         matrixLinker = new float[numRows][numCols];
@@ -40,7 +41,7 @@ public class DataLinker extends DataDefault {
     {
         for (int i = 0; i < numRows; i++) {
             for (int j = 0; j < numCols; j++) {
-                if(i==j)
+                if(i==j && i<3)
                 {
                     matrixLinker[i][j] = 1.f;
                 }
