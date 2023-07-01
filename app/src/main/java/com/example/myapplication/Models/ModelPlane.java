@@ -94,9 +94,9 @@ public class ModelPlane extends ModelDefault {
     }
 
     public void updatePidResults() {
-        dataPid.resultsPids[0] = PIDX.output;
-        dataPid.resultsPids[1] = PIDY.output;
-        dataPid.resultsPids[2] = PIDZ.output;
+        dataPid.resultPids[0] = PIDX.output;
+        dataPid.resultPids[1] = PIDY.output;
+        dataPid.resultPids[2] = PIDZ.output;
     }
 
     public int[] getResultsInt() {

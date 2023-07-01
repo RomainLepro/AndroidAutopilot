@@ -3,27 +3,36 @@ package com.example.myapplication.PID;
 import android.util.Log;
 
 public class PID {
-    static int MAX_DT_MS = 100;
-    static int MIN_DT_MS = 1;
-    static int MAX_I = 100;
-    static int MAX_D = 100;
+    static float  MAX_DT_MS = 100;
+    static float MIN_DT_MS = 1;
+    static float MAX_I = 300;
+
+    static float MAX_INTEGRAL = 300;
+    static float  MAX_D = 300;
+
+    static float  MAX_P = 1000;
+    static float filter = 0.2f;
 
     public float P,I,D;
     public int prev_t_ms;
 
     private float previous_position = 0;
     private float integral = 0;
+    private float derivative = 0;
 
-    public float output;
+    private float proportional = 0;
+
+    public float outputs[] = {0,0,0};
+    public float output = 0;
 
     public PID(float P_,float I_,float D_){
         prev_t_ms = 0;
         P = P_;I = I_;D = D_;
     }
 
-    public float update(float position,float goal,int t_ms)
+    public float update(float position,float goal,float t_ms)
     {
-        int dt_ms = (t_ms-prev_t_ms);
+        float dt_ms = (t_ms-prev_t_ms);
         return updateDt(position,goal,dt_ms);
     }
 
@@ -31,18 +40,32 @@ public class PID {
     {
         goal-=500;
         float result = 0;
-        float dt = dt_ms/1000;
-        float derivative = (position - previous_position)/dt;
+        float dt_s = dt_ms/1000;
+        derivative = derivative * (1-filter) + (position - previous_position)/dt_s * filter;
         previous_position = position;
-        integral += (goal - position)*dt;
+        integral += (goal - position)*dt_s;
 
-        if(integral>MAX_I)integral=MAX_I;
-        if(integral<-MAX_I)integral=-MAX_I;
+        if(integral>MAX_INTEGRAL) integral=MAX_INTEGRAL;
+        if(integral<-MAX_INTEGRAL)integral=-MAX_INTEGRAL;
 
-        if(derivative>MAX_D)derivative=MAX_D;
-        if(derivative<-MAX_D)derivative=-MAX_D;
+        proportional = (goal - position);
 
-        result += (goal - position) * P + derivative * D + integral * I;
+        outputs[0]=proportional * P;
+        outputs[1]=integral * I;
+        outputs[2]=derivative * D;
+
+        // Limit gain values
+
+        if(outputs[0]>MAX_P) outputs[0]=MAX_P;
+        if(outputs[0]<-MAX_P)outputs[0]=-MAX_P;
+
+        if(outputs[1]>MAX_I) outputs[1]=MAX_I;
+        if(outputs[1]<-MAX_I)outputs[1]=-MAX_I;
+
+        if(outputs[2]>MAX_D) outputs[2]=MAX_D;
+        if(outputs[2]<-MAX_D)outputs[2]=-MAX_D;
+
+        result += outputs[0]  + outputs[1] + outputs[2];
         output = result;
         return result;
     }

@@ -8,7 +8,7 @@ import java.util.Arrays;
 public class DataPid extends DataDefault {
     public float[][] outputPids;
 
-    public float[] resultsPids;
+    public float[] resultPids;
 
     public String[] pidNameList =  {"PIDX","PIDY","PIDZ" } ;
 
@@ -23,7 +23,7 @@ public class DataPid extends DataDefault {
     public DataPid() {
         pidCount = pidNameList.length;
         outputPids = new float[pidCount][3];
-        resultsPids = new float[pidCount];
+        resultPids = new float[pidCount];
 
 
         // Required empty public constructor
@@ -33,7 +33,7 @@ public class DataPid extends DataDefault {
             outputPids[i][1] = default_PIDY;
             outputPids[i][2] = default_PIDZ;
 
-            resultsPids[i] = 0;
+            resultPids[i] = 0;
         }
 
     }

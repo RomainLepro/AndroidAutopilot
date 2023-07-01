@@ -92,7 +92,7 @@ public class FragmentPID extends Fragment {
 
         m_pidInterface.outputPids = getValues();
         for (int i = 0; i < m_pidInterface.pidCount; i++) {
-            arrayPidValues.get(i).PIDresult = m_pidInterface.resultsPids[i];
+            arrayPidValues.get(i).PIDresult = m_pidInterface.resultPids[i];
             arrayPidValues.get(i).update();
         }
     }
