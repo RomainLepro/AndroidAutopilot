@@ -5,6 +5,8 @@ public class DataLogger extends DataDefault {
 
     public int maxLogSize = 400;
 
+    public boolean requestConnection = false;
+
     @Override
     public void saveData() {
 

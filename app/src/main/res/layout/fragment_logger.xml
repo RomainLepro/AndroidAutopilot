@@ -21,7 +21,7 @@
     <TextView
         android:id="@+id/tv_logger_in"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="130dp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="34dp"
         android:background="#FFFFFF"
@@ -36,9 +36,9 @@
     <TextView
         android:id="@+id/tv_logger_out"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="130dp"
         android:layout_below="@+id/tv_logger_in"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
         android:background="#FFFFFF"
         android:ellipsize="marquee"
         android:focusable="true"
@@ -51,9 +51,9 @@
     <TextView
         android:id="@+id/tv_debug"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="130dp"
         android:layout_below="@+id/tv_logger_out"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
         android:background="#FFFFFF"
         android:ellipsize="marquee"
         android:focusable="true"
@@ -70,8 +70,8 @@
         android:layout_below="@+id/tv_debug"
         android:layout_alignLeft="@+id/tv_debug"
         android:layout_alignRight="@+id/tv_debug"
-        android:layout_marginTop="10dp"
-        android:ems="10" />
+        android:layout_marginTop="5dp"
+        android:ems="5" />
 
     <Button
         android:id="@+id/btn_send"
@@ -80,7 +80,7 @@
         android:layout_alignLeft="@+id/tv_send"
         android:layout_alignRight="@+id/tv_send"
         android:layout_below="@+id/tv_send"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
         android:text="Send"/>
 
     <Button

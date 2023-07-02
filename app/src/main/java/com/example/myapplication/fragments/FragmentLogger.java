@@ -72,9 +72,8 @@ public class FragmentLogger extends Fragment implements FragmentInterface {
             @Override
             public void onClick(View view) {
                 Log.i("btn_connect","btn_connect");
-                MainActivity activity = (MainActivity)getActivity();
-                activity.startUsb();
-                tv_logger_in.setText(activity.getLogger_in());
+                m_interfaceLogger.requestConnection = true;
+                tv_logger_in.setText(m_interfaceLogger.logger_in);
             }
         });
 

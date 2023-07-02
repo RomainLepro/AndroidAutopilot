@@ -6,11 +6,14 @@ import static java.lang.Math.min;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.hardware.usb.UsbManager;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -33,11 +36,11 @@ import com.example.myapplication.fragments.FragmentSms;
 import java.util.Arrays;
 
 
-public class MainActivity extends AndroidCommunication implements ContextProvider {
+public class MainActivity extends AppCompatActivity implements ContextProvider {
 
     public static final int MILLIS = 1000;
     public static final int PERMISSION_FINE_LOCATION = 99;
-
+    private static final String ACTION_USB_PERMISSION = "com.android.example.USB_PERMISSION";
     Toolbar toolbar;
     FragmentTransaction ft;
 
@@ -45,6 +48,8 @@ public class MainActivity extends AndroidCommunication implements ContextProvide
     private static final int dtUpdateSimulation_ms = 5;
     long startTime_us = 0;
     long endTime_us = 0;
+
+    AndroidCommunication androidCommunication;
 
 
     ModelFactory modelFactory;
@@ -116,9 +121,8 @@ public class MainActivity extends AndroidCommunication implements ContextProvide
                 dt_ms = max((float)dtUpdateSimulation_ms/10.f,dt_ms);
                 dt_ms = min((float)dtUpdateSimulation_ms*10.f,dt_ms);
 
-                updateDt(dt_ms); //TODO put this inside a model in factory
+                androidCommunication.updateDt(dt_ms); //TODO put this inside a model in factory
                 modelFactory.updateDt(dt_ms);
-                sendData();
             }
         }
     };
@@ -135,8 +139,13 @@ public class MainActivity extends AndroidCommunication implements ContextProvide
         modelFactory.loadSharedPreferences( getSharedPreferences("MyPreferences", Context.MODE_PRIVATE));
         modelFactory.loadData();
 
-        dataRadio = modelFactory.getPlane().dataRadio; // TODO be removed (see AndroidComunication-
-        dataLogger = ((FragmentLogger)(modelFactory.getFragmentLogger())).m_interfaceLogger; // TODO be removed (see AndroidComunication-
+        androidCommunication = new AndroidCommunication();
+        androidCommunication.dataRadio = modelFactory.getPlane().dataRadio; // TODO be removed (see AndroidComunication-
+        androidCommunication.dataLogger = ((FragmentLogger)(modelFactory.getFragmentLogger())).m_interfaceLogger; // TODO be removed (see AndroidComunication-
+        // Register the broadcast receiver to listen for USB device connections
+
+        IntentFilter filter = new IntentFilter(UsbManager.ACTION_USB_DEVICE_ATTACHED);
+        registerReceiver(androidCommunication, filter);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -256,16 +265,6 @@ public class MainActivity extends AndroidCommunication implements ContextProvide
 
 
     SharedPreferences sharedPreferences;
-
-    public void loadData(){
-        
-        //TODO make load and save data methode in Interfaces data
-        Log.i("loadingData","LOADING DATA");
-
-
-
-    }
-
 
     @Override
     public Context getContext() {

@@ -5,17 +5,16 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbManager;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.myapplication.Interfaces.DataLogger;
 import com.example.myapplication.Interfaces.DataRadio;
+import com.example.myapplication.Models.Model;
 import com.hoho.android.usbserial.driver.UsbSerialDriver;
 import com.hoho.android.usbserial.driver.UsbSerialPort;
 import com.hoho.android.usbserial.driver.UsbSerialProber;
@@ -25,8 +24,8 @@ import java.io.IOException;
 import java.util.List;
 
 
-public class AndroidCommunication extends AppCompatActivity implements SerialInputOutputManager.Listener{
-
+public class AndroidCommunication extends BroadcastReceiver  implements SerialInputOutputManager.Listener, Model {
+    public static final int MAX_ANSWER_DELAY_MS = 200;
 
 
     //TODO use data interfaceRadio, should be a model
@@ -34,6 +33,8 @@ public class AndroidCommunication extends AppCompatActivity implements SerialInp
     public DataRadio dataRadio = new DataRadio();
 
     public DataLogger dataLogger = new DataLogger();
+
+    public long lastDeviceAnswer = 0;
 
 
 
@@ -45,51 +46,92 @@ public class AndroidCommunication extends AppCompatActivity implements SerialInp
     /*
     Manage all the usb stuff
      */
-    private UsbManager manager;
+    private UsbManager usbManager;
     private List<UsbSerialDriver> availableDrivers;
     private UsbSerialDriver driver;
     private UsbDeviceConnection connection;
     private UsbSerialPort port;
     private SerialInputOutputManager usbIoManager;
 
-    private final Handler mainLooper;
+
+    private BroadcastReceiver broadcastReceiver;
 
     public AndroidCommunication()
     {
-        mainLooper = new Handler(Looper.getMainLooper());
+
+
     }
-
-
-    private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if(intent.getAction() == Manifest.permission.REQUEST_COMPANION_USE_DATA_IN_BACKGROUND) {
-                startUsb();
-            }
-        }
-    };
-
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        startUsb();
+    public void onReceive(Context context, Intent intent) {
+        String action = intent.getAction();
+        dataLogger.debug+="received action:"+action+"\n";
+        if (UsbManager.ACTION_USB_DEVICE_ATTACHED.equals(action)) {
+            // A USB device has been connected
+            // Request permission for the device
+            UsbDevice device = (UsbDevice) intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
+            if (device != null) {
+                dataLogger.debug+="New Device connected\n";
+                PendingIntent permissionIntent = PendingIntent.getBroadcast(
+                        context,
+                        0,
+                        new Intent("com.example.USB_PERMISSION"),
+                        0
+                );
+
+                // Register the BroadcastReceiver to handle the permission result
+                IntentFilter filter = new IntentFilter(ACTION_USB_PERMISSION);//TODO not working, never called
+                context.registerReceiver(this,filter);
+
+                usbManager = (UsbManager) context.getSystemService(Context.USB_SERVICE);
+                usbManager.requestPermission(device, permissionIntent);
+            }
+        }
+        if (ACTION_USB_PERMISSION.equals(action)) { //TODO not working, never called
+            // Permission request result
+            boolean granted = intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false);
+            if (granted) {
+                // Permission granted, perform your task here
+                startUsb();
+            } else {
+                // Permission denied
+                // Handle the case when permission is denied
+            }
+        }
     }
+
 
     @Override
     public void onNewData(byte[] data) {
-        runOnUiThread(() -> {
             String message = (new String(data));
             dataLogger.logger_in += message;
-        });
+            lastDeviceAnswer = System.currentTimeMillis();
+
     }
 
     public void updateDt(float dt_ms)
     {
+        if(dataLogger.requestConnection)
+        {
+            startUsb();
+            dataLogger.requestConnection = false;
+        }
+
         extractData();
         getLogger_in();
         getLogger_out();
         getDebug();
+        sendData();
+    }
+
+    @Override
+    public void saveData() {
+
+    }
+
+    @Override
+    public void loadData() {
+
     }
 
     public void send(String message)
@@ -129,42 +171,39 @@ public class AndroidCommunication extends AppCompatActivity implements SerialInp
         send(mot);
     }
 
+
     public void startUsb()
     {
         Log.i("startUsb","startUsb");
-        manager = (UsbManager) getSystemService(Context.USB_SERVICE);
-        availableDrivers = UsbSerialProber.getDefaultProber().findAllDrivers(manager);
         dataLogger.debug+=("starting USB\n");
-        if (availableDrivers.isEmpty()) {
-            dataLogger.debug+=("no available driver\n");
+
+        if(usbManager==null)
+        {
+            dataLogger.debug+="usb manager is null\n";
             return;
         }
 
-        // Open a connection to the first available driver.
-        driver = availableDrivers.get(0);
-        connection = manager.openDevice(driver.getDevice());
-
-        if (connection == null) {
-            PendingIntent permissionIntent = PendingIntent.getBroadcast(this, 0, new Intent(ACTION_USB_PERMISSION), 0);
-            manager.requestPermission(driver.getDevice(),permissionIntent);
-            dataLogger.debug+=("asked permission\n");
-            connection = manager.openDevice(driver.getDevice());
-            if (connection == null) {
-                dataLogger.debug+=("failed to connect\n");
-                return;
-            }
-        }
-
-        port = driver.getPorts().get(0); // Most devices have just one port (port 0)
-        dataLogger.debug+=("opening port\n");
-
         try {
+
+            availableDrivers = UsbSerialProber.getDefaultProber().findAllDrivers(usbManager);
+            driver = availableDrivers.get(0);
+            port = driver.getPorts().get(0); // Most devices have just one port (port 0)
+
+            dataLogger.debug += "port obtained\n";
+
+            // Open a connection to the first available driver.
+            driver = availableDrivers.get(0);
+            connection = usbManager.openDevice(driver.getDevice());
+            dataLogger.debug+=("opening port\n");
+
             port.open(connection);
             port.setParameters(115200, 8, UsbSerialPort.STOPBITS_1, UsbSerialPort.PARITY_NONE);
         } catch (IOException e) {
             e.printStackTrace();
             dataLogger.debug+=("failed to open connection with port\n");
+            return;
         }
+
 
         if(port.isOpen())
         {
@@ -175,7 +214,6 @@ public class AndroidCommunication extends AppCompatActivity implements SerialInp
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
             usbIoManager = new SerialInputOutputManager(port, this);
             usbIoManager.start();
         }
@@ -224,56 +262,14 @@ public class AndroidCommunication extends AppCompatActivity implements SerialInp
     public boolean isConnected() {
         if(port!=null)
         {
-            return port.isOpen();
+            boolean isAnswering = (System.currentTimeMillis()-lastDeviceAnswer)< MAX_ANSWER_DELAY_MS;
+            if(!isAnswering)
+            {
+                dataLogger.debug += "Not Answering for : "+Integer.toString(MAX_ANSWER_DELAY_MS)+"\n";
+            }
+            return port.isOpen() && isAnswering; //this isn't reliable to know if the connection is open
         }
         return false;
-    }
-
-
-
-    public void extractData_old()
-    {
-        if(dataLogger.logger_in.length()<100)
-        {
-            return;
-        }
-        int ind = (int) (dataLogger.logger_in.length()-50);
-        String L[] = dataLogger.logger_in.substring(ind).split(String.valueOf('\n'));
-
-
-        for(int j=0;j< L.length-1;j++)
-        {
-
-            word = L[j];
-            if(word.length()>=4)
-            {
-                String NAME = word.substring(0,2);
-                String VAL = word.substring(3,word.length()-1);
-
-                for (int i =0;i< dataRadio.L_name_radio.length;i++) {
-                    if(dataRadio.L_name_radio[i].equals(NAME))
-                    {
-                        try {
-                            dataRadio.L_val_radio_int[i] = Integer.parseInt(VAL);
-                        }
-                        catch(Exception e){
-                            dataLogger.debug+='\n'+"value gotten : " + VAL + " IS NOT A NUMBER" +'\n';
-                            dataLogger.debug+="size : " + VAL.length() +'\n';
-                            return;
-                        }
-
-                        dataLogger.debug+="value gotten : " + NAME +'\n';
-                        dataLogger.debug+="value gotten : " + Integer.toString(dataRadio.L_val_radio_int[i])+'\n';
-                        dataLogger.debug+="value gotten : " + VAL+'\n';
-                        return;
-                    }
-                }
-                Log.i("name not found : ",NAME);
-                dataLogger.debug+="name not found"+'\n';
-                return;
-            }
-        }
-
     }
 
     public void extractData()
@@ -305,7 +301,6 @@ public class AndroidCommunication extends AppCompatActivity implements SerialInp
         }
         for(int i=0;i<split.length-1;i++)
         {
-            //System.out.println(split[i]); TODO useless ?
             try {
                 dataRadio.L_val_radio_int[i] = Integer.parseInt(split[i]);
             }
@@ -314,8 +309,5 @@ public class AndroidCommunication extends AppCompatActivity implements SerialInp
                 return;
             }
         }
-
     }
-
-
 }
