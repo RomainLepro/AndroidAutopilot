@@ -35,6 +35,7 @@ public class ModelFactory extends ModelDefault{
             dataMacroData,dataPid,dataRadio,dataSensors,dataSms;
     private Fragment m_fragmentLogger,m_fragmentSensor,m_fragmentGps,m_fragmentPID,
             m_fragmentWaypoints,m_fragmentLinker,m_fragmentMacroData,m_fragmentSms;
+    private Fragment m_activeFragment,m_previousFragment;
 
     private Model m_macroData,m_plane, m_gps,m_sms, m_imu;
 
@@ -58,12 +59,24 @@ public class ModelFactory extends ModelDefault{
         return m_fragmentMacroData;
     }
     public Fragment getFragmentSms() {return m_fragmentSms;}
+
     public ModelPlane getPlane() {
         return (ModelPlane) m_plane;
     }
     public ModelGps getGps() {
         return (ModelGps) m_gps;
     }
+
+
+    public Fragment getActiveFragment(){return m_activeFragment;}
+    public Fragment getPreviousFragment(){return m_previousFragment;}
+    public void setActiveFragment(Fragment desiredFragment)
+    {
+        m_previousFragment = m_activeFragment;
+        m_activeFragment = desiredFragment;
+        return;
+    }
+
 
     public List<Fragment> m_listFragments = new ArrayList<Fragment>();
     public List<Model> m_listModels = new ArrayList<Model>();
@@ -111,7 +124,8 @@ public class ModelFactory extends ModelDefault{
         m_fragmentMacroData = new FragmentMacroData((DataMacroData) dataMacroData);m_listFragments.add(m_fragmentMacroData);
         m_fragmentSms = new FragmentSms((DataSms) dataSms);m_listFragments.add(m_fragmentSms);
 
-
+        m_activeFragment = m_fragmentLogger;
+        m_previousFragment = m_fragmentLogger;
     }
 
     public void loadSharedPreferences(SharedPreferences sharedPreferences) {

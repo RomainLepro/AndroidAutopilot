@@ -91,7 +91,7 @@ public class FragmentGps extends Fragment implements FragmentInterface{
         });
 
         btn_showMap     = view.findViewById(R.id.btn_showMap);
-        btn_addWaypoint.setOnClickListener(new View.OnClickListener() {
+        btn_showMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // show the map with all the waypoints

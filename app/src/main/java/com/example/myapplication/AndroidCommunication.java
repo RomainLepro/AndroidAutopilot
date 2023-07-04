@@ -24,6 +24,14 @@ import java.io.IOException;
 import java.util.List;
 
 
+//TODO:
+/*
+ModelComunication extend ModelDefault;
+member => 
+
+ */
+
+
 public class AndroidCommunication extends BroadcastReceiver  implements SerialInputOutputManager.Listener, Model {
     public static final int MAX_ANSWER_DELAY_MS = 200;
 
@@ -82,24 +90,61 @@ public class AndroidCommunication extends BroadcastReceiver  implements SerialIn
                 // Register the BroadcastReceiver to handle the permission result
                 IntentFilter filter = new IntentFilter(ACTION_USB_PERMISSION);//TODO not working, never called
                 context.registerReceiver(this,filter);
-
                 usbManager = (UsbManager) context.getSystemService(Context.USB_SERVICE);
                 usbManager.requestPermission(device, permissionIntent);
             }
         }
-        if (ACTION_USB_PERMISSION.equals(action)) { //TODO not working, never called
-            // Permission request result
-            boolean granted = intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false);
-            if (granted) {
-                // Permission granted, perform your task here
-                startUsb();
-            } else {
-                // Permission denied
-                // Handle the case when permission is denied
-            }
-        }
     }
 
+    public void startUsb()
+    {
+        Log.i("startUsb","startUsb");
+        dataLogger.debug+=("starting USB\n");
+
+        if(usbManager==null)
+        {
+            dataLogger.debug+="usb manager is null\n";
+            return;
+        }
+        availableDrivers = UsbSerialProber.getDefaultProber().findAllDrivers(usbManager);
+        if(availableDrivers.size()==0)
+        {
+            dataLogger.debug += "no driver available\n";
+            return;
+        }
+        driver = availableDrivers.get(0);
+        port = driver.getPorts().get(0); // Most devices have just one port (port 0)
+        dataLogger.debug += "port obtained\n";
+        try {
+            // Open a connection to the first available driver.
+            driver = availableDrivers.get(0);
+            connection = usbManager.openDevice(driver.getDevice());
+            dataLogger.debug+=("opening port\n");
+            port.open(connection);
+            port.setParameters(115200, 8, UsbSerialPort.STOPBITS_1, UsbSerialPort.PARITY_NONE);
+        } catch (IOException e) {
+            e.printStackTrace();
+            dataLogger.debug+=("failed to open connection with port\n");
+            return;
+        }
+
+        if(port.isOpen())
+        {
+            dataLogger.debug+=("connection succeeded !\n");
+            byte[] response = new byte[100];
+            try {
+                int len = port.read(response, READ_WAIT_MILLIS);
+                usbIoManager = new SerialInputOutputManager(port, this);
+                usbIoManager.start();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        else
+        {
+            dataLogger.debug+=("port not open\n");
+        }
+    }
 
     @Override
     public void onNewData(byte[] data) {
@@ -170,60 +215,6 @@ public class AndroidCommunication extends BroadcastReceiver  implements SerialIn
         mot += '\n';
         send(mot);
     }
-
-
-    public void startUsb()
-    {
-        Log.i("startUsb","startUsb");
-        dataLogger.debug+=("starting USB\n");
-
-        if(usbManager==null)
-        {
-            dataLogger.debug+="usb manager is null\n";
-            return;
-        }
-
-        try {
-
-            availableDrivers = UsbSerialProber.getDefaultProber().findAllDrivers(usbManager);
-            driver = availableDrivers.get(0);
-            port = driver.getPorts().get(0); // Most devices have just one port (port 0)
-
-            dataLogger.debug += "port obtained\n";
-
-            // Open a connection to the first available driver.
-            driver = availableDrivers.get(0);
-            connection = usbManager.openDevice(driver.getDevice());
-            dataLogger.debug+=("opening port\n");
-
-            port.open(connection);
-            port.setParameters(115200, 8, UsbSerialPort.STOPBITS_1, UsbSerialPort.PARITY_NONE);
-        } catch (IOException e) {
-            e.printStackTrace();
-            dataLogger.debug+=("failed to open connection with port\n");
-            return;
-        }
-
-
-        if(port.isOpen())
-        {
-            dataLogger.debug+=("connection succeeded !\n");
-            byte[] response = new byte[100];
-            try {
-                int len = port.read(response, READ_WAIT_MILLIS);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            usbIoManager = new SerialInputOutputManager(port, this);
-            usbIoManager.start();
-        }
-        else
-        {
-            dataLogger.debug+=("port not open\n");
-        }
-    }
-
-
     @Override
     public void onRunError(Exception e) {
         Log.e("onRunError","ERROR in arduino");

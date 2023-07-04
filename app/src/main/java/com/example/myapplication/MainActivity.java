@@ -186,52 +186,49 @@ public class MainActivity extends AppCompatActivity implements ContextProvider {
         {
             case R.id.item1:
                 Toast.makeText(getApplicationContext(),"LOGGER",Toast.LENGTH_SHORT).show();
-
-                ft = getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.FrameLayout, modelFactory.getFragmentLogger());
-                ft.commit();
+                modelFactory.setActiveFragment(modelFactory.getFragmentLogger());
                 break;
             case R.id.item2:
                 Toast.makeText(getApplicationContext(),"SENSOR",Toast.LENGTH_SHORT).show();
-
-                ft = getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.FrameLayout, modelFactory.getFragmentSensor());
-                ft.commit();
+                modelFactory.setActiveFragment(modelFactory.getFragmentSensor());
                 break;
             case R.id.item3:
                 Toast.makeText(getApplicationContext(),"GPS",Toast.LENGTH_SHORT).show();
-                ft = getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.FrameLayout, modelFactory.getFragmentGps());
-                ft.commit();
+                modelFactory.setActiveFragment(modelFactory.getFragmentGps());
                 break;
             case R.id.item4:
                 Toast.makeText(getApplicationContext(),"PID",Toast.LENGTH_SHORT).show();
-                ft = getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.FrameLayout, modelFactory.getFragmentPID());
-                ft.commit();
+                modelFactory.setActiveFragment(modelFactory.getFragmentPID());
                 break;
             case R.id.item5:
-                ft = getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.FrameLayout, modelFactory.getFragmentWaypoints());
-                ft.commit();
+                modelFactory.setActiveFragment(modelFactory.getFragmentWaypoints());
                 break;
             case R.id.item6:
-                ft = getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.FrameLayout, modelFactory.getFragmentLinker());
-                ft.commit();
+                modelFactory.setActiveFragment(modelFactory.getFragmentLinker());
                 break;
             case R.id.item7:
-                ft = getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.FrameLayout, modelFactory.getFragmentMacroData());
-                ft.commit();
+                modelFactory.setActiveFragment(modelFactory.getFragmentMacroData());
                 break;
             case R.id.item8:
-                ft = getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.FrameLayout, modelFactory.getFragmentSms());
-                ft.commit();
+                modelFactory.setActiveFragment(modelFactory.getFragmentSms());
                 break;
         }
+
+        ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.FrameLayout, modelFactory.getActiveFragment());
+        ft.commit();
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        modelFactory.setActiveFragment(modelFactory.getPreviousFragment());
+
+        Toast.makeText(getApplicationContext(),"RETURN",Toast.LENGTH_SHORT).show();
+
+        ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.FrameLayout, modelFactory.getActiveFragment());
+        ft.commit();
     }
 
     @Override

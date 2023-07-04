@@ -11,7 +11,7 @@ public class PID {
     static float  MAX_D = 300;
 
     static float  MAX_P = 1000;
-    static float filter = 0.2f;
+    static float filter = 0.05f;
 
     public float P,I,D;
     public int prev_t_ms;
@@ -41,7 +41,7 @@ public class PID {
         goal-=500;
         float result = 0;
         float dt_s = dt_ms/1000;
-        derivative = derivative * (1-filter) + (position - previous_position)/dt_s * filter;
+        derivative = derivative * (1-filter) + (previous_position - position)/dt_s * filter;
         previous_position = position;
         integral += (goal - position)*dt_s;
 
