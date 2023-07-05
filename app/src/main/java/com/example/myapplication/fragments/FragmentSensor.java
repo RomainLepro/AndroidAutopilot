@@ -19,6 +19,7 @@ import android.widget.TextView;
  */
 
 ;
+import com.example.myapplication.Interfaces.DataGps;
 import com.example.myapplication.Interfaces.DataSensors;
 import com.example.myapplication.Interfaces.DataRadio;
 import com.example.myapplication.R;
@@ -26,7 +27,8 @@ import com.example.myapplication.R;
 public class FragmentSensor extends Fragment implements FragmentInterface{
     DataSensors m_interfaceSensors;
     DataRadio m_interfaceRadio;
-    TextView tv_ax,tv_ay,tv_az,tv_gx,tv_gy,tv_gz,tv_magx,tv_magy,tv_magz;
+    DataGps m_interfaceGps;
+    TextView tv_ax,tv_ay,tv_az,tv_gx,tv_gy,tv_gz,tv_magx,tv_magy,tv_magz,tv_magCorse,tv_gpsCorse,tv_corseWaypoint;
     TextView tv_Rx,tv_Ry,tv_Rz,tv_Th,tv_Sa,tv_Sb,tv_He,tv_Te;
     ImageView imv_arrow1,imv_arrow2;
     Button btn_update;
@@ -36,9 +38,10 @@ public class FragmentSensor extends Fragment implements FragmentInterface{
         m_interfaceSensors = new DataSensors();
     }
 
-    public FragmentSensor(DataSensors interfaceSensors, DataRadio interfaceRadio) {
+    public FragmentSensor(DataSensors interfaceSensors, DataRadio interfaceRadio,DataGps interfaceGps) {
         m_interfaceSensors = interfaceSensors;
         m_interfaceRadio =interfaceRadio;
+        m_interfaceGps =interfaceGps;
     }
 
     public static FragmentSensor newInstance(String param1, String param2) {
@@ -82,6 +85,10 @@ public class FragmentSensor extends Fragment implements FragmentInterface{
         tv_He = view.findViewById(R.id.tv_He);
         tv_Te = view.findViewById(R.id.tv_Te);
 
+        tv_corseWaypoint= view.findViewById(R.id.tv_corseWaypoint);
+        tv_gpsCorse     = view.findViewById(R.id.tv_gpsCorse);
+        tv_magCorse     = view.findViewById(R.id.tv_magCorse);
+
         btn_update = view.findViewById(R.id.btn_update);
 
         imv_arrow1 = view.findViewById(R.id.imv_arrow1);
@@ -112,12 +119,16 @@ public class FragmentSensor extends Fragment implements FragmentInterface{
         tv_magx.setText(String.format("%.2f",radToangle(m_interfaceSensors.magnetometerReading[0])));
         tv_magy.setText(String.format("%.2f",radToangle(m_interfaceSensors.magnetometerReading[1])));
         tv_magz.setText(String.format("%.2f",radToangle(m_interfaceSensors.magnetometerReading[2])));
+
+        tv_corseWaypoint.setText(String.format("%.2f",radToangle(m_interfaceGps.courseToNextWaypoint_deg)));
+        tv_gpsCorse.setText     (String.format("%.2f",radToangle(m_interfaceGps.currentCourse_deg)));
+        tv_magCorse.setText     (String.format("%.2f",radToangle(m_interfaceSensors.orientationAngles[0])));
     }
 
     public void updateView(float[] accelerometerReading,float[] orientationAngles,int[] radioListInputs)
     {
         updateView(accelerometerReading,orientationAngles);
-
+        //TODO use DataRadio insted
         tv_Rx.setText(String.valueOf(radioListInputs[0]));
         tv_Ry.setText(String.valueOf(radioListInputs[1]));
         tv_Rz.setText(String.valueOf(radioListInputs[2]));
@@ -132,6 +143,8 @@ public class FragmentSensor extends Fragment implements FragmentInterface{
     public void updateView()
     {
         updateView(m_interfaceSensors.accelerometerReading, m_interfaceSensors.orientationAngles,m_interfaceRadio.L_val_radio_int);
+        updateArrows(-m_interfaceGps.currentCourse_deg,
+                m_interfaceGps.deltaCourseToNextWaypoint_deg);
     }
 
     public void updateArrows(float arrow1Angle_rad,float arrow2Angle_rad)

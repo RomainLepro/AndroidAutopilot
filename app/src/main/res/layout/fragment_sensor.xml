@@ -314,6 +314,57 @@
         app:layout_constraintStart_toEndOf="@+id/tv_labelMagz"
         app:layout_constraintTop_toTopOf="@+id/tv_labelMagz" />
 
+    <TextView
+        android:id="@+id/tv_labelMagCorse"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="MagCorse:"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_labelMagz" />
+
+    <TextView
+        android:id="@+id/tv_magCorse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0.00"
+        app:layout_constraintStart_toEndOf="@+id/tv_labelMagCorse"
+        app:layout_constraintTop_toTopOf="@+id/tv_labelMagCorse" />
+
+    <TextView
+        android:id="@+id/tv_labelGpsCorse"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="GpsCorse:"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_labelMagCorse" />
+
+    <TextView
+        android:id="@+id/tv_gpsCorse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0.00"
+        app:layout_constraintStart_toEndOf="@+id/tv_labelGpsCorse"
+        app:layout_constraintTop_toTopOf="@+id/tv_labelGpsCorse" />
+
+    <TextView
+        android:id="@+id/tv_labelCorseWaypoint"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Waypoint:"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_labelGpsCorse" />
+
+    <TextView
+        android:id="@+id/tv_corseWaypoint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0.00"
+        app:layout_constraintStart_toEndOf="@+id/tv_labelCorseWaypoint"
+        app:layout_constraintTop_toTopOf="@+id/tv_labelCorseWaypoint" />
+
     <Button
         android:id="@+id/btn_update"
         android:layout_width="wrap_content"

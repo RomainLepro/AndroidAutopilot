@@ -68,7 +68,9 @@ public class MainActivity extends AppCompatActivity implements ContextProvider {
                 if(modelFactory.getFragmentSensor().isVisible())
                 {
                     ((FragmentSensor) modelFactory.getFragmentSensor()).updateView();
-                    ((FragmentSensor) modelFactory.getFragmentSensor()).updateArrows(-modelFactory.getGps().dataGps.currentCourse_deg, modelFactory.getGps().dataGps.deltaCourseToNextWaypoint_deg);
+                    //TODO this should be removed
+                    ((FragmentSensor) modelFactory.getFragmentSensor()).updateArrows(-modelFactory.getGps().dataGps.currentCourse_deg,
+                            modelFactory.getGps().dataGps.deltaCourseToNextWaypoint_deg);
                     //((FragmentSensor) fragmentSensor).updateArrows(480, -90);
                 }
                 if(modelFactory.getFragmentGps().isVisible())

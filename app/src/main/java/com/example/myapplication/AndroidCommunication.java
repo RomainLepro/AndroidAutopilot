@@ -27,14 +27,14 @@ import java.util.List;
 //TODO:
 /*
 ModelComunication extend ModelDefault;
-member => 
+member => myBroadcastReceiver
 
+myBroadcastReceiver extend BroadcastReceiver
  */
 
 
 public class AndroidCommunication extends BroadcastReceiver  implements SerialInputOutputManager.Listener, Model {
     public static final int MAX_ANSWER_DELAY_MS = 200;
-
 
     //TODO use data interfaceRadio, should be a model
 

@@ -116,7 +116,7 @@ public class ModelFactory extends ModelDefault{
         m_imu = new ModelImu(m_contextProvider, (DataSensors) dataSensors);m_listModels.add(m_imu);
 
         m_fragmentLogger = new FragmentLogger();m_listFragments.add(m_fragmentLogger);
-        m_fragmentSensor = new FragmentSensor((DataSensors) dataSensors, (DataRadio) dataRadio);m_listFragments.add(m_fragmentSensor);
+        m_fragmentSensor = new FragmentSensor((DataSensors) dataSensors, (DataRadio) dataRadio,(DataGps) dataGps);m_listFragments.add(m_fragmentSensor);
         m_fragmentGps = new FragmentGps((DataGps) dataGps, (ModelGps) m_gps);m_listFragments.add(m_fragmentGps);
         m_fragmentPID = new FragmentPID((DataPid) dataPid);m_listFragments.add(m_fragmentPID);
         m_fragmentWaypoints = new FragmentWaypoints((DataGps) dataGps);m_listFragments.add(m_fragmentWaypoints);
