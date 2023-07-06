@@ -23,10 +23,6 @@ ContextCompat.startForegroundService(context, serviceIntent);
 Notification notification = createNotification(); // Create a custom notification
 startForeground(NOTIFICATION_ID, notification);
 
-
-
-
-
  */
 
 public class MyForegroundService extends Service {

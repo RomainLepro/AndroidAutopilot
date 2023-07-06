@@ -37,7 +37,7 @@ public class ModelFactory extends ModelDefault{
             m_fragmentWaypoints,m_fragmentLinker,m_fragmentMacroData,m_fragmentSms;
     private Fragment m_activeFragment,m_previousFragment;
 
-    private Model m_macroData,m_plane, m_gps,m_sms, m_imu;
+    private Model m_macroData,m_plane, m_gps,m_sms, m_imu, m_comunication;
 
     public Fragment getFragmentLogger() { return m_fragmentLogger;    }
     public Fragment getFragmentSensor() {
@@ -66,6 +66,8 @@ public class ModelFactory extends ModelDefault{
     public ModelGps getGps() {
         return (ModelGps) m_gps;
     }
+
+    public ModelCommunication getComunication(){return (ModelCommunication) m_comunication;}
 
 
     public Fragment getActiveFragment(){return m_activeFragment;}
@@ -114,6 +116,7 @@ public class ModelFactory extends ModelDefault{
         m_macroData = new ModelMacroData((DataGps) dataGps);m_listModels.add(m_macroData);
         m_sms = new ModelSms(m_contextProvider, (DataGps) dataGps,(DataSms) dataSms);m_listModels.add(m_sms);
         m_imu = new ModelImu(m_contextProvider, (DataSensors) dataSensors);m_listModels.add(m_imu);
+        m_comunication = new ModelCommunication((DataRadio)dataRadio,(DataLogger)dataLogger);m_listModels.add(m_comunication);
 
         m_fragmentLogger = new FragmentLogger();m_listFragments.add(m_fragmentLogger);
         m_fragmentSensor = new FragmentSensor((DataSensors) dataSensors, (DataRadio) dataRadio,(DataGps) dataGps);m_listFragments.add(m_fragmentSensor);

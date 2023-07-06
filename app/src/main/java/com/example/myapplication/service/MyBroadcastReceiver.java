@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.myapplication.service;
 
 import android.Manifest;
 import android.app.PendingIntent;
@@ -33,14 +33,12 @@ myBroadcastReceiver extend BroadcastReceiver
  */
 
 
-public class AndroidCommunication extends BroadcastReceiver  implements SerialInputOutputManager.Listener, Model {
+public class MyBroadcastReceiver extends BroadcastReceiver  implements SerialInputOutputManager.Listener {
     public static final int MAX_ANSWER_DELAY_MS = 200;
 
-    //TODO use data interfaceRadio, should be a model
+    public DataRadio dataRadio;
 
-    public DataRadio dataRadio = new DataRadio();
-
-    public DataLogger dataLogger = new DataLogger();
+    public DataLogger dataLogger;
 
     public long lastDeviceAnswer = 0;
 
@@ -64,10 +62,9 @@ public class AndroidCommunication extends BroadcastReceiver  implements SerialIn
 
     private BroadcastReceiver broadcastReceiver;
 
-    public AndroidCommunication()
-    {
-
-
+    public MyBroadcastReceiver(DataRadio dataRadio, DataLogger dataLogger) {
+        this.dataLogger = dataLogger;
+        this.dataRadio = dataRadio;
     }
 
     @Override
@@ -148,34 +145,9 @@ public class AndroidCommunication extends BroadcastReceiver  implements SerialIn
 
     @Override
     public void onNewData(byte[] data) {
-            String message = (new String(data));
-            dataLogger.logger_in += message;
-            lastDeviceAnswer = System.currentTimeMillis();
-
-    }
-
-    public void updateDt(float dt_ms)
-    {
-        if(dataLogger.requestConnection)
-        {
-            startUsb();
-            dataLogger.requestConnection = false;
-        }
-
-        extractData();
-        getLogger_in();
-        getLogger_out();
-        getDebug();
-        sendData();
-    }
-
-    @Override
-    public void saveData() {
-
-    }
-
-    @Override
-    public void loadData() {
+        String message = (new String(data));
+        dataLogger.logger_in += message;
+        lastDeviceAnswer = System.currentTimeMillis();
 
     }
 
@@ -220,36 +192,6 @@ public class AndroidCommunication extends BroadcastReceiver  implements SerialIn
         Log.e("onRunError","ERROR in arduino");
     }
 
-    public String getLogger_in()
-    {
-        if(dataLogger.logger_in.length()>dataLogger.maxLogSize)
-        {
-            int remove =  dataLogger.logger_in.length()- dataLogger.maxLogSize;
-            dataLogger.logger_in = dataLogger.logger_in.substring(remove, dataLogger.logger_in.length());
-        }
-        return dataLogger.logger_in;
-    }
-
-    public String getLogger_out()
-    {
-        if(dataLogger.logger_out.length()>dataLogger.maxLogSize)
-        {
-            int remove =  dataLogger.logger_out.length()- dataLogger.maxLogSize;
-            dataLogger.logger_out = dataLogger.logger_out.substring(remove, dataLogger.logger_out.length());
-        }
-        return dataLogger.logger_out;
-    }
-
-    public String getDebug()
-    {
-        if(dataLogger.debug.length()>dataLogger.maxLogSize)
-        {
-            int remove =  dataLogger.debug.length()- dataLogger.maxLogSize;
-            dataLogger.debug = dataLogger.debug.substring(remove,dataLogger.debug.length());
-        }
-        return dataLogger.debug;
-    }
-
     public boolean isConnected() {
         if(port!=null)
         {
@@ -263,42 +205,4 @@ public class AndroidCommunication extends BroadcastReceiver  implements SerialIn
         return false;
     }
 
-    public void extractData()
-    {
-        int dataSize = 40;
-        if(dataLogger.logger_in.length()<=dataSize*2)
-        {
-            return;
-        }
-
-        String sub = dataLogger.logger_in.substring(dataLogger.logger_in.length()-dataSize*2);
-        String[] lines = sub.split(Character.toString('\n'));
-        if(lines.length <1)
-        {
-            dataLogger.debug+=("not enough lines, size : " + lines.length + '\n');
-            return;
-        }
-        String[] split = (lines[1]).split(";");
-
-        if(split.length < 5)
-        {
-            dataLogger.debug+=("not enough data, size : " + split.length + '\n');
-            return;
-        }
-        if(split.length > dataRadio.L_val_radio_int.length+1)
-        {
-            dataLogger.debug+=("too much data, size : " + split.length + '\n');
-            return;
-        }
-        for(int i=0;i<split.length-1;i++)
-        {
-            try {
-                dataRadio.L_val_radio_int[i] = Integer.parseInt(split[i]);
-            }
-            catch(Exception e){
-                dataLogger.debug+='\n'+"value gotten : " + split[i] + " IS NOT A NUMBER" +'\n';
-                return;
-            }
-        }
-    }
 }

@@ -142,7 +142,9 @@ public class FragmentSensor extends Fragment implements FragmentInterface{
     //called to update the veiw from main activity
     public void updateView()
     {
-        updateView(m_interfaceSensors.accelerometerReading, m_interfaceSensors.orientationAngles,m_interfaceRadio.L_val_radio_int);
+        updateView(m_interfaceSensors.accelerometerReading,
+                m_interfaceSensors.orientationAngles,
+                m_interfaceRadio.L_val_radio_int);
         updateArrows(-m_interfaceGps.currentCourse_deg,
                 m_interfaceGps.deltaCourseToNextWaypoint_deg);
     }

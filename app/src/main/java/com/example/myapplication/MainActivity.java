@@ -24,6 +24,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.example.myapplication.Models.ModelCommunication;
 import com.example.myapplication.Models.ModelFactory;
 import com.example.myapplication.fragments.FragmentGps;
 import com.example.myapplication.fragments.FragmentLogger;
@@ -32,8 +33,6 @@ import com.example.myapplication.fragments.FragmentPID;
 import com.example.myapplication.fragments.FragmentSensor;
 import com.example.myapplication.fragments.FragmentLinker;
 import com.example.myapplication.fragments.FragmentSms;
-
-import java.util.Arrays;
 
 
 public class MainActivity extends AppCompatActivity implements ContextProvider {
@@ -48,8 +47,6 @@ public class MainActivity extends AppCompatActivity implements ContextProvider {
     private static final int dtUpdateSimulation_ms = 5;
     long startTime_us = 0;
     long endTime_us = 0;
-
-    AndroidCommunication androidCommunication;
 
 
     ModelFactory modelFactory;
@@ -68,10 +65,6 @@ public class MainActivity extends AppCompatActivity implements ContextProvider {
                 if(modelFactory.getFragmentSensor().isVisible())
                 {
                     ((FragmentSensor) modelFactory.getFragmentSensor()).updateView();
-                    //TODO this should be removed
-                    ((FragmentSensor) modelFactory.getFragmentSensor()).updateArrows(-modelFactory.getGps().dataGps.currentCourse_deg,
-                            modelFactory.getGps().dataGps.deltaCourseToNextWaypoint_deg);
-                    //((FragmentSensor) fragmentSensor).updateArrows(480, -90);
                 }
                 if(modelFactory.getFragmentGps().isVisible())
                 {
@@ -123,7 +116,6 @@ public class MainActivity extends AppCompatActivity implements ContextProvider {
                 dt_ms = max((float)dtUpdateSimulation_ms/10.f,dt_ms);
                 dt_ms = min((float)dtUpdateSimulation_ms*10.f,dt_ms);
 
-                androidCommunication.updateDt(dt_ms); //TODO put this inside a model in factory
                 modelFactory.updateDt(dt_ms);
             }
         }
@@ -141,13 +133,8 @@ public class MainActivity extends AppCompatActivity implements ContextProvider {
         modelFactory.loadSharedPreferences( getSharedPreferences("MyPreferences", Context.MODE_PRIVATE));
         modelFactory.loadData();
 
-        androidCommunication = new AndroidCommunication();
-        androidCommunication.dataRadio = modelFactory.getPlane().dataRadio; // TODO be removed (see AndroidComunication-
-        androidCommunication.dataLogger = ((FragmentLogger)(modelFactory.getFragmentLogger())).m_interfaceLogger; // TODO be removed (see AndroidComunication-
-        // Register the broadcast receiver to listen for USB device connections
-
         IntentFilter filter = new IntentFilter(UsbManager.ACTION_USB_DEVICE_ATTACHED);
-        registerReceiver(androidCommunication, filter);
+        registerReceiver(modelFactory.getComunication().myBroadcastReceiver, filter);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -166,7 +153,6 @@ public class MainActivity extends AppCompatActivity implements ContextProvider {
         handler = new Handler(Looper.getMainLooper());
         handler.postDelayed(taskUpdateUi,dtUpdateUI_ms);
         handler.postDelayed(taskUpdateSimulation,dtUpdateSimulation_ms);
-
     }
 
     @Override
