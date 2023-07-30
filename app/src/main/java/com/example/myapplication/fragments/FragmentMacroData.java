@@ -31,10 +31,6 @@ public class FragmentMacroData extends Fragment implements FragmentInterface {
 
     Button btn_reset;
 
-    public FragmentMacroData() {
-        m_interfaceMacroData = new DataMacroData();
-    }
-
     public FragmentMacroData(DataMacroData interfaceMacroData) {
         m_interfaceMacroData = interfaceMacroData;
     }
@@ -50,7 +46,6 @@ public class FragmentMacroData extends Fragment implements FragmentInterface {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_macro_data, container, false);
         gridLayout = view.findViewById(R.id.grid_layout);
-
 
         gridLayout.setRowCount(m_interfaceMacroData.m_dataList.size());
         gridLayout.setColumnCount(3);
@@ -95,7 +90,7 @@ public class FragmentMacroData extends Fragment implements FragmentInterface {
 
     @Override
     public void updateView() {
-
+        Log.i("time",Float.toString(m_interfaceMacroData.runningTime.DataValue));
         for (int i = 0; i < m_interfaceMacroData.m_dataList.size(); i++) {
             View name = gridLayout.getChildAt( i * 3 + 0);
             View data = gridLayout.getChildAt( i * 3 + 1);

@@ -27,22 +27,9 @@ public class FragmentLogger extends Fragment implements FragmentInterface {
 
     public DataLogger m_interfaceLogger;
 
-
-    public FragmentLogger() {
-        // Required empty public constructor
-        m_interfaceLogger = new DataLogger();
-    }
-
     public FragmentLogger(DataLogger interfaceLogger) {
         // Required empty public constructor
         m_interfaceLogger = interfaceLogger;
-    }
-
-    public static FragmentLogger newInstance() {
-        FragmentLogger fragment = new FragmentLogger();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
     }
 
     @Override

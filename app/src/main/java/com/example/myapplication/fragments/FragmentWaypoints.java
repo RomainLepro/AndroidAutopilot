@@ -23,19 +23,8 @@ public class FragmentWaypoints extends Fragment {
 
     DataGps m_gpsInterface;
 
-    public FragmentWaypoints() {
-        m_gpsInterface = new DataGps();
-    }
-
     public FragmentWaypoints(DataGps gpsInterface) {
         m_gpsInterface = gpsInterface;
-    }
-
-    public static FragmentWaypoints newInstance(String param1, String param2) {
-        FragmentWaypoints fragment = new FragmentWaypoints();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
     }
 
     @Override

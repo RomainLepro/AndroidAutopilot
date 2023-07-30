@@ -3,6 +3,8 @@ package com.example.myapplication.Models;
 import static java.lang.Double.max;
 import static java.lang.Double.min;
 
+import android.util.Log;
+
 import com.example.myapplication.Interfaces.DataGps;
 import com.example.myapplication.Interfaces.DataMacroData;
 
@@ -12,14 +14,9 @@ public class ModelMacroData extends ModelDefault {
 
     public DataGps dataGps;
 
-    ModelMacroData(DataGps gps){
-        dataMacroData = new DataMacroData();
+    ModelMacroData(DataGps gps,DataMacroData data){
+        dataMacroData = data;
         dataGps = gps;
-    }
-
-    ModelMacroData(){
-        dataMacroData = new DataMacroData();
-        dataGps = new DataGps();
     }
 
     @Override
@@ -32,7 +29,6 @@ public class ModelMacroData extends ModelDefault {
             dataMacroData.distanceTraveled.DataValue += dataGps.speed_ms*dt_ms / 1000.0;
             dataMacroData.movingTime.DataValue += dt_ms / 1000.0;
         }
-
         dataMacroData.runningTime.DataValue += dt_ms / 1000.0;
         dataMacroData.averageSpeed.DataValue = dataMacroData.distanceTraveled.DataValue / (float)max(dataMacroData.movingTime.DataValue,0.1f);
 

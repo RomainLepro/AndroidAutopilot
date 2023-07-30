@@ -20,7 +20,6 @@ public class ModelCommunication extends ModelDefault {
     Manage all the usb stuff
      */
 
-
     private BroadcastReceiver broadcastReceiver;
 
     public ModelCommunication(DataRadio dataRadio, DataLogger dataLogger)
@@ -29,7 +28,6 @@ public class ModelCommunication extends ModelDefault {
         this.dataLogger = dataLogger;
         myBroadcastReceiver = new MyBroadcastReceiver(this.dataRadio, this.dataLogger);
     }
-
 
     public void updateDt(float dt_ms)
     {

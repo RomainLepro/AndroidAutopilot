@@ -32,23 +32,11 @@ public class FragmentSensor extends Fragment implements FragmentInterface{
     ImageView imv_gpsCourse, imv_relativeWaypointCourse,imv_magCorse;
     View view;
 
-    public FragmentSensor() {
-        m_interfaceSensors = new DataSensors();
-    }
-
     public FragmentSensor(DataSensors interfaceSensors, DataRadio interfaceRadio,DataGps interfaceGps) {
         m_interfaceSensors = interfaceSensors;
         m_interfaceRadio =interfaceRadio;
         m_interfaceGps =interfaceGps;
     }
-
-    public static FragmentSensor newInstance(String param1, String param2) {
-        FragmentSensor fragment = new FragmentSensor();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

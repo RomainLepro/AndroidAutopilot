@@ -33,12 +33,6 @@ public class FragmentLinker extends Fragment implements FragmentInterface {
     EditText m_editText;
     boolean m_linkerHasChanged = false;
 
-    public FragmentLinker() {
-        // Required empty public constructor
-        m_interfaceLinkerSelector = new DataLinkerSelector();
-        m_linker = m_interfaceLinkerSelector.m_linker;
-    }
-
     public FragmentLinker(DataLinkerSelector linkerSelector) {
         // if a linker is provided, do not initialize the matrix
         m_interfaceLinkerSelector = linkerSelector;

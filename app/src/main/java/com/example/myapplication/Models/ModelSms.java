@@ -25,13 +25,6 @@ public class ModelSms extends BroadcastReceiver implements Model {
     private static final int PERMISSION_REQUEST_SEND_SMS = 123;
     private ContextProvider m_contextProvider = null;
 
-    @Deprecated
-    public ModelSms(ContextProvider contextProvider, DataGps gps) {
-        m_contextProvider = contextProvider;
-        dataSms = new DataSms();
-        dataGps = gps;
-    }
-
     public ModelSms(ContextProvider contextProvider, DataGps dataGps,DataSms dataSms) {
         m_contextProvider = contextProvider;
         this.dataSms = dataSms;

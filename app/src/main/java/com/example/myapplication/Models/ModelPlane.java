@@ -20,29 +20,6 @@ public class ModelPlane extends ModelDefault {
     public DataRadio dataRadio;
     public DataSensors dataSensors;
 
-    @Deprecated
-    public ModelPlane()
-    {
-        int numInputs = 11;
-        int numOutputs = 6;
-
-        dataLinkerSelector = new DataLinkerSelector(numInputs,numOutputs);
-
-        dataLinker = dataLinkerSelector.m_linker;
-
-        dataPid = new DataPid();
-
-        dataGps = new DataGps();
-
-        dataRadio = new DataRadio();
-
-        dataSensors = new DataSensors();
-
-        PIDX = new PID(2,0.1f,0.1f);
-        PIDY = new PID(2,0.1f,0.1f);
-        PIDZ = new PID(2,0.1f,0.1f);
-    }
-
     public ModelPlane(DataLinkerSelector dataLinkerSelector,DataPid dataPid,DataGps dataGps,DataRadio dataRadio,DataSensors dataSensors)
     {
         int numInputs = 11;
