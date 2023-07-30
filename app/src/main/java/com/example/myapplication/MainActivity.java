@@ -56,42 +56,7 @@ public class MainActivity extends AppCompatActivity implements ContextProvider {
             Runnable activity = this;
             if(activity!=null)
             {
-                //TODO all this shit should be in the implementation of the factory
-                if(modelFactory.getFragmentLogger().isVisible())
-                {
-                    ((FragmentLogger) modelFactory.getFragmentLogger()).updateView();
-                }
-                if(modelFactory.getFragmentSensor().isVisible())
-                {
-                    ((FragmentSensor) modelFactory.getFragmentSensor()).updateView();
-                }
-                if(modelFactory.getFragmentGps().isVisible())
-                {
-                    ((FragmentGps) modelFactory.getFragmentGps()).updateView();
-                }
-                if(modelFactory.getFragmentPID().isVisible())
-                {
-                    // transfert PID values from plane
-                    modelFactory.getPlane().updatePIDGains(); // not using by name to enable reordering of list
-                    modelFactory.getPlane().updatePidResults();
-                    ((FragmentPID) modelFactory.getFragmentPID()).updateView();
-                    // updates PID gain of plane
-                }
-                if(modelFactory.getFragmentLinker().isVisible())
-                {
-                    float[][] values = ((FragmentLinker) modelFactory.getFragmentLinker()).getValues();
-                    ((FragmentLinker)modelFactory.getFragmentLinker()).updateView();
-                    //Log.i("LINKER : ",String.valueOf(values[0][0]));
-                }
-                if(modelFactory.getFragmentMacroData().isVisible())
-                {
-                    ((FragmentMacroData)modelFactory.getFragmentMacroData()).updateView();
-                }
-                if(modelFactory.getFragmentSms().isVisible())
-                {
-                    ((FragmentSms)modelFactory.getFragmentSms()).updateView();
-                }
-
+                modelFactory.updateUI();
                 handler.postDelayed(this, dtUpdateUI_ms);
             }
         }
@@ -104,14 +69,9 @@ public class MainActivity extends AppCompatActivity implements ContextProvider {
             {
                 handler.postDelayed(this, dtUpdateSimulation_ms);
 
-                //modelFactory.getPlane().dataRadio.L_val_radio = modelFactory.getPlane().intToFloatArray(L_val_radio);
-                //modelFactory.getPlane().dataRadio.L_val_radio_int = L_val_radio;
-                // update plane and its PIDS (with radio and gyros)
-
                 endTime_us = System.nanoTime();
                 float dt_ms = (endTime_us - startTime_us) / 1000000.f;
                 startTime_us = endTime_us;
-
                 dt_ms = max((float)dtUpdateSimulation_ms/10.f,dt_ms);
                 dt_ms = min((float)dtUpdateSimulation_ms*10.f,dt_ms);
 
@@ -119,8 +79,6 @@ public class MainActivity extends AppCompatActivity implements ContextProvider {
             }
         }
     };
-
-
 
 
     @SuppressLint("ResourceType")
@@ -235,7 +193,6 @@ public class MainActivity extends AppCompatActivity implements ContextProvider {
         if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
         {
             Log.i("Main activity gpas permission","Permission Granted");
-            //TODO update position
         }
         else
         {
@@ -243,7 +200,6 @@ public class MainActivity extends AppCompatActivity implements ContextProvider {
             finish();
         }
     }
-
 
     SharedPreferences sharedPreferences;
 

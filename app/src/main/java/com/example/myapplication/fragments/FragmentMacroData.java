@@ -90,7 +90,6 @@ public class FragmentMacroData extends Fragment implements FragmentInterface {
 
     @Override
     public void updateView() {
-        Log.i("time",Float.toString(m_interfaceMacroData.runningTime.DataValue));
         for (int i = 0; i < m_interfaceMacroData.m_dataList.size(); i++) {
             View name = gridLayout.getChildAt( i * 3 + 0);
             View data = gridLayout.getChildAt( i * 3 + 1);

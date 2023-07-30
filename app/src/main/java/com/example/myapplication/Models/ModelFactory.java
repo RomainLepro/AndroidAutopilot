@@ -94,6 +94,45 @@ public class ModelFactory extends ModelDefault{
         }
     }
 
+    public void updateUI() {
+
+        if(getFragmentLogger().isVisible())
+        {
+            ((FragmentLogger) getFragmentLogger()).updateView();
+        }
+        if(getFragmentSensor().isVisible())
+        {
+            ((FragmentSensor) getFragmentSensor()).updateView();
+        }
+        if(getFragmentGps().isVisible())
+        {
+            ((FragmentGps) getFragmentGps()).updateView();
+        }
+        if(getFragmentPID().isVisible())
+        {
+            // transfert PID values from plane
+            getPlane().updatePIDGains(); // not using by name to enable reordering of list
+            getPlane().updatePidResults();
+            ((FragmentPID) getFragmentPID()).updateView();
+            // updates PID gain of plane
+        }
+        if(getFragmentLinker().isVisible())
+        {
+            float[][] values = ((FragmentLinker) getFragmentLinker()).getValues();
+            ((FragmentLinker)getFragmentLinker()).updateView();
+            //Log.i("LINKER : ",String.valueOf(values[0][0]));
+        }
+        if(getFragmentMacroData().isVisible())
+        {
+            ((FragmentMacroData)getFragmentMacroData()).updateView();
+        }
+        if(getFragmentSms().isVisible())
+        {
+            ((FragmentSms)getFragmentSms()).updateView();
+        }
+
+    }
+
     public void createAllModels(){
         Log.i("createAllModels","createAllModels");
 
