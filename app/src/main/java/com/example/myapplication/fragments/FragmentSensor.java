@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -30,8 +29,7 @@ public class FragmentSensor extends Fragment implements FragmentInterface{
     DataGps m_interfaceGps;
     TextView tv_ax,tv_ay,tv_az,tv_gx,tv_gy,tv_gz,tv_magx,tv_magy,tv_magz,tv_magCorse,tv_gpsCorse,tv_corseWaypoint;
     TextView tv_Rx,tv_Ry,tv_Rz,tv_Th,tv_Sa,tv_Sb,tv_He,tv_Te;
-    ImageView imv_arrow1,imv_arrow2;
-    Button btn_update;
+    ImageView imv_gpsCourse, imv_relativeWaypointCourse,imv_magCorse;
     View view;
 
     public FragmentSensor() {
@@ -89,24 +87,16 @@ public class FragmentSensor extends Fragment implements FragmentInterface{
         tv_gpsCorse     = view.findViewById(R.id.tv_gpsCorse);
         tv_magCorse     = view.findViewById(R.id.tv_magCorse);
 
-        btn_update = view.findViewById(R.id.btn_update);
-
-        imv_arrow1 = view.findViewById(R.id.imv_arrow1);
-        imv_arrow2 = view.findViewById(R.id.imv_arrow2);
-
-        btn_update.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.i("Update","update");
-            }
-        });
+        imv_gpsCourse = view.findViewById(R.id.imv_gpsCourse);
+        imv_relativeWaypointCourse = view.findViewById(R.id.imv_relativeWaypointCourse);
+        imv_magCorse = view.findViewById(R.id.imv_magCorse);
 
         Log.i("CREATE_SENSOR","creating activity sensor");
 
         return view;
     }
 
-    public void updateView(float[] accelerometerReading,float[] orientationAngles)
+    public void updateView(float[] accelerometerReading,float[] orientationAngles,int[] radioListInputs)
     {
         tv_ax.setText(String.format("%.2f",accelerometerReading[0]));
         tv_ay.setText(String.format("%.2f",accelerometerReading[1]));
@@ -120,15 +110,10 @@ public class FragmentSensor extends Fragment implements FragmentInterface{
         tv_magy.setText(String.format("%.2f",radToangle(m_interfaceSensors.magnetometerReading[1])));
         tv_magz.setText(String.format("%.2f",radToangle(m_interfaceSensors.magnetometerReading[2])));
 
-        tv_corseWaypoint.setText(String.format("%.2f",radToangle(m_interfaceGps.courseToNextWaypoint_deg)));
-        tv_gpsCorse.setText     (String.format("%.2f",radToangle(m_interfaceGps.currentCourse_deg)));
-        tv_magCorse.setText     (String.format("%.2f",radToangle(m_interfaceSensors.orientationAngles[0])));
-    }
+        tv_corseWaypoint.setText(String.format("%.2f",(m_interfaceGps.courseToNextWaypoint_deg)));
+        tv_gpsCorse.setText     (String.format("%.2f",(m_interfaceGps.currentCourse_deg)));
+        tv_magCorse.setText     (String.format("%.2f",radToangle(m_interfaceSensors.orientationAngles_rad[0])));
 
-    public void updateView(float[] accelerometerReading,float[] orientationAngles,int[] radioListInputs)
-    {
-        updateView(accelerometerReading,orientationAngles);
-        //TODO use DataRadio insted
         tv_Rx.setText(String.valueOf(radioListInputs[0]));
         tv_Ry.setText(String.valueOf(radioListInputs[1]));
         tv_Rz.setText(String.valueOf(radioListInputs[2]));
@@ -143,16 +128,17 @@ public class FragmentSensor extends Fragment implements FragmentInterface{
     public void updateView()
     {
         updateView(m_interfaceSensors.accelerometerReading,
-                m_interfaceSensors.orientationAngles,
+                m_interfaceSensors.orientationAngles_rad,
                 m_interfaceRadio.L_val_radio_int);
         updateArrows(-m_interfaceGps.currentCourse_deg,
-                m_interfaceGps.deltaCourseToNextWaypoint_deg);
+                m_interfaceGps.deltaCourseToNextWaypoint_deg,-radToangle(m_interfaceSensors.orientationAngles_rad[0]));
     }
 
-    public void updateArrows(float arrow1Angle_rad,float arrow2Angle_rad)
+    public void updateArrows(float gpsCourse_deg,float relativeCourseWaypoint_deg,float magCorse_deg)
     {
-        imv_arrow1.setRotation(arrow1Angle_rad);
-        imv_arrow2.setRotation(arrow2Angle_rad);
+        imv_gpsCourse.setRotation(gpsCourse_deg);
+        imv_relativeWaypointCourse.setRotation(relativeCourseWaypoint_deg);
+        imv_magCorse.setRotation(magCorse_deg);
     }
 
 

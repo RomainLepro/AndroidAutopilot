@@ -3,9 +3,6 @@ package com.example.myapplication.Models;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
-import android.os.Debug;
-import android.util.Log;
-
 import com.example.myapplication.Interfaces.DataGps;
 import com.example.myapplication.Interfaces.DataSensors;
 import com.example.myapplication.Interfaces.DataLinker;
@@ -85,9 +82,9 @@ public class ModelPlane extends ModelDefault {
     public void updateDt(float dt_ms){
         //Log.i("debug",Float.toString(dataSensors.accelerometerReading[0]));
 
-        PIDX.updateDt(dataSensors.orientationAngles[2]*400, dataRadio.L_val_radio_int[0],dt_ms);
-        PIDY.updateDt(dataSensors.orientationAngles[1]*400, dataRadio.L_val_radio_int[1],dt_ms);
-        PIDZ.updateDt(dataSensors.orientationAngles[0]*400, dataRadio.L_val_radio_int[2],dt_ms);
+        PIDX.updateDt(dataSensors.orientationAngles_rad[2]*400, dataRadio.L_val_radio_int[0],dt_ms);
+        PIDY.updateDt(dataSensors.orientationAngles_rad[1]*400, dataRadio.L_val_radio_int[1],dt_ms);
+        PIDZ.updateDt(dataSensors.orientationAngles_rad[0]*400, dataRadio.L_val_radio_int[2],dt_ms);
 
         updateLinkerInputsAndOutputs();
         dataRadio.L_val_servos_int = getResultsInt();

@@ -8,15 +8,6 @@ import com.example.myapplication.Interfaces.DataRadio;
 import com.example.myapplication.service.MyBroadcastReceiver;
 
 
-//TODO:
-/*
-ModelComunication extend ModelDefault;
-member => myBroadcastReceiver
-
-myBroadcastReceiver extend BroadcastReceiver
- */
-
-
 public class ModelCommunication extends ModelDefault {
 
     public DataRadio dataRadio = new DataRadio();

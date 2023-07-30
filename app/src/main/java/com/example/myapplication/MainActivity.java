@@ -24,7 +24,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.example.myapplication.Models.ModelCommunication;
 import com.example.myapplication.Models.ModelFactory;
 import com.example.myapplication.fragments.FragmentGps;
 import com.example.myapplication.fragments.FragmentLogger;
@@ -134,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements ContextProvider {
         modelFactory.loadData();
 
         IntentFilter filter = new IntentFilter(UsbManager.ACTION_USB_DEVICE_ATTACHED);
-        registerReceiver(modelFactory.getComunication().myBroadcastReceiver, filter);
+        registerReceiver(modelFactory.getCommunication().myBroadcastReceiver, filter);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -211,9 +210,7 @@ public class MainActivity extends AppCompatActivity implements ContextProvider {
     @Override
     public void onBackPressed() {
         modelFactory.setActiveFragment(modelFactory.getPreviousFragment());
-
         Toast.makeText(getApplicationContext(),"RETURN",Toast.LENGTH_SHORT).show();
-
         ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.FrameLayout, modelFactory.getActiveFragment());
         ft.commit();
@@ -223,7 +220,6 @@ public class MainActivity extends AppCompatActivity implements ContextProvider {
     protected void onResume() {
         modelFactory.loadData();
         super.onResume();
-
     }
 
     @Override

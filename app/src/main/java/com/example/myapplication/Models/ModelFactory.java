@@ -17,7 +17,6 @@ import com.example.myapplication.Interfaces.DataRadio;
 import com.example.myapplication.Interfaces.DataSensors;
 import com.example.myapplication.Interfaces.DataSms;
 import com.example.myapplication.fragments.FragmentGps;
-import com.example.myapplication.fragments.FragmentInterface;
 import com.example.myapplication.fragments.FragmentLinker;
 import com.example.myapplication.fragments.FragmentLogger;
 import com.example.myapplication.fragments.FragmentMacroData;
@@ -66,8 +65,7 @@ public class ModelFactory extends ModelDefault{
     public ModelGps getGps() {
         return (ModelGps) m_gps;
     }
-
-    public ModelCommunication getComunication(){return (ModelCommunication) m_comunication;}
+    public ModelCommunication getCommunication(){return (ModelCommunication) m_comunication;}
 
 
     public Fragment getActiveFragment(){return m_activeFragment;}

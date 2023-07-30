@@ -365,37 +365,71 @@
         app:layout_constraintStart_toEndOf="@+id/tv_labelCorseWaypoint"
         app:layout_constraintTop_toTopOf="@+id/tv_labelCorseWaypoint" />
 
-    <Button
-        android:id="@+id/btn_update"
+
+    <ImageView
+        android:id="@+id/imv_gpsCourse"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="8dp"
+        android:src="@drawable/arrow"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_labelTe" />
+
+    <ImageView
+        android:id="@+id/imv_relativeWaypointCourse"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="10dp"
+        android:src="@drawable/arrow"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imv_gpsCourse"/>
+
+    <ImageView
+        android:id="@+id/imv_magCorse"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="8dp"
+        android:src="@drawable/arrow"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imv_relativeWaypointCourse" />
+
+    <EditText
+        android:id="@+id/gps"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="84dp"
-        android:text="update"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_labelGz" />
+        android:layout_marginStart="12dp"
+        android:text="GpsCorse:"
+        app:layout_constraintBottom_toBottomOf="@+id/imv_gpsCourse"
+        app:layout_constraintStart_toEndOf="@+id/imv_gpsCourse"
+        app:layout_constraintTop_toTopOf="@+id/imv_gpsCourse"
+        app:layout_constraintVertical_bias="0.4" />
 
+    <EditText
+        android:id="@+id/waypoint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:text="relativeWpCorse"
+        app:layout_constraintBottom_toBottomOf="@+id/imv_relativeWaypointCourse"
+        app:layout_constraintStart_toEndOf="@+id/imv_relativeWaypointCourse"
+        app:layout_constraintTop_toTopOf="@+id/imv_relativeWaypointCourse"
+        app:layout_constraintVertical_bias="0.0" />
 
-    <ImageView
-        android:id="@+id/imv_arrow1"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="10dp"
-        android:src="@drawable/arrow"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_update"/>
-
-    <ImageView
-        android:id="@+id/imv_arrow2"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="10dp"
-        android:src="@drawable/arrow"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imv_arrow1"/>
-
+    <EditText
+        android:id="@+id/mag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:text="magCorse"
+        app:layout_constraintBottom_toBottomOf="@+id/imv_magCorse"
+        app:layout_constraintStart_toEndOf="@+id/imv_magCorse"
+        app:layout_constraintTop_toBottomOf="@+id/imv_relativeWaypointCourse"
+        app:layout_constraintVertical_bias="0.692" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

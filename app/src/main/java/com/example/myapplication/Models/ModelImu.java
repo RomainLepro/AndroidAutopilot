@@ -78,7 +78,7 @@ public class ModelImu extends ModelDefault implements SensorEventListener {
     // the device's accelerometer and magnetometer.
     public void updateOrientationAngles() {
         // Update rotation matrix, which is needed to update orientation angles.
-        float[] orientationAngles = m_dataSensors.orientationAngles;
+        float[] orientationAngles = m_dataSensors.orientationAngles_rad;
         float[] rotationMatrix = m_dataSensors.rotationMatrix;
         float[] magnetometerReading = m_dataSensors.magnetometerReading;
         float[] accelerometerReading = m_dataSensors.accelerometerReading;
