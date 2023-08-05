@@ -1,5 +1,6 @@
 package com.example.myapplication.fragments;
 
+import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 
@@ -14,6 +15,7 @@ import android.widget.Button;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.example.myapplication.DrawWaypointActivity;
 import com.example.myapplication.Interfaces.DataGps;
 import com.example.myapplication.MainActivity;
 import com.example.myapplication.Models.ModelGps;
@@ -94,7 +96,8 @@ public class FragmentGps extends Fragment implements FragmentInterface{
         btn_showMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // show the map with all the waypoints
+                Intent intent = new Intent(getActivity(), DrawWaypointActivity.class);
+                startActivity(intent);
             }
         });
 

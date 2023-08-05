@@ -6,6 +6,7 @@ import static java.lang.Math.min;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -192,7 +193,7 @@ public class MainActivity extends AppCompatActivity implements ContextProvider {
 
         if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
         {
-            Log.i("Main activity gpas permission","Permission Granted");
+            Log.i("Main activity gps permission","Permission Granted");
         }
         else
         {
@@ -212,4 +213,5 @@ public class MainActivity extends AppCompatActivity implements ContextProvider {
     public Activity getActivity() {
         return this;
     }
+    
 }
