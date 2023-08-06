@@ -1,7 +1,6 @@
 package com.example.myapplication.Models;
 
 import static com.example.myapplication.MainActivity.MILLIS;
-import static com.example.myapplication.MainActivity.PERMISSION_FINE_LOCATION;
 
 import android.Manifest;
 import android.content.Context;
@@ -31,11 +30,11 @@ import com.google.android.gms.tasks.OnSuccessListener;
 
 public class ModelGps extends ModelDefault implements  SensorEventListener {
 
-    MainActivity myApp;
     public DataGps dataGps;
     public FusedLocationProviderClient fusedLocationProviderClient;
     public LocationRequest locationRequest;
-    private ContextProvider m_contextProvider = null;
+
+    public static final int PERMISSION_FINE_LOCATION = 99;
 
     LocationCallback locationCallback;
 
@@ -114,7 +113,6 @@ public class ModelGps extends ModelDefault implements  SensorEventListener {
         }
 
         dataGps.waypointDistance_m = dataGps.currentLocation.distanceTo(dataGps.savedLocations.get(dataGps.nexLocationId));
-
 
         if(!dataGps.startLocationFollowing)
         {

@@ -2,6 +2,7 @@ package com.example.myapplication.Models;
 
 import android.util.Log;
 
+import com.example.myapplication.ContextProvider;
 import com.example.myapplication.Interfaces.DataInterface;
 
 import java.util.ArrayList;
@@ -10,6 +11,9 @@ import java.util.List;
 public class ModelDefault implements Model{
 
     public List<DataInterface> m_listData = null;
+
+    ContextProvider m_contextProvider = null;
+
     @Override
     public void updateDt(float dt_ms) {
 
@@ -47,5 +51,10 @@ public class ModelDefault implements Model{
         for(DataInterface data:m_listData){
             data.loadData();
         }
+    }
+
+    @Override
+    public void changeContext(ContextProvider contextProvider) {
+        m_contextProvider = contextProvider;
     }
 }

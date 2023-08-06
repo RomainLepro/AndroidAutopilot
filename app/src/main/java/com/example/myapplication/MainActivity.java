@@ -38,11 +38,8 @@ import com.example.myapplication.fragments.FragmentSms;
 public class MainActivity extends AppCompatActivity implements ContextProvider {
 
     public static final int MILLIS = 1000;
-    public static final int PERMISSION_FINE_LOCATION = 99;
-    private static final String ACTION_USB_PERMISSION = "com.android.example.USB_PERMISSION";
     Toolbar toolbar;
     FragmentTransaction ft;
-
     private static final int dtUpdateUI_ms = 100;
     private static final int dtUpdateSimulation_ms = 5;
     long startTime_us = 0;
@@ -86,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements ContextProvider {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        modelFactory = new ModelFactory(this);
+        modelFactory = ModelFactory.getInstance(this);
         modelFactory.createAllModels();
         modelFactory.loadSharedPreferences( getSharedPreferences("MyPreferences", Context.MODE_PRIVATE));
         modelFactory.loadData();
@@ -187,16 +184,14 @@ public class MainActivity extends AppCompatActivity implements ContextProvider {
         super.onPause();
     }
 
-    @Override
+    @Override // this is just to have logs
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
-        {
-            Log.i("Main activity gps permission","Permission Granted");
+        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            Log.i("Main activity permission","Permission Granted : "+permissions);
         }
-        else
-        {
+        else {
             Toast.makeText(this, "This app requires permission", Toast.LENGTH_SHORT).show();
             finish();
         }

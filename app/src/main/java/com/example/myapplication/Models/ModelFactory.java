@@ -30,7 +30,9 @@ import java.util.List;
 
 public class ModelFactory extends ModelDefault{
 
-    private DataInterface dataGps,dataLinkerSelector,dataLogger,
+    private static ModelFactory modelFactory;
+
+    public DataInterface dataGps,dataLinkerSelector,dataLogger,
             dataMacroData,dataPid,dataRadio,dataSensors,dataSms;
     private Fragment m_fragmentLogger,m_fragmentSensor,m_fragmentGps,m_fragmentPID,
             m_fragmentWaypoints,m_fragmentLinker,m_fragmentMacroData,m_fragmentSms;
@@ -81,6 +83,29 @@ public class ModelFactory extends ModelDefault{
     public List<Fragment> m_listFragments = new ArrayList<Fragment>();
     public List<Model> m_listModels = new ArrayList<Model>();
     private ContextProvider m_contextProvider = null;
+
+
+    // Public static method to access the single instance of the class.
+    public static ModelFactory getInstance(ContextProvider contextProvider) {
+        if (modelFactory == null && contextProvider != null) {
+            modelFactory = new ModelFactory(contextProvider);
+        }
+        else if(modelFactory == null)
+        {
+            Log.w("ModelFactory","First instantiation of MF should provide context");
+        }
+        return modelFactory;
+    }
+
+    public void changeContext(ContextProvider contextProvider)
+    {
+        if(modelFactory != null &&  m_listModels!=null)
+        {
+            for(Model model : m_listModels){
+                model.changeContext(contextProvider);
+            }
+        }
+    }
     public ModelFactory(ContextProvider contextProvider){
         m_contextProvider = contextProvider;
         m_listData = new ArrayList<DataInterface>();

@@ -47,6 +47,7 @@ public class MyBroadcastReceiver extends BroadcastReceiver  implements SerialInp
     private static final int READ_WAIT_MILLIS = 100;
     private static final int WRITE_WAIT_MILLIS = 100;
     private static final String ACTION_USB_PERMISSION = "com.android.example.USB_PERMISSION";
+
     private String word = "";
 
     /*
